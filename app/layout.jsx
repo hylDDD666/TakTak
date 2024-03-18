@@ -41,6 +41,15 @@ export default function RootLayout({ children }) {
                 itemSelectedBg: 'white',
                 itemSelectedColor: 'rgb(254,44,85)',
               },
+              Slider:{
+                trackBg:'white',
+                railBg:'rgb(113,122,112)',
+                railHoverBg:'rgb(113,122,112)',
+                trackHoverBg:'white',
+                handleLineWidth:0,
+                handleLineWidthHover:0
+
+              }
             },
           }}
         >
