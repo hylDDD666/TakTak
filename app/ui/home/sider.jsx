@@ -30,6 +30,8 @@ export default function PriSider() {
     <>
       <Sider
         style={{
+          position:'fixed',
+          height:"100%",
           background: 'white',
           borderRight: '1px solid rgb(224,224,224)',
           boxShadow: '2px 1px 10px rgb(249,249,249)',

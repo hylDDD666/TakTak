@@ -63,7 +63,7 @@ export default function VideoPlayer(props) {
   return (
     <>
       {domLoaded && (
-        <div className={'w-[270px] h-[483px] rounded-lg relative truncate'}>
+        <div className={'w-3/4 max-w-80 rounded-lg relative truncate'}>
           <div className="w-full h-full absolute bg-inherit z-10 opacity-0 hover:opacity-100 transition-opacity">
             <div className={'absolute top-5 right-5 text-white '}>
               <Popover

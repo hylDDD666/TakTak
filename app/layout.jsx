@@ -58,12 +58,13 @@ export default function RootLayout({ children }) {
           <AntdRegistry>
             <Layout>
               <Header></Header>
-              <Layout className={'h-full'}>
+              <Layout className={'h-full !bg-white'}>
                 <Sider></Sider>
                 <Content
                   style={{
-                    margin: '24px 16px 0',
+                    padding:'10px 10px 10px 100px',
                     overflow: 'initial',
+                    backgroundColor:'white'
                   }}
                 >
                   {children}

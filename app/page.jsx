@@ -1,10 +1,11 @@
 import React, { Suspense } from 'react'
-import VideoPlayer from './ui/video-player'
+import HomeItem from './ui/home/homeItem'
+
 
 export default function Home() {
   return (
     <Suspense fallback={'jiazaizhong'}>
-      <VideoPlayer />
+      <HomeItem></HomeItem>
     </Suspense>
   )
 }

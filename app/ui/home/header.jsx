@@ -14,6 +14,9 @@ export default function PriHeader() {
     <>
       <Header
         style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1,
           display: 'flex',
           alignItems: 'center',
           backgroundColor: 'white',
