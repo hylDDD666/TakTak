@@ -47,7 +47,9 @@ export default function RootLayout({ children }) {
                 railHoverBg:'rgb(113,122,112)',
                 trackHoverBg:'white',
                 handleLineWidth:0,
-                handleLineWidthHover:0
+                handleLineWidthHover:0,
+                handleSize:6,
+                handleSizeHover:8
 
               }
             },

@@ -34,8 +34,8 @@ export default function PriSider() {
           borderRight: '1px solid rgb(224,224,224)',
           boxShadow: '2px 1px 10px rgb(249,249,249)',
         }}
-        breakpoint="md"
-        className={'md:!border-0'}
+        breakpoint="lg"
+        className={'lg:!border-0'}
       >
         <Menu
           mode="inline"
