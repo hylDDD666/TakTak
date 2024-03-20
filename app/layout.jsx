@@ -5,6 +5,7 @@ import { ConfigProvider, Layout } from 'antd'
 import Header from './ui/home/header'
 import Sider from './ui/home/sider'
 import { Content } from 'antd/es/layout/layout'
+import BackTop from 'antd/es/float-button/BackTop'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,6 +32,8 @@ export default function RootLayout({ children }) {
                 defaultHoverBorderColor: '#d9d9d9',
                 defaultHoverBg:'rgb(247,247,248)',
                 defaultBg: '#ffffff',
+                defaultActiveBg:'rgb(229,229,230)',
+                defaultActiveBorderColor:'#d9d9d9'
               },
               Input: {
                 activeBorderColor: 'rgb(197,197,201)',
@@ -69,6 +72,7 @@ export default function RootLayout({ children }) {
                 >
                   {children}
                 </Content>
+                <BackTop></BackTop>
               </Layout>
             </Layout>
           </AntdRegistry>

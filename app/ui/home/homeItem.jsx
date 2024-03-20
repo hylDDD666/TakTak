@@ -2,14 +2,28 @@
 import { Avatar, Button, Card, Col, Row } from 'antd'
 import React, { useState } from 'react'
 import VideoPlayer from '../video-player'
+import {
+  HeartFilled,
+  MergeFilled,
+  MessageFilled,
+  StarFilled,
+} from '@ant-design/icons'
 
-export default function HomeItem() {
+export default function HomeItem(props) {
   const [isCollipse, setIsCollipse] = useState(true)
+  const [isLike, setIsLike] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
   }
+  const handleLikeClick = () => {
+    setIsLike((pre) => !pre)
+  }
+  const handleFavorites = () => {
+    setIsFavorite((pre) => !pre)
+  }
   return (
-    <div>
+    <div className='border-b border-slate-200 border-solid pt-6'>
       <Row justify={'center'} wrap={false}>
         <Col flex={'60px'}>
           <Avatar
@@ -61,10 +75,81 @@ export default function HomeItem() {
         </Col>
       </Row>
       <Row justify={'center'} wrap={false}>
-            <Col flex={'60px'}></Col>
-            <Col flex={'auto'} style={{ maxWidth: '610px' }}>
-              <VideoPlayer></VideoPlayer>
-            </Col>
+        <Col flex={'60px'}></Col>
+        <Col
+          flex={'auto'}
+          style={{ maxWidth: '610px', display: 'flex'}}
+          className="pb-10"
+        >
+          <VideoPlayer></VideoPlayer>
+          <div className="w-[48px] ml-5 flex flex-col flex-wrap justify-end">
+            <Button
+              type="round"
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '5px',
+                padding: 0,
+                height: '48px',
+                backgroundColor: 'rgb(241,241,242)',
+              }}
+              className={`active:!bg-gray-200 ${
+                isLike ? '!text-rose-500' : ''
+              }`}
+              size="large"
+              icon={<HeartFilled className={'!text-xl'} />}
+              onClick={handleLikeClick}
+            ></Button>
+            <strong className="w-full text-center text-xs mb-2">12312</strong>
+            <Button
+              type="round"
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '5px',
+                padding: 0,
+                height: '48px',
+                border: 0,
+                backgroundColor: 'rgb(241,241,242)',
+              }}
+              size="large"
+              icon={<MessageFilled className="!text-xl" />}
+              className={`active:!bg-gray-200`}
+            ></Button>
+            <strong className="w-full text-center text-xs mb-2">12312</strong>
+            <Button
+              type="round"
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '5px',
+                padding: 0,
+                height: '48px',
+                border: 0,
+                backgroundColor: 'rgb(241,241,242)',
+              }}
+              size="large"
+              icon={<StarFilled className="!text-xl" />}
+              className={`active:!bg-gray-200 ${
+                isFavorite ? '!text-yellow-400' : ''
+              }`}
+              onClick={handleFavorites}
+            ></Button>
+            <strong className="w-full text-center text-xs mb-2">12312</strong>
+            <Button
+              type="round"
+              style={{
+                fontWeight: 'bold',
+                marginBottom: '5px',
+                padding: 0,
+                height: '48px',
+                border: 0,
+                backgroundColor: 'rgb(241,241,242)',
+              }}
+              size="large"
+              icon={<MergeFilled className="!text-xl" />}
+              className={`active:!bg-gray-200 `}
+            ></Button>
+            <strong className="w-full text-center text-xs mb-2">12312</strong>
+          </div>
+        </Col>
       </Row>
     </div>
   )

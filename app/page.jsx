@@ -6,6 +6,9 @@ export default function Home() {
   return (
     <Suspense fallback={'jiazaizhong'}>
       <HomeItem></HomeItem>
+      <HomeItem></HomeItem>
+      <HomeItem></HomeItem>
+      <HomeItem></HomeItem>
     </Suspense>
   )
 }

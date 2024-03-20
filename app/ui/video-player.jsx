@@ -7,21 +7,12 @@ import {
   FlagOutlined,
   MutedOutlined,
   PauseOutlined,
+  PlayCircleFilled,
   PlayCircleOutlined,
   SendOutlined,
   SoundOutlined,
 } from '@ant-design/icons'
-import {
-  Button,
-  Col,
-  Flex,
-  InputNumber,
-  Popover,
-  Progress,
-  Row,
-  Slider,
-  Tooltip,
-} from 'antd'
+import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 
@@ -33,6 +24,8 @@ export default function VideoPlayer(props) {
   const [isMuted, setIsMuted] = useState(false)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
+
+  const [show, setShow] = useState(false)
   const playerRef = useRef()
   useEffect(() => {
     setDomLoaded(true)
@@ -60,11 +53,27 @@ export default function VideoPlayer(props) {
   const handleMute = () => {
     setIsMuted((pre) => !pre)
   }
+  const handleMouseEnter = () => {
+    setShow(true)
+  }
+  const handleMouseLeave = () => {
+    setShow(false)
+  }
   return (
     <>
       {domLoaded && (
-        <div className={'w-3/4 max-w-80 rounded-lg relative truncate min-w-52'}>
-          <div className="w-full h-full absolute bg-inherit z-10 opacity-0 hover:opacity-100 transition-opacity">
+        <div
+          className={
+            'w-3/5 max-w-80 rounded-lg relative truncate min-w-52 max-h-180'
+          }
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div
+            className={`w-full h-full absolute bg-inherit z-10 opacity-0 ${
+              show ? 'opacity-100' : ''
+            } transition-opacity`}
+          >
             <div className={'absolute top-5 right-5 text-white '}>
               <Popover
                 content={
@@ -106,11 +115,15 @@ export default function VideoPlayer(props) {
                 'absolute bottom-0 w-full h-[60px] text-white px-[10px] bg-gradient-to-t from-slate-800 '
               }
             >
-              <Row>
-                <Col span={18}>
+              <Row justify={'space-between'}>
+                <Col span={'auto'}>
                   <Button
                     icon={
-                      isPlaying ? <PauseOutlined /> : <PlayCircleOutlined />
+                      isPlaying ? (
+                        <PauseOutlined className={'!text-xl'} />
+                      ) : (
+                        <PlayCircleFilled className={'!text-xl'} />
+                      )
                     }
                     style={{
                       border: 0,
@@ -121,7 +134,7 @@ export default function VideoPlayer(props) {
                     onClick={togglePlaying}
                   ></Button>
                 </Col>
-                <Col span={6}>
+                <Col span={'60px'}>
                   <Tooltip
                     placement="top"
                     arrow={false}
@@ -131,7 +144,11 @@ export default function VideoPlayer(props) {
                   >
                     <Button
                       icon={
-                        isRoll ? <ArrowUpOutlined /> : <CloseCircleOutlined />
+                        isRoll ? (
+                          <ArrowUpOutlined className={'!text-xl'} />
+                        ) : (
+                          <CloseCircleOutlined className={'!text-xl'} />
+                        )
                       }
                       onClick={toggleRoll}
                       style={{
@@ -162,9 +179,9 @@ export default function VideoPlayer(props) {
                     <Button
                       icon={
                         volume === 0 || isMuted ? (
-                          <MutedOutlined />
+                          <MutedOutlined className={'!text-xl'} />
                         ) : (
-                          <SoundOutlined />
+                          <SoundOutlined className={'!text-xl'} />
                         )
                       }
                       style={{
@@ -192,7 +209,7 @@ export default function VideoPlayer(props) {
                     }}
                   />
                 </Col>
-                <Col flex={'70px'} className="leading-3" >
+                <Col flex={'70px'} className="leading-3">
                   <span className="text-xs ml-3">
                     {' '}
                     {Math.floor((sliderValue * duration) / 6000) < 10
