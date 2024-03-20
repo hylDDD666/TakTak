@@ -10,11 +10,11 @@ import {
   PlayCircleFilled,
   PlayCircleOutlined,
   SendOutlined,
-  SoundOutlined,
+  SoundOutlined
 } from '@ant-design/icons'
 import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
-import React, { Suspense, useEffect, useRef, useState } from 'react'
-import ReactPlayer from 'react-player'
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+const ReactPlayer = lazy(() => import('react-player'))
 
 export default function VideoPlayer(props) {
   const [domLoaded, setDomLoaded] = useState(false)
@@ -30,6 +30,7 @@ export default function VideoPlayer(props) {
   useEffect(() => {
     setDomLoaded(true)
   }, [])
+  useEffect(() => {}, [])
   const onChange = (newValue) => {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
@@ -63,9 +64,7 @@ export default function VideoPlayer(props) {
     <>
       {domLoaded && (
         <div
-          className={
-            'w-3/5 max-w-80 rounded-lg relative truncate min-w-52 max-h-180'
-          }
+          className={'w-3/5 max-w-80 rounded-lg relative  min-w-52 max-h-180 overflow-hidden'}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -82,7 +81,7 @@ export default function VideoPlayer(props) {
                       style={{
                         fontWeight: 'bold',
                         border: 0,
-                        marginRight: '10px',
+                        marginRight: '10px'
                       }}
                       icon={<DislikeOutlined />}
                     >
@@ -92,7 +91,7 @@ export default function VideoPlayer(props) {
                       style={{
                         fontWeight: 'bold',
                         border: 0,
-                        marginRight: '10px',
+                        marginRight: '10px'
                       }}
                       icon={<FlagOutlined />}
                     >
@@ -103,7 +102,7 @@ export default function VideoPlayer(props) {
                 placement="right"
                 arrow={false}
                 align={{
-                  offset: [25, 0],
+                  offset: [25, 0]
                 }}
                 className="rounded"
               >
@@ -129,7 +128,7 @@ export default function VideoPlayer(props) {
                       border: 0,
                       padding: 0,
                       backgroundColor: 'transparent',
-                      color: 'white',
+                      color: 'white'
                     }}
                     onClick={togglePlaying}
                   ></Button>
@@ -156,7 +155,7 @@ export default function VideoPlayer(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px',
+                        width: '28px'
                       }}
                     ></Button>
                   </Tooltip>
@@ -189,7 +188,7 @@ export default function VideoPlayer(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px',
+                        width: '28px'
                       }}
                       onClick={handleMute}
                     ></Button>
@@ -205,7 +204,7 @@ export default function VideoPlayer(props) {
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
-                      open: false,
+                      open: false
                     }}
                   />
                 </Col>
@@ -235,17 +234,19 @@ export default function VideoPlayer(props) {
             </div>
           </div>
           <div className="z-0">
-            <ReactPlayer
-              ref={playerRef}
-              playing={isPlaying}
-              loop
-              volume={volume / 100}
-              width={'100%'}
-              height={'100%'}
-              url={'/video/pexels-alexander-jensen-20496059 (Original).mp4'}
-              onDuration={handleDuration}
-              onProgress={handllePlay}
-            ></ReactPlayer>
+            <Suspense fallback={<div className="h-full w-full bg-slate-200"></div>}>
+              <ReactPlayer
+                ref={playerRef}
+                playing={isPlaying}
+                loop
+                volume={volume / 100}
+                width={'100%'}
+                height={'100%'}
+                url={'/video/pexels-alexander-jensen-20496059 (Original).mp4'}
+                onDuration={handleDuration}
+                onProgress={handllePlay}
+              ></ReactPlayer>
+            </Suspense>
           </div>
         </div>
       )}
