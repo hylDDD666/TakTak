@@ -63,7 +63,7 @@ export default function VideoPlayer(props) {
   return (
     <>
       {domLoaded && (
-        <div className={'w-3/4 max-w-80 rounded-lg relative truncate'}>
+        <div className={'w-3/4 max-w-80 rounded-lg relative truncate min-w-52'}>
           <div className="w-full h-full absolute bg-inherit z-10 opacity-0 hover:opacity-100 transition-opacity">
             <div className={'absolute top-5 right-5 text-white '}>
               <Popover
@@ -180,7 +180,7 @@ export default function VideoPlayer(props) {
                 </Col>
               </Row>
               <Row>
-                <Col span={17}>
+                <Col flex={'auto'}>
                   <Slider
                     min={0}
                     max={100}
@@ -192,7 +192,7 @@ export default function VideoPlayer(props) {
                     }}
                   />
                 </Col>
-                <Col span={7} className="leading-3">
+                <Col flex={'70px'} className="leading-3" >
                   <span className="text-xs ml-3">
                     {' '}
                     {Math.floor((sliderValue * duration) / 6000) < 10

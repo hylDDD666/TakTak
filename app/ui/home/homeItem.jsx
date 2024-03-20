@@ -24,24 +24,27 @@ export default function HomeItem() {
           >
             <h3>用户名</h3>
           </a>
-          <div className={`text-lg mb-3`}>
-            <label
-              className="cursor-pointer font-bold  float-right clear-both mr-4 mt-7"
-              onClick={toggleCollopse}
+          <div className="flex">
+            <div
+              className={`text-lg mb-3 before:float-right before:w-0 before:h-full before:-mb-[32px] `}
             >
-              {isCollipse ? '展开' : '收起'}
-            </label>
-            <span
-              className={`pr-5 ${
-                isCollipse ? 'overflow-hidden line-clamp-2' : ''
-              }`}
-            >
-              Respuesta a @anacristinamunaresmejia Nuevas imágenes de la
-              tribuMante #mante #tribumante #tribe #tribu #misterio
-              #mantetribe#losttribe
-            </span>
+              <label
+                className="cursor-pointer font-bold  float-right clear-both"
+                onClick={toggleCollopse}
+              >
+                {isCollipse ? '展开' : '收起'}
+              </label>
+              <span
+                className={`pr-5 ${
+                  isCollipse ? 'overflow-hidden line-clamp-2' : ''
+                }`}
+              >
+                Respuesta a @anacristinamunaresmejia Nuevas imágenes de la
+                tribuMante #mante #tribumante #tribe #tribu #misterio
+                #mantetribe#losttribe
+              </span>
+            </div>
           </div>
-          <VideoPlayer></VideoPlayer>
         </Col>
         <Col flex={'100px'}>
           <Button
@@ -56,6 +59,12 @@ export default function HomeItem() {
             关注
           </Button>
         </Col>
+      </Row>
+      <Row justify={'center'} wrap={false}>
+            <Col flex={'60px'}></Col>
+            <Col flex={'auto'} style={{ maxWidth: '610px' }}>
+              <VideoPlayer></VideoPlayer>
+            </Col>
       </Row>
     </div>
   )
