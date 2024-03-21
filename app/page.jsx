@@ -18,6 +18,8 @@ export default function Home() {
               user={item.user}
               desc={item.desc}
               videoInfo={item.video}
+              disLike={item.disLike}
+              id={item.id}
             ></HomeItem>
         )
       })}

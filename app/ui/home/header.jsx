@@ -44,7 +44,7 @@ export default function PriHeader() {
         />
         <div className={'h-full'}>
           <Button
-            style={{ fontWeight: 'bold', marginRight: '10px' }}
+            style={{ fontWeight: 'bold', marginleft: '10px' }}
             icon={<PlusOutlined></PlusOutlined>}
             size="large"
           >

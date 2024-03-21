@@ -47,7 +47,7 @@ export default function VideoPlayer(props) {
     playerRef.current.seekTo(newValue / 100)
   }
 
-  const deleteItem = useHomeStore((state) => state.deleteItem)
+  const disLikeItem = useHomeStore((state) => state.disLikeItem)
   const handleDuration = (value) => {
     setDuration(value)
   }
@@ -74,7 +74,7 @@ export default function VideoPlayer(props) {
     setShow(false)
   }
   const handleDislike = () => {
-    deleteItem(id)
+    disLikeItem(id)
   }
   return (
     <>

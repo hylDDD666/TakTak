@@ -197,6 +197,7 @@ for (let i = 0; i < 5; i++) {
       collectNum: Math.floor(Math.random() * 1000),
       shareNum: Math.floor(Math.random() * 1000),
     },
+    disLike:false
   })
 }
 
@@ -208,4 +209,12 @@ export const useHomeStore = create((set) => ({
       return { itemList: newList }
     })
   },
+  disLikeItem:(id)=>{
+    set((state)=>{
+      const newList = [...state.itemList]
+      const index = state.itemList.findIndex((item)=>item.id===id)
+      newList[index].disLike=true
+      return {itemList:newList}
+    })
+  }
 }))
