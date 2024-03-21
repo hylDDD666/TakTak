@@ -20,9 +20,10 @@ const items2 = [
   const key = String(index + 1)
   return {
     key: `${key}`,
-    icon: React.createElement(icon[0], { className: '!text-xl' }),
+    icon: React.createElement(icon[0], { className: '!text-2xl' }),
     label: icon[1],
     title: icon[1],
+    style:{marginTop:"8px",paddingLeft:'15px'}
   }
 })
 export default function PriSider() {
@@ -38,12 +39,15 @@ export default function PriSider() {
         }}
         breakpoint="lg"
         className={'lg:!border-r-0 lg:!shadow-none'}
+        collapsedWidth='60px'
+        defaultCollapsed
       >
         <Menu
           mode="inline"
           defaultSelectedKeys={['1']}
           className={'!h-full !text-xl !font-bold !border-r-0 '}
           items={items2}
+          style={{ minWidth: 0, flex: "auto" }}
         />
       </Sider>
     </>

@@ -10,23 +10,34 @@ import {
   PlayCircleFilled,
   PlayCircleOutlined,
   SendOutlined,
-  SoundOutlined
+  SoundOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { useHomeStore } from '../stores/homeStore'
 const ReactPlayer = lazy(() => import('react-player'))
 
 export default function VideoPlayer(props) {
+  const { url, type } = props.videoInfo
+  const id = props.id
   const [domLoaded, setDomLoaded] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isRoll, setIsRoll] = useState(false)
-  const [volume, setVolume] = useState(0)
+  const [volume, setVolume] = useState(20)
   const [isMuted, setIsMuted] = useState(false)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
 
   const [show, setShow] = useState(false)
   const playerRef = useRef()
+  useEffect(() => {
+    const options = {
+      rootMargin: '0px',
+      threshold: 0.6,
+    }
+    const observer = new IntersectionObserver(([entry]) => {}, options)
+  }, [])
+
   useEffect(() => {
     setDomLoaded(true)
   }, [])
@@ -35,6 +46,8 @@ export default function VideoPlayer(props) {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
   }
+
+  const deleteItem = useHomeStore((state) => state.deleteItem)
   const handleDuration = (value) => {
     setDuration(value)
   }
@@ -60,16 +73,21 @@ export default function VideoPlayer(props) {
   const handleMouseLeave = () => {
     setShow(false)
   }
+  const handleDislike = () => {
+    deleteItem(id)
+  }
   return (
     <>
       {domLoaded && (
         <div
-          className={'w-3/5 max-w-80 rounded-lg relative  min-w-52 max-h-180 overflow-hidden'}
+          className={`${
+            type === 'col' ? 'w-3/5 max-w-96 min-w-52' : 'w-full'
+          } rounded-lg relative   overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           <div
-            className={`w-full h-full absolute bg-inherit z-10 opacity-0 ${
+            className={`w-full h-full absolute bg-transparent z-10 opacity-0 ${
               show ? 'opacity-100' : ''
             } transition-opacity`}
           >
@@ -81,9 +99,10 @@ export default function VideoPlayer(props) {
                       style={{
                         fontWeight: 'bold',
                         border: 0,
-                        marginRight: '10px'
+                        marginRight: '10px',
                       }}
                       icon={<DislikeOutlined />}
+                      onClick={handleDislike}
                     >
                       不感兴趣
                     </Button>
@@ -91,7 +110,7 @@ export default function VideoPlayer(props) {
                       style={{
                         fontWeight: 'bold',
                         border: 0,
-                        marginRight: '10px'
+                        marginRight: '10px',
                       }}
                       icon={<FlagOutlined />}
                     >
@@ -102,7 +121,7 @@ export default function VideoPlayer(props) {
                 placement="right"
                 arrow={false}
                 align={{
-                  offset: [25, 0]
+                  offset: [25, 0],
                 }}
                 className="rounded"
               >
@@ -128,7 +147,7 @@ export default function VideoPlayer(props) {
                       border: 0,
                       padding: 0,
                       backgroundColor: 'transparent',
-                      color: 'white'
+                      color: 'white',
                     }}
                     onClick={togglePlaying}
                   ></Button>
@@ -155,7 +174,7 @@ export default function VideoPlayer(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px'
+                        width: '28px',
                       }}
                     ></Button>
                   </Tooltip>
@@ -188,7 +207,7 @@ export default function VideoPlayer(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px'
+                        width: '28px',
                       }}
                       onClick={handleMute}
                     ></Button>
@@ -204,7 +223,7 @@ export default function VideoPlayer(props) {
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
-                      open: false
+                      open: false,
                     }}
                   />
                 </Col>
@@ -234,7 +253,9 @@ export default function VideoPlayer(props) {
             </div>
           </div>
           <div className="z-0">
-            <Suspense fallback={<div className="h-full w-full bg-slate-200"></div>}>
+            <Suspense
+              fallback={<div className="h-full w-full bg-slate-200"></div>}
+            >
               <ReactPlayer
                 ref={playerRef}
                 playing={isPlaying}
@@ -242,9 +263,10 @@ export default function VideoPlayer(props) {
                 volume={volume / 100}
                 width={'100%'}
                 height={'100%'}
-                url={'/video/pexels-alexander-jensen-20496059 (Original).mp4'}
+                url={url}
                 onDuration={handleDuration}
                 onProgress={handllePlay}
+                style={type === 'row' ? { position: 'absolute' } : {}}
               ></ReactPlayer>
             </Suspense>
           </div>

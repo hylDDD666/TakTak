@@ -30,10 +30,10 @@ export default function RootLayout({ children }) {
             components: {
               Button: {
                 defaultHoverBorderColor: '#d9d9d9',
-                defaultHoverBg:'rgb(247,247,248)',
+                defaultHoverBg: 'rgb(247,247,248)',
                 defaultBg: '#ffffff',
-                defaultActiveBg:'rgb(229,229,230)',
-                defaultActiveBorderColor:'#d9d9d9'
+                defaultActiveBg: 'rgb(229,229,230)',
+                defaultActiveBorderColor: '#d9d9d9',
               },
               Input: {
                 activeBorderColor: 'rgb(197,197,201)',
@@ -44,30 +44,29 @@ export default function RootLayout({ children }) {
                 itemSelectedBg: 'white',
                 itemSelectedColor: 'rgb(254,44,85)',
               },
-              Slider:{
-                trackBg:'white',
-                railBg:'rgb(113,122,112)',
-                railHoverBg:'rgb(113,122,112)',
-                trackHoverBg:'white',
-                handleLineWidth:0,
-                handleLineWidthHover:0,
-                handleSize:6,
-                handleSizeHover:8
-
-              }
+              Slider: {
+                trackBg: 'white',
+                railBg: 'rgb(113,122,112)',
+                railHoverBg: 'rgb(113,122,112)',
+                trackHoverBg: 'white',
+                handleLineWidth: 0,
+                handleLineWidthHover: 0,
+                handleSize: 6,
+                handleSizeHover: 8,
+              },
             },
           }}
         >
           <AntdRegistry>
             <Layout>
               <Header></Header>
-              <Layout className={'h-full !bg-white'}>
+              <Layout className={'h-full !bg-white'} hasSider>
                 <Sider></Sider>
                 <Content
                   style={{
-                    padding:'10px 10px 10px 100px',
+                    padding: '10px 10px 10px 100px',
                     overflow: 'initial',
-                    backgroundColor:'white'
+                    backgroundColor: 'white',
                   }}
                 >
                   {children}
