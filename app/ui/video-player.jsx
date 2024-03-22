@@ -15,21 +15,24 @@ import {
 import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../stores/homeStore'
-const ReactPlayer = lazy(() => import('react-player'))
+import ReactPlayer from 'react-player'
 
 export default function VideoPlayer(props) {
   const { url, type } = props.videoInfo
-  const id = props.id
+  const { id, isPlay } = props
   const [domLoaded, setDomLoaded] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
   const [isRoll, setIsRoll] = useState(false)
   const [volume, setVolume] = useState(20)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
 
   const [show, setShow] = useState(false)
   const playerRef = useRef()
+  useEffect(() => {
+    setIsPlaying(isPlay)
+  }, [isPlay])
   useEffect(() => {
     const options = {
       rootMargin: '0px',
@@ -75,6 +78,9 @@ export default function VideoPlayer(props) {
   }
   const handleDislike = () => {
     disLikeItem(id)
+  }
+  const handleReady = () => {
+    setIsPlaying(true)
   }
   return (
     <>
@@ -253,22 +259,18 @@ export default function VideoPlayer(props) {
             </div>
           </div>
           <div className="z-0">
-            <Suspense
-              fallback={<div className="h-full w-full bg-slate-200"></div>}
-            >
-              <ReactPlayer
-                ref={playerRef}
-                playing={isPlaying}
-                loop
-                volume={volume / 100}
-                width={'100%'}
-                height={'100%'}
-                url={url}
-                onDuration={handleDuration}
-                onProgress={handllePlay}
-                style={type === 'row' ? { position: 'absolute' } : {}}
-              ></ReactPlayer>
-            </Suspense>
+            <ReactPlayer
+              ref={playerRef}
+              playing={isPlaying}
+              loop
+              volume={isMuted ? 0 : volume / 100}
+              width={'100%'}
+              height={'100%'}
+              url={url}
+              onDuration={handleDuration}
+              onProgress={handllePlay}
+              style={type === 'row' ? { position: 'absolute' } : {}}
+            ></ReactPlayer>
           </div>
         </div>
       )}

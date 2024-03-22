@@ -1,7 +1,6 @@
 'use client'
 import React, { Suspense } from 'react'
 import dynamic from 'next/dynamic'
-// import HomeItem from './ui/home/homeItem'
 import { useHomeStore } from './stores/homeStore'
 const HomeItem = dynamic(() => import('./ui/home/homeItem'), { ssr: false })
 
@@ -20,6 +19,7 @@ export default function Home() {
               videoInfo={item.video}
               disLike={item.disLike}
               id={item.id}
+              isPlaying={item.isPlaying}
             ></HomeItem>
         )
       })}

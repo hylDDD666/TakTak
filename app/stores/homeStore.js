@@ -197,7 +197,8 @@ for (let i = 0; i < 5; i++) {
       collectNum: Math.floor(Math.random() * 1000),
       shareNum: Math.floor(Math.random() * 1000),
     },
-    disLike:false
+    disLike: false,
+    isPlaying: false,
   })
 }
 
@@ -209,12 +210,29 @@ export const useHomeStore = create((set) => ({
       return { itemList: newList }
     })
   },
-  disLikeItem:(id)=>{
-    set((state)=>{
+  disLikeItem: (id) => {
+    set((state) => {
       const newList = [...state.itemList]
-      const index = state.itemList.findIndex((item)=>item.id===id)
-      newList[index].disLike=true
-      return {itemList:newList}
+      const index = state.itemList.findIndex((item) => item.id === id)
+      newList[index].disLike = true
+      return { itemList: newList }
     })
-  }
+  },
+  pauseAllItems: () => {
+    set((state) => {
+      const newList = [...state.itemList]
+      newList.map((item) => {
+        item.isPlaying = false
+      })
+      return { itemList: newList }
+    })
+  },
+  playItemById: (id) => {
+    set((state) => {
+      const newList = [...state.itemList]
+      const index = newList.findIndex((item) => item.id === id)
+      newList[index].isPlaying = true
+      return { itemList: newList }
+    })
+  },
 }))

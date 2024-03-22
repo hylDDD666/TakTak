@@ -1,7 +1,12 @@
 'use client'
 import { Avatar, Button, Card, Col, Row } from 'antd'
-import React, { Suspense, lazy, useRef, useState } from 'react'
-import { HeartFilled, MergeFilled, MessageFilled, StarFilled } from '@ant-design/icons'
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import {
+  HeartFilled,
+  MergeFilled,
+  MessageFilled,
+  StarFilled,
+} from '@ant-design/icons'
 import VideoPlayer from '../video-player'
 import { Transition } from 'react-transition-group'
 import { useHomeStore } from '@/app/stores/homeStore'
@@ -9,18 +14,20 @@ import { useHomeStore } from '@/app/stores/homeStore'
 const defaultStyle = {
   transition: 'all 300ms linear',
   display: 'block',
-  maxHeight: '1000px'
+  maxHeight: '1000px',
 }
 const transitionStyles = {
   entering: { opacity: 1, maxHeight: '1000px' },
   entered: { opacity: 1 },
   exiting: { opacity: 0 },
-  exited: { maxHeight: 0, opacity: 0, padding: 0 }
+  exited: { maxHeight: 0, opacity: 0, padding: 0 },
 }
 
 export default function HomeItem(props) {
-  const { user, desc, videoInfo, disLike, id } = props
+  const { user, desc, videoInfo, disLike, id, isPlaying } = props
   const deleteItem = useHomeStore((state) => state.deleteItem)
+  const pauseItem = useHomeStore((state) => state.pauseAllItems)
+  const playItem = useHomeStore((state) => state.playItemById)
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLike, setIsLike] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -34,6 +41,34 @@ export default function HomeItem(props) {
   const handleFavorites = () => {
     setIsFavorite((pre) => !pre)
   }
+  useEffect(() => {
+    const options = {
+      rootMargin: '-64px 0px 0px 0px',
+      threshold: [0, 0.2, 0.6, 1],
+    }
+    const observer = new IntersectionObserver((entrys) => {
+      // console.log(entry.isIntersecting, id)
+      // // console.log(entry.rootBounds, id)
+      // // console.log(entry.boundingClientRect, id)
+      // // console.log(entry.intersectionRect, id)
+      // console.log(entry.intersectionRatio, id)
+      for (let entry of entrys) {
+        if (entry.isIntersecting) {
+          if (entry.intersectionRatio > 0.9) {
+            pauseItem()
+            playItem(id)
+          }
+        }
+      }
+    }, options)
+    if (nodeRef.current) {
+      observer.observe(nodeRef.current)
+    }
+    // return () => {
+    //   observer.unobserve(nodeRef.current)
+    // }
+  }, [])
+
   return (
     <Transition
       nodeRef={nodeRef}
@@ -73,7 +108,11 @@ export default function HomeItem(props) {
                     >
                       {isCollipse ? '展开' : '收起'}
                     </label>
-                    <span className={`pr-5 ${isCollipse ? 'overflow-hidden line-clamp-2' : ''}`}>
+                    <span
+                      className={`pr-5 ${
+                        isCollipse ? 'overflow-hidden line-clamp-2' : ''
+                      }`}
+                    >
                       {desc}
                     </span>
                   </div>
@@ -85,7 +124,7 @@ export default function HomeItem(props) {
                   style={{
                     width: '100px',
                     color: 'rgb(254,44,85)',
-                    borderColor: 'rgb(254,44,85)'
+                    borderColor: 'rgb(254,44,85)',
                   }}
                   className="hover:!bg-rose-100"
                 >
@@ -95,8 +134,16 @@ export default function HomeItem(props) {
             </Row>
             <Row justify={'center'} wrap={false}>
               <Col flex={'60px'}></Col>
-              <Col flex={'auto'} style={{ maxWidth: '610px', display: 'flex' }} className="pb-10">
-                <VideoPlayer videoInfo={videoInfo.videoInfo} id={videoInfo.id}></VideoPlayer>
+              <Col
+                flex={'auto'}
+                style={{ maxWidth: '610px', display: 'flex' }}
+                className="pb-10"
+              >
+                <VideoPlayer
+                  videoInfo={videoInfo.videoInfo}
+                  id={videoInfo.id}
+                  isPlay={isPlaying}
+                ></VideoPlayer>
                 <div className="w-[48px] min-w-12 ml-3 flex flex-col flex-wrap justify-end">
                   <Button
                     type="round"
@@ -105,14 +152,18 @@ export default function HomeItem(props) {
                       marginBottom: '5px',
                       padding: 0,
                       height: '48px',
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
-                    className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
+                    className={`active:!bg-gray-200 ${
+                      isLike ? '!text-rose-500' : ''
+                    }`}
                     size="large"
                     icon={<HeartFilled className={'!text-xl'} />}
                     onClick={handleLikeClick}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">{videoInfo.likeNum}</strong>
+                  <strong className="w-full text-center text-xs mb-2">
+                    {videoInfo.likeNum}
+                  </strong>
                   <Button
                     type="round"
                     style={{
@@ -121,7 +172,7 @@ export default function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<MessageFilled className="!text-xl" />}
@@ -138,11 +189,13 @@ export default function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<StarFilled className="!text-xl" />}
-                    className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
+                    className={`active:!bg-gray-200 ${
+                      isFavorite ? '!text-yellow-400' : ''
+                    }`}
                     onClick={handleFavorites}
                   ></Button>
                   <strong className="w-full text-center text-xs mb-2">
@@ -156,13 +209,15 @@ export default function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<MergeFilled className="!text-xl" />}
                     className={`active:!bg-gray-200 `}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">{videoInfo.shareNum}</strong>
+                  <strong className="w-full text-center text-xs mb-2">
+                    {videoInfo.shareNum}
+                  </strong>
                 </div>
               </Col>
             </Row>
