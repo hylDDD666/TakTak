@@ -47,14 +47,9 @@ export default function HomeItem(props) {
       threshold: [0, 0.2, 0.6, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
-      // console.log(entry.isIntersecting, id)
-      // // console.log(entry.rootBounds, id)
-      // // console.log(entry.boundingClientRect, id)
-      // // console.log(entry.intersectionRect, id)
-      // console.log(entry.intersectionRatio, id)
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (entry.intersectionRatio > 0.9) {
+          if (entry.intersectionRatio > 0.8) {
             pauseItem()
             playItem(id)
           }
