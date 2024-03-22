@@ -203,6 +203,7 @@ for (let i = 0; i < 5; i++) {
 }
 
 export const useHomeStore = create((set) => ({
+  isAutoRoll: false,
   itemList: itemList,
   deleteItem: (id) => {
     set((state) => {
@@ -234,5 +235,10 @@ export const useHomeStore = create((set) => ({
       newList[index].isPlaying = true
       return { itemList: newList }
     })
+  },
+  toggleAutoRoll: () => {
+    set((state) => ({
+      isAutoRoll: !state.isAutoRoll,
+    }))
   },
 }))

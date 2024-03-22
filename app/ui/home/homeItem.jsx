@@ -24,7 +24,7 @@ const transitionStyles = {
 }
 
 export default function HomeItem(props) {
-  const { user, desc, videoInfo, disLike, id, isPlaying } = props
+  const { user, desc, videoInfo, disLike, id, isPlaying,autoScroll } = props
   const deleteItem = useHomeStore((state) => state.deleteItem)
   const pauseItem = useHomeStore((state) => state.pauseAllItems)
   const playItem = useHomeStore((state) => state.playItemById)
@@ -40,6 +40,9 @@ export default function HomeItem(props) {
   }
   const handleFavorites = () => {
     setIsFavorite((pre) => !pre)
+  }
+  const scrollNext = () => {
+    autoScroll(nodeRef.current.getBoundingClientRect().bottom)
   }
   useEffect(() => {
     const options = {
@@ -138,6 +141,7 @@ export default function HomeItem(props) {
                   videoInfo={videoInfo.videoInfo}
                   id={videoInfo.id}
                   isPlay={isPlaying}
+                  scrollNext={scrollNext}
                 ></VideoPlayer>
                 <div className="w-[48px] min-w-12 ml-3 flex flex-col flex-wrap justify-end">
                   <Button

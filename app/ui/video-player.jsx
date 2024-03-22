@@ -22,13 +22,13 @@ export default function VideoPlayer(props) {
   const { id, isPlay } = props
   const [domLoaded, setDomLoaded] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
-  const [isRoll, setIsRoll] = useState(false)
   const [volume, setVolume] = useState(20)
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
 
   const [show, setShow] = useState(false)
+
   const playerRef = useRef()
   useEffect(() => {
     setIsPlaying(isPlay)
@@ -51,6 +51,8 @@ export default function VideoPlayer(props) {
   }
 
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
+  const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
+  const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
   const handleDuration = (value) => {
     setDuration(value)
   }
@@ -62,7 +64,7 @@ export default function VideoPlayer(props) {
     setIsPlaying((pre) => !pre)
   }
   const toggleRoll = () => {
-    setIsRoll((pre) => !pre)
+    toggleAutoRoll()
   }
   const handllePlay = (played) => {
     setSliderValue((played.playedSeconds / duration) * 100)
@@ -79,8 +81,9 @@ export default function VideoPlayer(props) {
   const handleDislike = () => {
     disLikeItem(id)
   }
-  const handleReady = () => {
-    setIsPlaying(true)
+  const handleAutoPlay = ()=>{
+    console.log(111);
+    props.scrollNext()
   }
   return (
     <>
@@ -162,13 +165,13 @@ export default function VideoPlayer(props) {
                   <Tooltip
                     placement="top"
                     arrow={false}
-                    title={isRoll ? '自动滚动已开启' : '自动滚动已关闭'}
+                    title={isAutoRoll ? '自动滚动已开启' : '自动滚动已关闭'}
                     color="rgb(54,54,54)"
                     overlayStyle={{ fontSize: 'small', color: 'white' }}
                   >
                     <Button
                       icon={
-                        isRoll ? (
+                        isAutoRoll ? (
                           <ArrowUpOutlined className={'!text-xl'} />
                         ) : (
                           <CloseCircleOutlined className={'!text-xl'} />
@@ -262,13 +265,14 @@ export default function VideoPlayer(props) {
             <ReactPlayer
               ref={playerRef}
               playing={isPlaying}
-              loop
+              loop={!isAutoRoll}
               volume={isMuted ? 0 : volume / 100}
               width={'100%'}
               height={'100%'}
               url={url}
               onDuration={handleDuration}
               onProgress={handllePlay}
+              onEnded={handleAutoPlay}
               style={type === 'row' ? { position: 'absolute' } : {}}
             ></ReactPlayer>
           </div>
