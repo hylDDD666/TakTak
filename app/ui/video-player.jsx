@@ -81,7 +81,7 @@ export default function VideoPlayer(props) {
   const handleDislike = () => {
     disLikeItem(id)
   }
-  const handleAutoPlay = ()=>{
+  const handleAutoPlay = () => {
     props.scrollNext()
   }
   return (

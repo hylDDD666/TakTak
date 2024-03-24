@@ -43,20 +43,19 @@ export default function HomeItem(props) {
   }
   const scrollNext = () => {
     window.scrollTo({
-      behavior: "smooth",
-      top:window.scrollY + nodeRef.current.getBoundingClientRect().bottom-63
+      behavior: 'smooth',
+      top: window.scrollY + nodeRef.current.getBoundingClientRect().bottom - 63,
     })
   }
   useEffect(() => {
     const options = {
-      rootMargin: '-64px 0px 0px 0px',
-      threshold: [0, 0.2, 0.6,0.8, 1],
+      rootMargin: '-60px 0px 0px 0px',
+      threshold: [0, 0.2, 0.6, 0.8, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (entry.intersectionRatio === 1) {
-            pauseItem()
+          if (entry.intersectionRatio > 0.9) {
             playItem(id)
           }
         }

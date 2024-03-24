@@ -176,9 +176,9 @@ const desces = [
   '这段视频展示了一次精彩的瑜伽课程，通过简单的动作和呼吸练习，帮助你舒缓压力，提升身心健康。',
 ]
 const getItemList = () => {
-const itemList = []
+  const itemList = []
   for (let i = 0; i < 5; i++) {
-    const id= Date.now()+i
+    const id = Date.now() + i
     itemList.push({
       id: id,
       user: {
@@ -237,8 +237,8 @@ export const useHomeStore = create((set) => ({
   currentPage: 0,
   fetchItemData: () => {
     set((state) => {
-      const newList = [...state.itemList,...getItemList()]
-      return { itemList: newList,page:state.page+1 }
+      const newList = [...state.itemList, ...getItemList()]
+      return { itemList: newList, page: state.page + 1 }
     })
   },
   deleteItem: (id) => {
@@ -267,6 +267,9 @@ export const useHomeStore = create((set) => ({
   playItemById: (id) => {
     set((state) => {
       const newList = [...state.itemList]
+      newList.map((item) => {
+        item.isPlaying = false
+      })
       const index = newList.findIndex((item) => item.id === id)
       newList[index].isPlaying = true
       return { itemList: newList }
