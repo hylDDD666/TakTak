@@ -42,7 +42,6 @@ export default function HomeItem(props) {
     setIsFavorite((pre) => !pre)
   }
   const scrollNext = () => {
-    console.log(window.scrollY)
     window.scrollTo({
       behavior: "smooth",
       top:window.scrollY + nodeRef.current.getBoundingClientRect().bottom-63
@@ -51,12 +50,12 @@ export default function HomeItem(props) {
   useEffect(() => {
     const options = {
       rootMargin: '-64px 0px 0px 0px',
-      threshold: [0, 0.2, 0.6, 1],
+      threshold: [0, 0.2, 0.6,0.8, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (entry.intersectionRatio > 0.8) {
+          if (entry.intersectionRatio === 1) {
             pauseItem()
             playItem(id)
           }
