@@ -175,36 +175,72 @@ const desces = [
   '本视频带你探索宇宙的奥秘，从地球到遥远的星系，揭开宇宙的神秘面纱，让人叹为观止。',
   '这段视频展示了一次精彩的瑜伽课程，通过简单的动作和呼吸练习，帮助你舒缓压力，提升身心健康。',
 ]
+const getItemList = () => {
 const itemList = []
-for (let i = 0; i < 5; i++) {
-  itemList.push({
-    id: i,
-    user: {
-      id: i,
-      userName: userNames[i],
-      avatar: 'https://api.btstu.cn/sjbz/api.php',
-      isFollowed: false,
-    },
-    desc: desces[Math.floor(Math.random() * 10)],
-    video: {
-      id: i,
-      videoInfo: {
-        ...videos[Math.floor(Math.random() * videos.length)],
-        isPlaying: false,
+  for (let i = 0; i < 5; i++) {
+    const id= Date.now()+i
+    itemList.push({
+      id: id,
+      user: {
+        id: id,
+        userName: userNames[i],
+        avatar: 'https://api.btstu.cn/sjbz/api.php',
+        isFollowed: false,
       },
-      likeNum: Math.floor(Math.random() * 1000),
-      commentsNum: Math.floor(Math.random() * 1000),
-      collectNum: Math.floor(Math.random() * 1000),
-      shareNum: Math.floor(Math.random() * 1000),
-    },
-    disLike: false,
-    isPlaying: false,
-  })
+      desc: desces[Math.floor(Math.random() * 10)],
+      video: {
+        id: id,
+        videoInfo: {
+          ...videos[Math.floor(Math.random() * videos.length)],
+          isPlaying: false,
+        },
+        likeNum: Math.floor(Math.random() * 1000),
+        commentsNum: Math.floor(Math.random() * 1000),
+        collectNum: Math.floor(Math.random() * 1000),
+        shareNum: Math.floor(Math.random() * 1000),
+      },
+      disLike: false,
+      isPlaying: false,
+    })
+  }
+  return itemList
 }
+// for (let i = 0; i < 5; i++) {
+//   itemList.push({
+//     id: i,
+//     user: {
+//       id: i,
+//       userName: userNames[i],
+//       avatar: 'https://api.btstu.cn/sjbz/api.php',
+//       isFollowed: false,
+//     },
+//     desc: desces[Math.floor(Math.random() * 10)],
+//     video: {
+//       id: i,
+//       videoInfo: {
+//         ...videos[Math.floor(Math.random() * videos.length)],
+//         isPlaying: false,
+//       },
+//       likeNum: Math.floor(Math.random() * 1000),
+//       commentsNum: Math.floor(Math.random() * 1000),
+//       collectNum: Math.floor(Math.random() * 1000),
+//       shareNum: Math.floor(Math.random() * 1000),
+//     },
+//     disLike: false,
+//     isPlaying: false,
+//   })
+// }
 
 export const useHomeStore = create((set) => ({
   isAutoRoll: false,
-  itemList: itemList,
+  itemList: getItemList(),
+  currentPage: 0,
+  fetchItemData: () => {
+    set((state) => {
+      const newList = [...state.itemList,...getItemList()]
+      return { itemList: newList,page:state.page+1 }
+    })
+  },
   deleteItem: (id) => {
     set((state) => {
       const newList = [...state.itemList].filter((item) => item.id !== id)
