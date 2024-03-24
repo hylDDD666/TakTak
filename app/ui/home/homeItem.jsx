@@ -42,9 +42,11 @@ export default function HomeItem(props) {
     setIsFavorite((pre) => !pre)
   }
   const scrollNext = () => {
-    nodeRef.current.parentNode.scrollTop =
-      nodeRef.current.parentNode.scrollTop +
-      nodeRef.current.getBoundingClientRect().bottom
+    console.log(window.scrollY)
+    window.scrollTo({
+      behavior: "smooth",
+      top:window.scrollY + nodeRef.current.getBoundingClientRect().bottom-63
+    })
   }
   useEffect(() => {
     const options = {
