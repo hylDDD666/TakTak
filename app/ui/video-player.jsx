@@ -21,7 +21,7 @@ export default function VideoPlayer(props) {
   const { url, type } = props.videoInfo
   const { id, isPlay } = props
   const [domLoaded, setDomLoaded] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(true)
+  // const [isPlaying, setIsPlaying] = useState(true)
   const [volume, setVolume] = useState(20)
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
@@ -30,16 +30,6 @@ export default function VideoPlayer(props) {
   const [show, setShow] = useState(false)
 
   const playerRef = useRef()
-  useEffect(() => {
-    setIsPlaying(isPlay)
-  }, [isPlay])
-  useEffect(() => {
-    const options = {
-      rootMargin: '0px',
-      threshold: 0.6,
-    }
-    const observer = new IntersectionObserver(([entry]) => {}, options)
-  }, [])
 
   useEffect(() => {
     setDomLoaded(true)
@@ -53,6 +43,8 @@ export default function VideoPlayer(props) {
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
   const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
   const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
+  const playItemById = useHomeStore((state) => state.playItemById)
+  const pauseItemById = useHomeStore((state) => state.pauseItemById)
   const handleDuration = (value) => {
     setDuration(value)
   }
@@ -61,7 +53,9 @@ export default function VideoPlayer(props) {
     setVolume(newValue)
   }
   const togglePlaying = () => {
-    setIsPlaying((pre) => !pre)
+    if (isPlay) {
+      pauseItemById(id)
+    } else [playItemById(id)]
   }
   const toggleRoll = () => {
     toggleAutoRoll()
@@ -145,7 +139,7 @@ export default function VideoPlayer(props) {
                 <Col span={'auto'}>
                   <Button
                     icon={
-                      isPlaying ? (
+                      isPlay ? (
                         <PauseOutlined className={'!text-xl'} />
                       ) : (
                         <PlayCircleFilled className={'!text-xl'} />
@@ -263,7 +257,7 @@ export default function VideoPlayer(props) {
           <div className="z-0">
             <ReactPlayer
               ref={playerRef}
-              playing={isPlaying}
+              playing={isPlay}
               loop={!isAutoRoll}
               volume={isMuted ? 0 : volume / 100}
               width={'100%'}

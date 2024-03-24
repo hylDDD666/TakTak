@@ -264,6 +264,14 @@ export const useHomeStore = create((set) => ({
       return { itemList: newList }
     })
   },
+  pauseItemById: (id) => {
+    set((state) => {
+      const newList = [...state.itemList]
+      const index = newList.findIndex((item) => item.id === id)
+      newList[index].isPlaying = false
+      return { itemList: newList }
+    })
+  },
   playItemById: (id) => {
     set((state) => {
       const newList = [...state.itemList]
