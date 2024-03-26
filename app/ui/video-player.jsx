@@ -83,7 +83,7 @@ export default function VideoPlayer(props) {
       {domLoaded && (
         <div
           className={`${
-            type === 'col' ? 'w-3/5 max-w-96 min-w-52' : 'w-full'
+            type === 'col' ? 'w-3/5 max-w-96 min-w-52' : 'w-full '
           } rounded-lg relative   overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
