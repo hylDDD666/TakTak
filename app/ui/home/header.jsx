@@ -24,7 +24,7 @@ export default function PriHeader() {
           justifyContent: 'space-between',
           fontWeight: 'bold',
           borderBottom: '1px solid rgb(224,224,224)',
-          zIndex:999
+          zIndex:10
         }}
       >
         <div className={'h-full py-1'}>

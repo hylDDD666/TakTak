@@ -1,9 +1,9 @@
 import { Inter } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider, Layout } from 'antd'
-import Header from './ui/home/header'
-import Sider from './ui/home/sider'
+import Header from '../ui/home/header'
+import Sider from '../ui/home/sider'
 import { Content } from 'antd/es/layout/layout'
 import BackTop from 'antd/es/float-button/BackTop'
 
@@ -61,7 +61,7 @@ export default function RootLayout({ children }) {
             <Layout>
               <Header></Header>
               <Layout className={'h-full !bg-white'} hasSider>
-                <Sider></Sider>
+                <Sider ></Sider>
                 <Content
                   style={{
                     padding: '10px 10px 10px 100px',

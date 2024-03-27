@@ -1,9 +1,9 @@
 'use client'
 import React, { Suspense, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
-import { useHomeStore } from './stores/homeStore'
+import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
-const HomeItem = dynamic(() => import('./ui/home/homeItem'), { ssr: false })
+const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)

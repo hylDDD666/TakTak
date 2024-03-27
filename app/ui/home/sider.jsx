@@ -9,21 +9,24 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from '@ant-design/icons'
+import NavLink from '../nav-link'
 const items2 = [
-  [HomeOutlined, '推荐'],
-  [StarOutlined, '已关注'],
-  [TeamOutlined, '好友'],
-  [CompassOutlined, '探索'],
-  [VideoCameraOutlined, '直播'],
-  [UserOutlined, '个人资料'],
+  [HomeOutlined, '推荐', ''],
+  [StarOutlined, '已关注', 'followed'],
+  [TeamOutlined, '好友', 'friends'],
+  [CompassOutlined, '探索', 'explore'],
+  [UserOutlined, '个人资料', 'profile'],
 ].map((icon, index) => {
   const key = String(index + 1)
   return {
     key: `${key}`,
     icon: React.createElement(icon[0], { className: '!text-2xl' }),
-    label: icon[1],
-    title: icon[1],
-    style:{marginTop:"8px",paddingLeft:'15px'}
+    label: (
+      <NavLink path={`/${icon[2]}`}>
+        {icon[1]}
+      </NavLink>
+    ),
+    style: { marginTop: '8px', paddingLeft: '15px' },
   }
 })
 export default function PriSider() {
@@ -31,15 +34,15 @@ export default function PriSider() {
     <>
       <Sider
         style={{
-          position:'fixed',
-          height:"100%",
+          position: 'fixed',
+          height: '100%',
           background: 'white',
           borderRight: '1px solid rgb(224,224,224)',
           boxShadow: '2px 1px 10px rgb(249,249,249)',
         }}
         breakpoint="lg"
         className={'lg:!border-r-0 lg:!shadow-none'}
-        collapsedWidth='60px'
+        collapsedWidth="60px"
         defaultCollapsed
       >
         <Menu
@@ -47,7 +50,7 @@ export default function PriSider() {
           defaultSelectedKeys={['1']}
           className={'!h-full !text-xl !font-bold !border-r-0 '}
           items={items2}
-          style={{ minWidth: 0, flex: "auto" }}
+          style={{ minWidth: 0, flex: 'auto' }}
         />
       </Sider>
     </>

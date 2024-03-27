@@ -16,25 +16,24 @@ import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../stores/homeStore'
 import ReactPlayer from 'react-player'
+import { useRouter } from 'next/navigation'
 
 export default function VideoPlayer(props) {
   const { url, type } = props.videoInfo
-  const { id, isPlay } = props
+  const { id, isPlay,user } = props
   const [domLoaded, setDomLoaded] = useState(false)
   // const [isPlaying, setIsPlaying] = useState(true)
   const [volume, setVolume] = useState(20)
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
-
   const [show, setShow] = useState(false)
-
+  const router = useRouter()
   const playerRef = useRef()
 
   useEffect(() => {
     setDomLoaded(true)
   }, [])
-  useEffect(() => {}, [])
   const onChange = (newValue) => {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
@@ -52,18 +51,23 @@ export default function VideoPlayer(props) {
     if (newValue > 0) setIsMuted(false)
     setVolume(newValue)
   }
-  const togglePlaying = () => {
+  const togglePlaying = (e) => {
+    e.stopPropagation()
     if (isPlay) {
       pauseItemById(id)
-    } else [playItemById(id)]
+    } else {
+      playItemById(id)
+    }
   }
-  const toggleRoll = () => {
+  const toggleRoll = (e) => {
+    e.stopPropagation()
     toggleAutoRoll()
   }
   const handllePlay = (played) => {
     setSliderValue((played.playedSeconds / duration) * 100)
   }
-  const handleMute = () => {
+  const handleMute = (e) => {
+    e.stopPropagation()
     setIsMuted((pre) => !pre)
   }
   const handleMouseEnter = () => {
@@ -72,11 +76,17 @@ export default function VideoPlayer(props) {
   const handleMouseLeave = () => {
     setShow(false)
   }
-  const handleDislike = () => {
+  const handleDislike = (e) => {
+    e.stopPropagation()
     disLikeItem(id)
   }
   const handleAutoPlay = () => {
-    props.scrollNext()
+    if (isPlay) {
+      props.scrollNext()
+    }
+  }
+  const videoClickHandler = () => {
+    router.push(`/${user.userName}/video/${id}`)
   }
   return (
     <>
@@ -87,13 +97,17 @@ export default function VideoPlayer(props) {
           } rounded-lg relative   overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onClick={videoClickHandler}
         >
           <div
             className={`w-full h-full absolute bg-transparent z-10 opacity-0 ${
               show ? 'opacity-100' : ''
             } transition-opacity`}
           >
-            <div className={'absolute top-5 right-5 text-white '}>
+            <div
+              className={'absolute top-5 right-5 text-white '}
+              onClick={(e) => e.stopPropagation()}
+            >
               <Popover
                 content={
                   <>
@@ -134,6 +148,7 @@ export default function VideoPlayer(props) {
               className={
                 'absolute bottom-0 w-full h-[60px] text-white px-[10px] bg-gradient-to-t from-slate-800 '
               }
+              onClick={(e) => e.stopPropagation()}
             >
               <Row justify={'space-between'}>
                 <Col span={'auto'}>
