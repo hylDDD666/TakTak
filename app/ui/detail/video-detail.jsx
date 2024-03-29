@@ -2,19 +2,23 @@
 import {
   ArrowUpOutlined,
   CloseCircleOutlined,
+  CloseOutlined,
   DislikeOutlined,
+  DownOutlined,
   EllipsisOutlined,
   FlagOutlined,
   MutedOutlined,
   PauseOutlined,
   PlayCircleFilled,
-  SoundOutlined
+  SearchOutlined,
+  SoundOutlined,
+  UpOutlined,
 } from '@ant-design/icons'
-import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
+import { Button, Col, Input, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 export default function VideoDetail(props) {
   const [domLoaded, setDomLoaded] = useState(false)
@@ -23,13 +27,18 @@ export default function VideoDetail(props) {
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(true)
+  const params = useParams()
+  const id = params['video-id']
+  const playerRef = useRef() 
   const router = useRouter()
-  const playerRef = useRef()
-
+  const disLikeItem = useHomeStore((state) => state.disLikeItem)
   let type = 'col'
   let isAutoRoll = false
-
+  const item = useHomeStore((state) => {
+    return state.itemList.find((item) => item.id == id)
+  })
+  const { url } = item.video.videoInfo
   useEffect(() => {
     setDomLoaded(true)
   }, [])
@@ -38,7 +47,6 @@ export default function VideoDetail(props) {
     playerRef.current.seekTo(newValue / 100)
   }
 
-  const disLikeItem = useHomeStore((state) => state.disLikeItem)
   // const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
   // const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
   // const playItemById = useHomeStore((state) => state.playItemById)
@@ -71,11 +79,14 @@ export default function VideoDetail(props) {
     setShow(true)
   }
   const handleMouseLeave = () => {
-    setShow(false)
+    setShow(true)
   }
   const handleDislike = (e) => {
     e.stopPropagation()
     disLikeItem(id)
+  }
+  const handleClose =()=>{
+    router.back()
   }
   // const handleAutoPlay = () => {
   //   if (isPlay) {
@@ -100,70 +111,157 @@ export default function VideoDetail(props) {
             } transition-opacity`}
           >
             <div
-              className={'absolute top-5 right-5 text-white '}
+              className={'absolute top-5 text-white w-full'}
               onClick={(e) => e.stopPropagation()}
             >
-              <Popover
-                content={
-                  <div > 
-                    <div>
+              <Row wrap={false}>
+                <Col flex={'80px'} className="text-center">
+                  <Button
+                    size="large"
+                    icon={<CloseOutlined className={'!text-2xl'} />}
+                    style={{
+                      fontWeight: 'bold',
+                      border: 0,
+                      backgroundColor: 'rgba(255,255,255,.3)',
+                      color: 'white',
+                    }}
+                    className="hover:!opacity-50"
+                    onClick={handleClose}
+                  ></Button>
+                </Col>
+                <Col flex={'auto'}>
+                  <Input
+                    placeholder="input search text"
+                    allowClear
+                    size="large"
+                    style={{
+                      width: '100%',
+                      color: 'white',
+                    }}
+                    addonAfter={
                       <Button
+                        size="large"
+                        icon={<SearchOutlined className={'!text-2xl'} />}
                         style={{
                           fontWeight: 'bold',
                           border: 0,
+                          backgroundColor: 'transparent',
+                          color: 'white',
+                          height: '38px',
+                          width: '24px',
                         }}
-                        icon={<DislikeOutlined />}
-                        onClick={handleDislike}
-                      >
-                        不感兴趣
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        style={{
-                          fontWeight: 'bold',
-                          border: 0,
-                        }}
-                        icon={<FlagOutlined />}
-                      >
-                        举报
-                      </Button>
-                    </div>
-                  </div>
-                }
-                placement="bottomRight"
-                arrow={false}
-                className="rounded"
-              >
-                <EllipsisOutlined className="text-3xl !font-bold hover:cursor-pointer " />
-              </Popover>
+                        className="hover:!opacity-50"
+                      ></Button>
+                    }
+                  />
+                </Col>
+                <Col flex={'80px'} className="text-center">
+                  <Popover
+                    color="rgba(27,27,27,0.2)"
+                    content={
+                      <div>
+                        <div>
+                          <Button
+                            style={{
+                              fontWeight: 'bold',
+                              border: 0,
+                              backgroundColor: 'rgb(27,27,27,0)',
+                              color: 'white',
+                            }}
+                            icon={<DislikeOutlined />}
+                            onClick={handleDislike}
+                            className="hover:!opacity-50"
+                          >
+                            不感兴趣
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            style={{
+                              fontWeight: 'bold',
+                              border: 0,
+                              backgroundColor: 'rgb(27,27,27,0)',
+                              color: 'white',
+                            }}
+                            icon={<FlagOutlined />}
+                            className="hover:!opacity-50"
+                          >
+                            举报
+                          </Button>
+                        </div>
+                      </div>
+                    }
+                    placement="bottomRight"
+                    arrow={false}
+                    className="rounded"
+                  >
+                    <Button
+                      size="large"
+                      icon={<EllipsisOutlined className={'!text-2xl'} />}
+                      style={{
+                        fontWeight: 'bold',
+                        border: 0,
+                        backgroundColor: 'rgba(255,255,255,.3)',
+                        color: 'white',
+                      }}
+                      className="hover:!opacity-50"
+                    ></Button>
+                  </Popover>
+                </Col>
+              </Row>
+            </div>
+            <div className="w-[40px] absolute right-4 bottom-2/4 translate-y-2/4">
+              <Button
+                size="large"
+                icon={<UpOutlined className={'!text-2xl'} />}
+                style={{
+                  fontWeight: 'bold',
+                  border: 0,
+                  backgroundColor: 'rgba(255,255,255,.3)',
+                  color: 'white',
+                  marginBottom: '20px',
+                }}
+                className="hover:!opacity-50"
+              ></Button>
+              <Button
+                size="large"
+                icon={<DownOutlined className={'!text-2xl'} />}
+                style={{
+                  fontWeight: 'bold',
+                  border: 0,
+                  backgroundColor: 'rgba(255,255,255,.3)',
+                  color: 'white',
+                }}
+                className="hover:!opacity-50"
+              ></Button>
             </div>
             <div
               className={
-                'absolute bottom-0 w-full h-[60px] text-white px-[10px] bg-gradient-to-t from-slate-800 '
+                'absolute bottom-0 w-full h-[80px] text-white px-[10px] bg-gradient-to-t from-slate-800 '
               }
               onClick={(e) => e.stopPropagation()}
             >
               <Row justify={'space-between'}>
                 <Col span={'auto'}>
                   <Button
+                    size="large"
                     icon={
                       isPlay ? (
-                        <PauseOutlined className={'!text-xl'} />
+                        <PauseOutlined className={'!text-2xl'} />
                       ) : (
-                        <PlayCircleFilled className={'!text-xl'} />
+                        <PlayCircleFilled className={'!text-2xl'} />
                       )
                     }
                     style={{
                       border: 0,
                       padding: 0,
                       backgroundColor: 'transparent',
-                      color: 'white'
+                      color: 'white',
                     }}
                     onClick={togglePlaying}
                   ></Button>
                 </Col>
-                <Col span={'60px'}>
+                <Col span={'80px'}>
                   <Tooltip
                     placement="top"
                     arrow={false}
@@ -172,11 +270,12 @@ export default function VideoDetail(props) {
                     overlayStyle={{ fontSize: 'small', color: 'white' }}
                   >
                     <Button
+                      size="large"
                       icon={
                         isAutoRoll ? (
-                          <ArrowUpOutlined className={'!text-xl'} />
+                          <ArrowUpOutlined className={'!text-2xl'} />
                         ) : (
-                          <CloseCircleOutlined className={'!text-xl'} />
+                          <CloseCircleOutlined className={'!text-2xl'} />
                         )
                       }
                       // onClick={toggleRoll}
@@ -185,7 +284,7 @@ export default function VideoDetail(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px'
+                        width: '36px',
                       }}
                     ></Button>
                   </Tooltip>
@@ -206,11 +305,12 @@ export default function VideoDetail(props) {
                     }
                   >
                     <Button
+                      size="large"
                       icon={
                         volume === 0 || isMuted ? (
-                          <MutedOutlined className={'!text-xl'} />
+                          <MutedOutlined className={'!text-2xl'} />
                         ) : (
-                          <SoundOutlined className={'!text-xl'} />
+                          <SoundOutlined className={'!text-2xl'} />
                         )
                       }
                       style={{
@@ -218,7 +318,7 @@ export default function VideoDetail(props) {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '28px'
+                        width: '36px',
                       }}
                       onClick={handleMute}
                     ></Button>
@@ -234,7 +334,7 @@ export default function VideoDetail(props) {
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
-                      open: false
+                      open: false,
                     }}
                   />
                 </Col>
@@ -271,13 +371,11 @@ export default function VideoDetail(props) {
               volume={isMuted ? 0 : volume / 100}
               width={'100%'}
               height={'100%'}
-              url={
-                'https://player.vimeo.com/progressive_redirect/playback/917485262/rendition/360p/file.mp4?loc=external&oauth2_token_id=1747418641&signature=bc021f21549b97299df9a8a3325e41939225fefe780309311704fa3caa3c71f7'
-              }
+              url={url}
               onDuration={handleDuration}
               onProgress={handllePlay}
               // onEnded={handleAutoPlay}
-              style={type === 'row' ? { position: 'absolute' } : {}}
+              // style={type === 'row' ? { position: 'absolute' } : {}}
             ></ReactPlayer>
           </div>
         </div>

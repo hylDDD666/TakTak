@@ -1,6 +1,6 @@
 'use client'
-import { Avatar, Button, Card, Col, Row } from 'antd'
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Avatar, Button, Col, Row } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
 import {
   HeartFilled,
   MergeFilled,
@@ -23,7 +23,7 @@ const transitionStyles = {
   exited: { maxHeight: 0, opacity: 0, padding: 0 },
 }
 
-export default function HomeItem(props) {
+export default React.memo(function HomeItem(props) {
   const { user, desc, videoInfo, disLike, id, isPlaying } = props
   const deleteItem = useHomeStore((state) => state.deleteItem)
   const pauseItem = useHomeStore((state) => state.pauseAllItems)
@@ -149,7 +149,7 @@ export default function HomeItem(props) {
               >
                 <VideoPlayer
                   videoInfo={videoInfo.videoInfo}
-                  id={videoInfo.id}
+                  id={id}
                   user={user}
                   isPlay={isPlaying}
                   scrollNext={scrollNext}
@@ -236,4 +236,4 @@ export default function HomeItem(props) {
       }}
     </Transition>
   )
-}
+})

@@ -5,7 +5,7 @@ import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
-export default function Home() {
+export default React.memo(function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
   useEffect(() => {
@@ -46,4 +46,4 @@ export default function Home() {
       </div>
     </>
   )
-}
+})
