@@ -14,7 +14,7 @@ export const metadata = {
   description: '仿TikTok的短视频网站',
 }
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, detail }) {
   return (
     <html lang="en">
       <body>
@@ -58,22 +58,29 @@ export default function RootLayout({ children }) {
           }}
         >
           <AntdRegistry>
-            <Layout>
-              <Header></Header>
-              <Layout className={'h-full !bg-white'} hasSider>
-                <Sider ></Sider>
-                <Content
-                  style={{
-                    padding: '10px 10px 10px 100px',
-                    overflow: 'initial',
-                    backgroundColor: 'white',
-                  }}
-                >
-                  {children}
-                </Content>
-                <BackTop></BackTop>
-              </Layout>
-            </Layout>
+            <div className="overflow-hidden w-screen h-screen relative">
+              <div className="absolute left-0 top-0 bottom-0 -right-[17px] overflow-x-hiden overflow-y-scroll">
+                {detail}
+              </div>
+              <div className="absolute left-0 top-0 bottom-0 right-0 overflow-x-hiden overflow-y-scroll">
+                <Layout>
+                  <Header></Header>
+                  <Layout className={'h-full !bg-white'} hasSider>
+                    <Sider></Sider>
+                    <Content
+                      style={{
+                        padding: '10px 10px 10px 100px',
+                        overflow: 'initial',
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      {children}
+                    </Content>
+                    <BackTop></BackTop>
+                  </Layout>
+                </Layout>
+              </div>
+            </div>
           </AntdRegistry>
         </ConfigProvider>
       </body>

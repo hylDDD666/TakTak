@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useEffect } from 'react'
 import { Menu } from 'antd'
 import Sider from 'antd/es/layout/Sider'
 import {
@@ -7,29 +8,33 @@ import {
   StarOutlined,
   TeamOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from '@ant-design/icons'
-import NavLink from '../nav-link'
-const items2 = [
+import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
+const NavLink = dynamic(() => import('../nav-link'))
+
+const items1 = [
   [HomeOutlined, '推荐', ''],
   [StarOutlined, '已关注', 'followed'],
   [TeamOutlined, '好友', 'friends'],
   [CompassOutlined, '探索', 'explore'],
   [UserOutlined, '个人资料', 'profile'],
-].map((icon, index) => {
-  const key = String(index + 1)
+]
+const items2 = items1.map((icon, index) => {
+  const key = String(index)
   return {
-    key: `${key}`,
+    key: key,
     icon: React.createElement(icon[0], { className: '!text-2xl' }),
-    label: (
-      <NavLink path={`/${icon[2]}`}>
-        {icon[1]}
-      </NavLink>
-    ),
+    label: <NavLink path={`/${icon[2]}`}>{icon[1]}</NavLink>,
     style: { marginTop: '8px', paddingLeft: '15px' },
   }
 })
 export default function PriSider() {
+  const pathName = usePathname()
+  const defaultSelectedKey =
+    items1.findIndex((item) => {
+      return '/' + item[2] === pathName
+    }) + ''
   return (
     <>
       <Sider
@@ -47,7 +52,7 @@ export default function PriSider() {
       >
         <Menu
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={[defaultSelectedKey]}
           className={'!h-full !text-xl !font-bold !border-r-0 '}
           items={items2}
           style={{ minWidth: 0, flex: 'auto' }}

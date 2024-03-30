@@ -18,9 +18,9 @@ import { useHomeStore } from '../stores/homeStore'
 import ReactPlayer from 'react-player'
 import { useRouter } from 'next/navigation'
 
-export default function VideoPlayer(props) {
+export default React.memo(function VideoPlayer(props) {
   const { url, type } = props.videoInfo
-  const { id, isPlay,user } = props
+  const { id, isPlay, user } = props
   const [domLoaded, setDomLoaded] = useState(false)
   // const [isPlaying, setIsPlaying] = useState(true)
   const [volume, setVolume] = useState(20)
@@ -86,6 +86,7 @@ export default function VideoPlayer(props) {
     }
   }
   const videoClickHandler = () => {
+    pauseItemById(id)
     router.push(`/${user.userName}/video/${id}`)
   }
   return (
@@ -288,4 +289,4 @@ export default function VideoPlayer(props) {
       )}
     </>
   )
-}
+})

@@ -3,10 +3,8 @@ import {
   ArrowUpOutlined,
   CloseCircleOutlined,
   CloseOutlined,
-  DislikeOutlined,
   DownOutlined,
   EllipsisOutlined,
-  FlagOutlined,
   MutedOutlined,
   PauseOutlined,
   PlayCircleFilled,
@@ -14,14 +12,13 @@ import {
   SoundOutlined,
   UpOutlined,
 } from '@ant-design/icons'
-import { Button, Col, Input, Popover, Row, Slider, Tooltip } from 'antd'
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import { Button, Col, Input, Row, Slider } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
-import ReactPlayer from 'react-player'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function VideoDetail(props) {
+export default function VideoSkeleton() {
   const [domLoaded, setDomLoaded] = useState(false)
   const [isPlay, setIsPlay] = useState(true)
   const [volume, setVolume] = useState(20)
@@ -31,11 +28,8 @@ export default function VideoDetail(props) {
   const [show, setShow] = useState(true)
   const params = useParams()
   const id = params['video-id'] * 1
-  const playerRef = useRef()
-  const router = useRouter()
-  const disLikeItem = useHomeStore((state) => state.disLikeItem)
+
   let isAutoRoll = false
-  const playItemById = useHomeStore((state) => state.playItemById)
   const fetchItemData = useHomeStore((state) => state.fetchItemData)
   const item = useHomeStore((state) => {
     return state.itemList.find((item) => item.id == id)
@@ -58,7 +52,6 @@ export default function VideoDetail(props) {
       return null
     }
   })
-  const { url } = item.video.videoInfo
   useEffect(() => {
     setDomLoaded(true)
   }, [])
@@ -67,69 +60,14 @@ export default function VideoDetail(props) {
       fetchItemData()
     }
   }, [index])
-  const onChange = (newValue) => {
-    setSliderValue(newValue)
-    playerRef.current.seekTo(newValue / 100)
-  }
 
-  // const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
-  // const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
-  // const playItemById = useHomeStore((state) => state.playItemById)
-  // const pauseItemById = useHomeStore((state) => state.pauseItemById)
-  // const { id, isPlay,user } = props
-
-  const handleDuration = (value) => {
-    setDuration(value)
-  }
-  const volumeChange = (newValue) => {
-    if (newValue > 0) setIsMuted(false)
-    setVolume(newValue)
-  }
-  const togglePlaying = (e) => {
-    e.stopPropagation()
-    setIsPlay((pre) => !pre)
-  }
-  // const toggleRoll = (e) => {
-  //   e.stopPropagation()
-  //   toggleAutoRoll()
-  // }
-  const handllePlay = (played) => {
-    setSliderValue((played.playedSeconds / duration) * 100)
-  }
-  const handleMute = (e) => {
-    e.stopPropagation()
-    setIsMuted((pre) => !pre)
-  }
   const handleMouseEnter = () => {
     setShow(true)
   }
   const handleMouseLeave = () => {
-    setShow(true)
+    setShow(false)
   }
-  const handleDislike = (e) => {
-    e.stopPropagation()
-    disLikeItem(id)
-  }
-  const handleClose = () => {
-    playItemById(id)
-    router.back()
-  }
-  const handleToNext = () => {
-    router.replace(`/${nextItem.user.userName}/video/${nextItem.id}`)
-  }
-  const handleToPre = () => {
-    if (index !== 0) {
-      router.replace(`/${preItem.user.userName}/video/${preItem.id}`)
-    }
-  }
-  // const handleAutoPlay = () => {
-  //   if (isPlay) {
-  //     props.scrollNext()
-  //   }
-  // }
-  // const videoClickHandler = () => {
-  //   router.push(`/${user.userName}/video/${id}`)
-  // }
+
   return (
     <>
       {domLoaded && (
@@ -137,7 +75,6 @@ export default function VideoDetail(props) {
           className={`h-full w-full  relative   overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          onClick={togglePlaying}
         >
           <div
             className={`w-full h-full absolute bg-transparent z-10 opacity-0 ${
@@ -160,7 +97,6 @@ export default function VideoDetail(props) {
                       color: 'white',
                     }}
                     className="hover:!opacity-50"
-                    onClick={handleClose}
                   ></Button>
                 </Col>
                 <Col flex={'auto'}>
@@ -190,57 +126,17 @@ export default function VideoDetail(props) {
                   />
                 </Col>
                 <Col flex={'80px'} className="text-center">
-                  <Popover
-                    color="rgba(27,27,27,0.2)"
-                    content={
-                      <div>
-                        <div>
-                          <Button
-                            style={{
-                              fontWeight: 'bold',
-                              border: 0,
-                              backgroundColor: 'rgb(27,27,27,0)',
-                              color: 'white',
-                            }}
-                            icon={<DislikeOutlined />}
-                            onClick={handleDislike}
-                            className="hover:!opacity-50"
-                          >
-                            不感兴趣
-                          </Button>
-                        </div>
-                        <div>
-                          <Button
-                            style={{
-                              fontWeight: 'bold',
-                              border: 0,
-                              backgroundColor: 'rgb(27,27,27,0)',
-                              color: 'white',
-                            }}
-                            icon={<FlagOutlined />}
-                            className="hover:!opacity-50"
-                          >
-                            举报
-                          </Button>
-                        </div>
-                      </div>
-                    }
-                    placement="bottomRight"
-                    arrow={false}
-                    className="rounded"
-                  >
-                    <Button
-                      size="large"
-                      icon={<EllipsisOutlined className={'!text-2xl'} />}
-                      style={{
-                        fontWeight: 'bold',
-                        border: 0,
-                        backgroundColor: 'rgba(255,255,255,.3)',
-                        color: 'white',
-                      }}
-                      className="hover:!opacity-50"
-                    ></Button>
-                  </Popover>
+                  <Button
+                    size="large"
+                    icon={<EllipsisOutlined className={'!text-2xl'} />}
+                    style={{
+                      fontWeight: 'bold',
+                      border: 0,
+                      backgroundColor: 'rgba(255,255,255,.3)',
+                      color: 'white',
+                    }}
+                    className="hover:!opacity-50"
+                  ></Button>
                 </Col>
               </Row>
             </div>
@@ -264,7 +160,6 @@ export default function VideoDetail(props) {
                       marginBottom: '20px',
                     }}
                     className="hover:!opacity-50"
-                    // onClick={handleToPre}
                   ></Button>
                 </Link>
               )}
@@ -311,71 +206,44 @@ export default function VideoDetail(props) {
                       backgroundColor: 'transparent',
                       color: 'white',
                     }}
-                    onClick={togglePlaying}
                   ></Button>
                 </Col>
                 <Col span={'80px'}>
-                  <Tooltip
-                    placement="top"
-                    arrow={false}
-                    title={isAutoRoll ? '自动滚动已开启' : '自动滚动已关闭'}
-                    color="rgb(54,54,54)"
-                    overlayStyle={{ fontSize: 'small', color: 'white' }}
-                  >
-                    <Button
-                      size="large"
-                      icon={
-                        isAutoRoll ? (
-                          <ArrowUpOutlined className={'!text-2xl'} />
-                        ) : (
-                          <CloseCircleOutlined className={'!text-2xl'} />
-                        )
-                      }
-                      // onClick={toggleRoll}
-                      style={{
-                        border: 0,
-                        padding: 0,
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        width: '36px',
-                      }}
-                    ></Button>
-                  </Tooltip>
-                  <Popover
-                    placement="top"
-                    arrow={false}
-                    color="transparent"
-                    content={
-                      <div className="h-[60px]">
-                        <Slider
-                          vertical
-                          defaultValue={30}
-                          style={{ margin: 0 }}
-                          value={isMuted ? 0 : volume}
-                          onChange={volumeChange}
-                        />
-                      </div>
+                  <Button
+                    size="large"
+                    icon={
+                      isAutoRoll ? (
+                        <ArrowUpOutlined className={'!text-2xl'} />
+                      ) : (
+                        <CloseCircleOutlined className={'!text-2xl'} />
+                      )
                     }
-                  >
-                    <Button
-                      size="large"
-                      icon={
-                        volume === 0 || isMuted ? (
-                          <MutedOutlined className={'!text-2xl'} />
-                        ) : (
-                          <SoundOutlined className={'!text-2xl'} />
-                        )
-                      }
-                      style={{
-                        border: 0,
-                        padding: 0,
-                        backgroundColor: 'transparent',
-                        color: 'white',
-                        width: '36px',
-                      }}
-                      onClick={handleMute}
-                    ></Button>
-                  </Popover>
+                    style={{
+                      border: 0,
+                      padding: 0,
+                      backgroundColor: 'transparent',
+                      color: 'white',
+                      width: '36px',
+                    }}
+                  ></Button>
+
+                  <Button
+                    size="large"
+                    icon={
+                      volume === 0 || isMuted ? (
+                        <MutedOutlined className={'!text-2xl'} />
+                      ) : (
+                        <SoundOutlined className={'!text-2xl'} />
+                      )
+                    }
+                    style={{
+                      border: 0,
+                      padding: 0,
+                      backgroundColor: 'transparent',
+                      color: 'white',
+                      width: '36px',
+                    }}
+                  ></Button>
                 </Col>
               </Row>
               <Row>
@@ -383,7 +251,6 @@ export default function VideoDetail(props) {
                   <Slider
                     min={0}
                     max={100}
-                    onChange={onChange}
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
@@ -415,21 +282,6 @@ export default function VideoDetail(props) {
                 </Col>
               </Row>
             </div>
-          </div>
-          <div className="z-0 h-full">
-            <ReactPlayer
-              ref={playerRef}
-              playing={isPlay}
-              loop={!isAutoRoll}
-              volume={isMuted ? 0 : volume / 100}
-              width={'100%'}
-              height={'100%'}
-              url={url}
-              onDuration={handleDuration}
-              onProgress={handllePlay}
-              // onEnded={handleAutoPlay}
-              // style={type === 'row' ? { position: 'absolute' } : {}}
-            ></ReactPlayer>
           </div>
         </div>
       )}

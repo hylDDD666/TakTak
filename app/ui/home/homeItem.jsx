@@ -57,13 +57,13 @@ export default React.memo(function HomeItem(props) {
       setshowCollopse(false)
     }
     const options = {
-      rootMargin: '-63px 0px 0px 0px',
+      rootMargin: '-80px 0px 0px -30px',
       threshold: [0, 0.2, 0.6, 0.8, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (entry.intersectionRatio >= 0.9) {
+          if (entry.intersectionRatio >= 0.8) {
             // console.log(id);
             playItem(id)
           }

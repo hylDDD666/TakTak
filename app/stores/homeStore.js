@@ -288,4 +288,6 @@ export const useHomeStore = create((set) => ({
       isAutoRoll: !state.isAutoRoll
     }))
   }
+
+
 }))

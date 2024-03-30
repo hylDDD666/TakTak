@@ -3,11 +3,13 @@ import React, { Suspense, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
+import { usePathname } from 'next/navigation'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
+  const pathName = usePathname()
   useEffect(() => {
     const options = {
       rootMargin: '-64px 0px 0px 0px',
@@ -15,7 +17,6 @@ export default React.memo(function Home() {
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        // console.log(entry)
         fetchItemData()
       }
     }, options)
