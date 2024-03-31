@@ -17,10 +17,8 @@ const defaultStyle = {
   maxHeight: '1000px',
 }
 const transitionStyles = {
-  entering: { opacity: 1, maxHeight: '1000px' },
-  entered: { opacity: 1 },
-  exiting: { opacity: 0 },
-  exited: { maxHeight: 0, opacity: 0, padding: 0 },
+  exiting: { maxHeight: 0,opacity: 0,transition: 'all 500ms' },
+  // exited: { maxHeight: 0,  padding: 0 },
 }
 
 export default React.memo(function HomeItem(props) {
@@ -81,13 +79,12 @@ export default React.memo(function HomeItem(props) {
   return (
     <Transition
       nodeRef={nodeRef}
-      timeout={100}
+      timeout={500}
       in={!disLike}
-      onExited={() => {
-        setTimeout(() => {
-          deleteItem(id)
-        }, 300)
-      }}
+      unmountOnExit={true}
+      // onExited={() => {
+      //   nodeRef.current.style.display = 'none'
+      // }}
     >
       {(state) => {
         return (

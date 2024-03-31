@@ -34,7 +34,7 @@ export default function VideoDetail(props) {
   const playerRef = useRef()
   const router = useRouter()
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
-  let isAutoRoll = false
+  // const [isAutoRoll, setIsAutoRoll] = useState(false)
   const playItemById = useHomeStore((state) => state.playItemById)
   const fetchItemData = useHomeStore((state) => state.fetchItemData)
   const item = useHomeStore((state) => {
@@ -63,7 +63,7 @@ export default function VideoDetail(props) {
     setDomLoaded(true)
   }, [])
   useEffect(() => {
-    if (index === listLength - 1) {
+    if (index === listLength - 2) {
       fetchItemData()
     }
   }, [index])
@@ -72,8 +72,8 @@ export default function VideoDetail(props) {
     playerRef.current.seekTo(newValue / 100)
   }
 
-  // const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
-  // const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
+  const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
+  const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
   // const playItemById = useHomeStore((state) => state.playItemById)
   // const pauseItemById = useHomeStore((state) => state.pauseItemById)
   // const { id, isPlay,user } = props
@@ -89,10 +89,10 @@ export default function VideoDetail(props) {
     e.stopPropagation()
     setIsPlay((pre) => !pre)
   }
-  // const toggleRoll = (e) => {
-  //   e.stopPropagation()
-  //   toggleAutoRoll()
-  // }
+  const toggleRoll = (e) => {
+    e.stopPropagation()
+    toggleAutoRoll()
+  }
   const handllePlay = (played) => {
     setSliderValue((played.playedSeconds / duration) * 100)
   }
@@ -104,12 +104,9 @@ export default function VideoDetail(props) {
     setShow(true)
   }
   const handleMouseLeave = () => {
-    setShow(true)
+    setShow(false)
   }
-  const handleDislike = (e) => {
-    e.stopPropagation()
-    disLikeItem(id)
-  }
+
   const handleClose = () => {
     playItemById(id)
     router.back()
@@ -122,14 +119,16 @@ export default function VideoDetail(props) {
       router.replace(`/${preItem.user.userName}/video/${preItem.id}`)
     }
   }
-  // const handleAutoPlay = () => {
-  //   if (isPlay) {
-  //     props.scrollNext()
-  //   }
-  // }
-  // const videoClickHandler = () => {
-  //   router.push(`/${user.userName}/video/${id}`)
-  // }
+  const handleAutoPlay = () => {
+    if (isAutoRoll) {
+      handleToNext()
+    }
+  }
+  const handleDislike = (e) => {
+    e.stopPropagation()
+    handleToNext()
+    disLikeItem(id)
+  }
   return (
     <>
       {domLoaded && (
@@ -139,11 +138,7 @@ export default function VideoDetail(props) {
           onMouseLeave={handleMouseLeave}
           onClick={togglePlaying}
         >
-          <div
-            className={`w-full h-full absolute bg-transparent z-10 opacity-0 ${
-              show ? 'opacity-100' : ''
-            } transition-opacity`}
-          >
+          <div className={`w-full h-full absolute bg-transparent z-10 `}>
             <div
               className={'absolute top-5 text-white w-full'}
               onClick={(e) => e.stopPropagation()}
@@ -264,11 +259,10 @@ export default function VideoDetail(props) {
                       marginBottom: '20px',
                     }}
                     className="hover:!opacity-50"
-                    // onClick={handleToPre}
                   ></Button>
                 </Link>
               )}
-              {index < listLength && (
+              {index < listLength - 1 && (
                 <Link
                   replace={true}
                   href={`/${nextItem.user.userName}/video/${nextItem.id}`}
@@ -283,7 +277,6 @@ export default function VideoDetail(props) {
                       color: 'white',
                     }}
                     className="hover:!opacity-50"
-                    // onClick={handleToNext}
                   ></Button>
                 </Link>
               )}
@@ -331,7 +324,7 @@ export default function VideoDetail(props) {
                           <CloseCircleOutlined className={'!text-2xl'} />
                         )
                       }
-                      // onClick={toggleRoll}
+                      onClick={toggleRoll}
                       style={{
                         border: 0,
                         padding: 0,
@@ -378,7 +371,11 @@ export default function VideoDetail(props) {
                   </Popover>
                 </Col>
               </Row>
-              <Row>
+              <Row
+                className={`!opacity-0 ${
+                  show ? '!opacity-100' : ''
+                } !transition-opacity`}
+              >
                 <Col flex={'auto'}>
                   <Slider
                     min={0}
@@ -427,7 +424,7 @@ export default function VideoDetail(props) {
               url={url}
               onDuration={handleDuration}
               onProgress={handllePlay}
-              // onEnded={handleAutoPlay}
+              onEnded={handleAutoPlay}
               // style={type === 'row' ? { position: 'absolute' } : {}}
             ></ReactPlayer>
           </div>
