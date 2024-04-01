@@ -3,7 +3,7 @@ import VideoDetail from '@/app/ui/detail/video-detail'
 import { Col, ConfigProvider, Row } from 'antd'
 import React, { Suspense } from 'react'
 
-export default function layout({ children, videoPlayer }) {
+export default function layout({ videoPlayer,videoInfo }) {
   return (
     <>
       <ConfigProvider
@@ -27,8 +27,8 @@ export default function layout({ children, videoPlayer }) {
                 <VideoDetail/>
               </Suspense>
             </div>
-            <div className="h-full basis-[544px] bg-slate-300">
-              {videoPlayer}
+            <div className="h-full basis-[544px] bg-white">
+              {videoInfo}
             </div>
           </div>
         </div>

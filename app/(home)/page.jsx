@@ -9,7 +9,6 @@ const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 export default React.memo(function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
-  const pathName = usePathname()
   useEffect(() => {
     const options = {
       rootMargin: '-64px 0px 0px 0px',
@@ -27,6 +26,10 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
+  // useEffect(() => {
+  //   console.log(contentRef.current.offsetTop)
+  //   contentRef.current.scrollTo(0, scrollHeight)
+  // }, [])
   return (
     <>
       {itemList.map((item) => {

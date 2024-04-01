@@ -21,7 +21,7 @@ import ReactPlayer from 'react-player'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-export default function VideoDetail(props) {
+export default function VideoDetail() {
   const [domLoaded, setDomLoaded] = useState(false)
   const [isPlay, setIsPlay] = useState(true)
   const [volume, setVolume] = useState(20)
@@ -46,6 +46,7 @@ export default function VideoDetail(props) {
   const listLength = useHomeStore((state) => {
     return state.itemList.length
   })
+  const setCurId = useHomeStore((state) => state.setCurId)
   const nextItem = useHomeStore((state) => {
     if (index < state.itemList.length) {
       return state.itemList[index + 1]
@@ -58,15 +59,27 @@ export default function VideoDetail(props) {
       return null
     }
   })
+  const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
   const { url } = item.video.videoInfo
   useEffect(() => {
-    setDomLoaded(true)
+    setIsDetailOn(true)
+    console.log(1111);
+    return () => {
+      console.log(11111);
+      setIsDetailOn(false)
+    }
   }, [])
+
   useEffect(() => {
+    setDomLoaded(true)
+    setCurId(id)
+  }, [id])
+  useEffect(() => {
+    setIsPlay(true)
     if (index === listLength - 2) {
       fetchItemData()
     }
-  }, [index])
+  }, [id])
   const onChange = (newValue) => {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
@@ -129,6 +142,14 @@ export default function VideoDetail(props) {
     handleToNext()
     disLikeItem(id)
   }
+  const handleWheel = (e) => {
+    if (e.deltaY > 0) {
+      handleToNext()
+    } else {
+      handleToPre()
+    }
+  }
+
   return (
     <>
       {domLoaded && (
@@ -137,6 +158,7 @@ export default function VideoDetail(props) {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={togglePlaying}
+          onWheel={handleWheel}
         >
           <div className={`w-full h-full absolute bg-transparent z-10 `}>
             <div

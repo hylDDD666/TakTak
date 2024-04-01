@@ -62,16 +62,17 @@ export default function RootLayout({ children, detail }) {
               <div className="absolute left-0 top-0 bottom-0 -right-[17px] overflow-x-hiden overflow-y-scroll">
                 {detail}
               </div>
-              <div className="absolute left-0 top-0 bottom-0 right-0 overflow-x-hiden overflow-y-scroll">
+              <div className="absolute left-0 top-0 bottom-0 right-0 overflow-x-hiden ">
                 <Layout>
                   <Header></Header>
                   <Layout className={'h-full !bg-white'} hasSider>
                     <Sider></Sider>
                     <Content
                       style={{
+                        height:'100vh',
                         padding: '10px 10px 10px 100px',
-                        overflow: 'initial',
                         backgroundColor: 'white',
+                        overflowY:'scroll'
                       }}
                     >
                       {children}

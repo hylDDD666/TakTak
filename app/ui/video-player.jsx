@@ -81,13 +81,13 @@ export default React.memo(function VideoPlayer(props) {
     disLikeItem(id)
   }
   const handleAutoPlay = () => {
-    if (isPlay) {
+    if (isAutoRoll) {
       props.scrollNext()
     }
   }
   const videoClickHandler = () => {
     pauseItemById(id)
-    router.push(`/${user.userName}/video/${id}`)
+    router.push(`/${user.userName}/video/${id}`,{scroll:false})
   }
   return (
     <>

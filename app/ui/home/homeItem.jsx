@@ -17,15 +17,17 @@ const defaultStyle = {
   maxHeight: '1000px',
 }
 const transitionStyles = {
-  exiting: { maxHeight: 0,opacity: 0,transition: 'all 500ms' },
+  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' },
   // exited: { maxHeight: 0,  padding: 0 },
 }
 
 export default React.memo(function HomeItem(props) {
   const { user, desc, videoInfo, disLike, id, isPlaying } = props
-  const deleteItem = useHomeStore((state) => state.deleteItem)
-  const pauseItem = useHomeStore((state) => state.pauseAllItems)
+  const curId = useHomeStore((state) => state.currentPlayId)
+  // const pathName = usePathname()
   const playItem = useHomeStore((state) => state.playItemById)
+  const isDetailOn = useHomeStore((state) => state.isDetailOn)
+  const pauseAllItems = useHomeStore((state) => state.pauseAllItems)
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLike, setIsLike] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -42,17 +44,17 @@ export default React.memo(function HomeItem(props) {
     setIsFavorite((pre) => !pre)
   }
   const scrollNext = () => {
-    // console.log(nodeRef.current.getBoundingClientRect().bottom);
-    window.scrollTo({
+    nodeRef.current.parentNode.scrollTo({
       behavior: 'smooth',
-      top: window.scrollY + nodeRef.current.getBoundingClientRect().bottom - 63,
+      top:
+        nodeRef.current.parentNode.scrollTop +
+        nodeRef.current.getBoundingClientRect().bottom -
+        63,
     })
   }
   useEffect(() => {
-    if (textRef.current.scrollHeight > textRef.current.clientHeight) {
-      setshowCollopse(true)
-    } else {
-      setshowCollopse(false)
+    if (isDetailOn) {
+      pauseAllItems()
     }
     const options = {
       rootMargin: '-80px 0px 0px -30px',
@@ -62,8 +64,9 @@ export default React.memo(function HomeItem(props) {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
           if (entry.intersectionRatio >= 0.8) {
-            // console.log(id);
-            playItem(id)
+            if (!isDetailOn) {
+              playItem(id)
+            }
           }
         }
       }
@@ -74,7 +77,19 @@ export default React.memo(function HomeItem(props) {
     return () => {
       observer.disconnect()
     }
+  }, [isDetailOn])
+  useEffect(() => {
+    if (textRef.current.scrollHeight > textRef.current.clientHeight) {
+      setshowCollopse(true)
+    } else {
+      setshowCollopse(false)
+    }
   }, [])
+  useEffect(() => {
+    if (curId === id) {
+      nodeRef.current.parentNode.scrollTo(0, nodeRef.current.offsetTop - 65)
+    }
+  }, [curId])
 
   return (
     <Transition
@@ -82,9 +97,6 @@ export default React.memo(function HomeItem(props) {
       timeout={500}
       in={!disLike}
       unmountOnExit={true}
-      // onExited={() => {
-      //   nodeRef.current.style.display = 'none'
-      // }}
     >
       {(state) => {
         return (
