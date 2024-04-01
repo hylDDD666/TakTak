@@ -63,7 +63,6 @@ export default function VideoDetail() {
   const { url } = item.video.videoInfo
   useEffect(() => {
     setIsDetailOn(true)
-    console.log(1111);
     return () => {
       console.log(11111);
       setIsDetailOn(false)

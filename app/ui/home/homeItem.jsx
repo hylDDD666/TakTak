@@ -57,7 +57,7 @@ export default React.memo(function HomeItem(props) {
       pauseAllItems()
     }
     const options = {
-      rootMargin: '-80px 0px 0px -30px',
+      rootMargin: '-80px 0px 0px -200px',
       threshold: [0, 0.2, 0.6, 0.8, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
