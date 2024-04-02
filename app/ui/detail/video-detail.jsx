@@ -64,7 +64,6 @@ export default function VideoDetail() {
   useEffect(() => {
     setIsDetailOn(true)
     return () => {
-      console.log(11111);
       setIsDetailOn(false)
     }
   }, [])

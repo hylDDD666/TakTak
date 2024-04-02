@@ -23,9 +23,9 @@ export default function layout({ videoPlayer,videoInfo }) {
         <div className="fixed  h-screen left-0 top-0 -right-[17px] z-50">
           <div className="flex flex-nowrap h-full overflow-hidden">
             <div className="h-full bg-black  grow basis-[500px] shrink-0">
-              <Suspense fallback={<VideoSkeleton></VideoSkeleton>}>
+              {/* <Suspense fallback={<VideoSkeleton></VideoSkeleton>}>
                 <VideoDetail/>
-              </Suspense>
+              </Suspense> */}
             </div>
             <div className="h-full basis-[544px] bg-white">
               {videoInfo}
