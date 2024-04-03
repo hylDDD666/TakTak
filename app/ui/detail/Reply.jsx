@@ -1,13 +1,22 @@
+'use client'
 import { SmileOutlined } from '@ant-design/icons'
 import { Button, Input, Popover, Tooltip } from 'antd'
 import Compact from 'antd/es/space/Compact'
 import EmojiPicker from 'emoji-picker-react'
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function Reply(props) {
-  const { inputChange, commentInput, addEmoji,placeholder } = props
+  const { placeholder } = props
+  const [commentInput, setCommentInput] = useState('')
+  const inputChange = (e) => {
+    setCommentInput(e.target.value)
+  }
+  const addEmoji = (emojiData, e) => {
+    // console.log(emojiData,e);
+    setCommentInput((pre) => pre + emojiData.emoji)
+  }
   return (
-    <Compact style={{ width: '100%' }}>
+    <Compact style={{ width: '100%',marginBottom:'10px' }}>
       <Input
         onChange={inputChange}
         value={commentInput}
@@ -50,7 +59,7 @@ export default function Reply(props) {
       <Button
         size="large"
         disabled={commentInput === ''}
-        className="!border-0 !text-rose-500 hover:!bg-white !font-semibold !bg-white"
+        className={`!border-0 ${commentInput === ''?'text-gray-300':'!text-rose-500'} hover:!bg-white !font-semibold !bg-white !text-sm`}
       >
         发送
       </Button>

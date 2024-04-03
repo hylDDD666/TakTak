@@ -4,15 +4,18 @@ import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import { usePathname } from 'next/navigation'
+import { Content } from 'antd/es/layout/layout'
+import BackTop from 'antd/es/float-button/BackTop'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
+  const contentRef = useRef()
   useEffect(() => {
     const options = {
       rootMargin: '-64px 0px 0px 0px',
-      threshold: [0],
+      threshold: [0]
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -31,7 +34,15 @@ export default React.memo(function Home() {
   //   contentRef.current.scrollTo(0, scrollHeight)
   // }, [])
   return (
-    <>
+    <Content
+      ref={contentRef}
+      style={{
+        height: '100vh',
+        padding: '10px 10px 10px 100px',
+        backgroundColor: 'white',
+        overflowY: 'scroll'
+      }}
+    >
       {itemList.map((item) => {
         return (
           <HomeItem
@@ -48,6 +59,7 @@ export default React.memo(function Home() {
       <div ref={spinRef} className="text-center">
         <Spin size="large" className="!my-3 " />
       </div>
-    </>
+      <BackTop target={() => contentRef.current} tooltip="返回到顶部"></BackTop>
+    </Content>
   )
 })

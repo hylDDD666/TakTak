@@ -5,7 +5,7 @@ import {
   DownOutlined,
   HeartFilled,
   HeartOutlined,
-  UpOutlined,
+  UpOutlined
 } from '@ant-design/icons'
 import { Avatar, Button, Col, Row } from 'antd'
 import Link from 'next/link'
@@ -16,23 +16,20 @@ import Reply from './Reply'
 export default function Comment() {
   let isReplyExsist = true
   let isMoreReplyExist = true
-
+  const [showReplyInput, setShowReplyInput] = useState(false)
   const [isLike, setIsLike] = useState(false)
   const [showReply, setShowReply] = useState(false)
-  const [commentInput, setCommentInput] = useState('')
-  const inputChange = (e) => {
-    setCommentInput(e.target.value)
-  }
-  const addEmoji = (emojiData, e) => {
-    // console.log(emojiData,e);
-    setCommentInput((pre) => pre + emojiData.emoji)
-  }
+
 
   const handleLikeClick = () => {
     setIsLike((pre) => !pre)
   }
-
-  const handleReply = () => {}
+  const hideReplyInput=()=>{
+    setShowReplyInput(false)
+  }
+  const handleReply = () => {
+    setShowReplyInput(true)
+  }
   const handleReplyShow = () => {
     console.log('fetchSubCommentData')
     setShowReply(true)
@@ -60,10 +57,10 @@ export default function Comment() {
           >
             <span className="text-sm">usreName</span>
           </Link>
-          <p className=" text-base leading-[18px]">
-            I've been a kdrama fan since i was 12 and now I'm 23 I'm telling
-            y'all from all of the kdramas I've watched..queen of tears is one of
-            the good ones that'll remain in my heart ... it's so damn good
+          <p className=" text-base leading-[18px] text-black">
+            I've been a kdrama fan since i was 12 and now I'm 23 I'm telling y'all from all of the
+            kdramas I've watched..queen of tears is one of the good ones that'll remain in my heart
+            ... it's so damn good
           </p>
           <div className="text-gray-500 my-0.5">
             <span>time</span>
@@ -90,7 +87,7 @@ export default function Comment() {
               fontWeight: 'bold',
               backgroundColor: 'white',
               color: 'rgb(138,139,145)',
-              padding: '0 10px',
+              padding: '0 10px'
             }}
             className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
             size="large"
@@ -106,6 +103,21 @@ export default function Comment() {
           <p className="w-full text-center text-gray-500 ">{1231}</p>
         </Col>
       </Row>
+     {showReplyInput && <Row style={{ marginTop: '8px' }}>
+        <Col span={2}></Col>
+        <Col span={19}>
+          <Reply
+            placeholder="回复..."
+          ></Reply>
+        </Col>
+        <Col span={2}>
+          <Button
+          onClick={hideReplyInput}
+            icon={<CloseOutlined />}
+            className=" !h-[42px] !w-full !border-0 !text-black hover:!bg-white  !font-semibold !bg-white"
+          ></Button>
+        </Col>
+      </Row>}
       {showReply && isMoreReplyExist && (
         <>
           <SubComment></SubComment>
@@ -135,23 +147,6 @@ export default function Comment() {
           </Row>
         </>
       )}
-      <Row style={{marginTop:'8px'}}>
-        <Col span={2}></Col>
-        <Col span={19}>
-          <Reply
-            placeholder="回复..."
-            inputChange={inputChange}
-            commentInput={commentInput}
-            addEmoji={addEmoji}
-          ></Reply>
-        </Col>
-        <Col span={2}>
-          <Button
-            icon={<CloseOutlined />}
-            className=" !h-[42px] !w-full !border-0 !text-black hover:!bg-white  !font-semibold !bg-white"
-          ></Button>
-        </Col>
-      </Row>
     </>
   )
 }
