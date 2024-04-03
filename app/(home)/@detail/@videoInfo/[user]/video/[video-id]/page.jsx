@@ -8,6 +8,7 @@ import {
   ConfigProvider,
   Input,
   Menu,
+  Popover,
   Row,
   Tooltip,
   message,
@@ -18,12 +19,16 @@ import {
   HeartFilled,
   MessageFilled,
   SendOutlined,
+  SmileOutlined,
   StarFilled,
 } from '@ant-design/icons'
 import { usePathname, useRouter } from 'next/navigation'
 import { withRouter } from 'next/router'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
+import EmojiPicker from 'emoji-picker-react'
+import Compact from 'antd/es/space/Compact'
+import Reply from '@/app/ui/detail/Reply'
 
 const items = [
   {
@@ -52,6 +57,10 @@ export default function layout() {
   const [showCollopse, setshowCollopse] = useState(false)
   const [isComments, setIsComments] = useState(true)
   const router = useRouter()
+  const [commentInput, setCommentInput] = useState('')
+  const inputChange = (e) => {
+    setCommentInput(e.target.value)
+  }
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
   }
@@ -74,20 +83,25 @@ export default function layout() {
       setshowCollopse(false)
     }
   }, [])
-  const handleMenuClick = ({ key}) => {
+  const handleMenuClick = ({ key }) => {
     if (key === 'comments') {
       setIsComments(true)
     } else {
       setIsComments(false)
     }
   }
-
+  const addEmoji = (emojiData, e) => {
+    // console.log(emojiData,e);
+    setCommentInput((pre) => pre + emojiData.emoji)
+  }
   return (
-    <>
+    <div className=" h-screen overflow-y-auto w-full overflow-x-hidden">
       <ConfigProvider
         theme={{
           token: {
             colorBgContainer: 'rgb(247,247,248)',
+            colorTextPlaceholder: 'rgb(77,79,87)',
+            colorBgSpotlight: 'rgb(97,97,97)',
           },
           components: {
             Message: {
@@ -96,6 +110,9 @@ export default function layout() {
             Menu: {
               itemColor: 'rgb(116,117,124)',
               itemHoverColor: 'rgb(116,117,124)',
+            },
+            Input: {
+              activeBorderColor: 'rgb(197,197,201)',
             },
           },
         }}
@@ -138,7 +155,7 @@ export default function layout() {
               </Row>
             }
             description={
-              <div className={`text-lg mb-3 flex text-black`}>
+              <div className={`text-base mb-3 flex text-black`}>
                 <div
                   ref={textRef}
                   className={`mr-1 ${
@@ -290,17 +307,81 @@ export default function layout() {
             defaultSelectedKeys="comments"
             mode="horizontal"
             items={items}
-            style={{ color: 'black', backgroundColor: 'white' }}
+            style={{
+              position: 'sticky',
+              top: 0,
+              color: 'black',
+              backgroundColor: 'white',
+              zIndex: 99,
+            }}
           />
           {isComments ? (
-            <div className='px-[20px] pt-[10px] pb-[5px] w-full'>
+            <div className="px-[20px] pt-[10px] pb-[5px] w-full pb-[90px] ">
               <Comment></Comment>
+              <Comment></Comment>
+              <Comment></Comment>
+              <div className=" border-t border-gray-300 border-solid h-[85px]  absolute bottom-0 py-[20px] pl-[15px] bg-white left-0 right-0">
+                {/* <Compact style={{ width: '100%' }}>
+                  <Input
+                    onChange={inputChange}
+                    value={commentInput}
+                    style={{
+                      width: '85%',
+                      border: '1px solid rgb(241,241,242)',
+                      color: 'black',
+                      backgroundColor: 'rgb(241,241,242)',
+                    }}
+                    placeholder="添加评论"
+                    suffix={
+                      <Popover
+                      placement='topLeft'
+                      color='white'
+                      trigger={'click'}
+                        content={
+                          <EmojiPicker
+                          width={'300px'}
+                          height={'300px'}
+                            searchDisabled
+                            skinTonesDisabled
+                            onEmojiClick={addEmoji}
+                          ></EmojiPicker>
+                        }
+                      >
+                        <Tooltip title="点击添加表情">
+                          <Button
+                            style={{
+                              color: 'black',
+                              borderColor: 'rgb(241,241,242)',
+                              backgroundColor: 'rgb(241,241,242)',
+                            }}
+                            icon={<SmileOutlined className="text-lg" />}
+                            className="hover:!bg-gray-300"
+                          ></Button>
+                        </Tooltip>
+                      </Popover>
+                    }
+                  ></Input>
+                  <Button
+                    size="large"
+                    disabled={commentInput === ''}
+                    className="!border-0 !text-rose-500 hover:!bg-white !font-semibold !bg-white"
+                  >
+                    发送
+                  </Button>
+                </Compact> */}
+                <Reply
+                  inputChange={inputChange}
+                  commentInput={commentInput}
+                  addEmoji={addEmoji}
+                  placeholder='添加评论...'
+                ></Reply>
+              </div>
             </div>
           ) : (
             <>creator</>
           )}
         </div>
       </ConfigProvider>
-    </>
+    </div>
   )
 }
