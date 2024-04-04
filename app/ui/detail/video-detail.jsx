@@ -14,12 +14,23 @@ import {
   SoundOutlined,
   UpOutlined,
 } from '@ant-design/icons'
-import { Button, Col, Input, Popover, Row, Slider, Tooltip } from 'antd'
+import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { getVideoPreviewImg } from '@/app/lib/getVideoPreview'
+
+const debounce = (func, delay) => {
+  let timeout
+  return (e) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      func(e)
+    }, delay)
+  }
+}
 
 export default function VideoDetail() {
   const [domLoaded, setDomLoaded] = useState(false)
@@ -28,10 +39,13 @@ export default function VideoDetail() {
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)
   const [sliderValue, setSliderValue] = useState(0)
+  const [previewShow, setPreviewShow] = useState(false)
+  const [previewImg, setPreviewImg] = useState('')
   const [show, setShow] = useState(true)
   const params = useParams()
   const id = params['video-id'] * 1
   const playerRef = useRef()
+  const previewRef = useRef()
   const router = useRouter()
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
   // const [isAutoRoll, setIsAutoRoll] = useState(false)
@@ -61,6 +75,7 @@ export default function VideoDetail() {
   })
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
   const { url } = item.video.videoInfo
+
   useEffect(() => {
     setIsDetailOn(true)
     return () => {
@@ -85,9 +100,6 @@ export default function VideoDetail() {
 
   const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
   const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
-  // const playItemById = useHomeStore((state) => state.playItemById)
-  // const pauseItemById = useHomeStore((state) => state.pauseItemById)
-  // const { id, isPlay,user } = props
 
   const handleDuration = (value) => {
     setDuration(value)
@@ -148,11 +160,30 @@ export default function VideoDetail() {
     }
   }
 
+  const getPreviewDebonced = debounce(async (e) => {
+    const mouseX = e.clientX
+    const width = e.target.clientWidth
+    const time = (mouseX / width) * duration
+    console.log(time, mouseX)
+    const res = await getVideoPreviewImg(url, time)
+    setPreviewImg(res)
+  }, 500)
+  const showVideoPreview = (e) => {
+    const mouseX = e.clientX
+    previewRef.current.style.left =
+      mouseX - previewRef.current.clientWidth / 2 + 'px'
+    getPreviewDebonced(e)
+    setPreviewShow(true)
+  }
+
+  const hideVideoPreview = () => {
+    setPreviewShow(false)
+  }
   return (
     <>
       {domLoaded && (
         <div
-          className={`h-full w-full  relative   overflow-hidden bg-black z-0`}
+          className={`h-full w-full  relative overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={togglePlaying}
@@ -391,12 +422,19 @@ export default function VideoDetail() {
                   </Popover>
                 </Col>
               </Row>
+              <Row>
+                <Col flex={'10vw'}></Col>
+              </Row>
               <Row
                 className={`!opacity-0 ${
                   show ? '!opacity-100' : ''
                 } !transition-opacity`}
               >
-                <Col flex={'auto'}>
+                <Col
+                  flex={'auto'}
+                  onMouseMove={showVideoPreview}
+                  onMouseLeave={hideVideoPreview}
+                >
                   <Slider
                     min={0}
                     max={100}
@@ -408,6 +446,7 @@ export default function VideoDetail() {
                     }}
                   />
                 </Col>
+
                 <Col flex={'70px'} className="leading-3">
                   <span className="text-xs ml-3">
                     {' '}
@@ -433,6 +472,16 @@ export default function VideoDetail() {
               </Row>
             </div>
           </div>
+
+          <div
+            ref={previewRef}
+            className={`max-w-1/5 max-h-1/4 absolute bottom-[50px] text-white z-40 ${
+              previewShow ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <Image src={previewImg} placeholder={true} width={'120px'} />
+          </div>
+
           <div className="z-0 h-full">
             <ReactPlayer
               ref={playerRef}

@@ -11,7 +11,7 @@ import {
   Popover,
   Row,
   Tooltip,
-  message
+  message,
 } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
@@ -20,7 +20,7 @@ import {
   MessageFilled,
   SendOutlined,
   SmileOutlined,
-  StarFilled
+  StarFilled,
 } from '@ant-design/icons'
 import { usePathname, useRouter } from 'next/navigation'
 import { withRouter } from 'next/router'
@@ -30,16 +30,23 @@ import EmojiPicker from 'emoji-picker-react'
 import Compact from 'antd/es/space/Compact'
 import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
+import PlayerCard from '@/app/ui/PlayerCard'
 
 const items = [
   {
-    label: <div className="font-bold w-[231px] text-center">Comments({'number'})</div>,
-    key: 'comments'
+    label: (
+      <div className="font-bold w-[231px] text-center">
+        Comments({'number'})
+      </div>
+    ),
+    key: 'comments',
   },
   {
-    label: <div className="font-bold w-[231px] text-center">Creator videos</div>,
-    key: 'Creator videos'
-  }
+    label: (
+      <div className="font-bold w-[231px] text-center">Creator videos</div>
+    ),
+    key: 'Creator videos',
+  },
 ]
 
 export default function layout() {
@@ -65,7 +72,7 @@ export default function layout() {
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
-      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60'
+      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
     })
   }
   useEffect(() => {
@@ -84,33 +91,36 @@ export default function layout() {
   }
 
   return (
-    <div className=" h-screen overflow-y-auto w-full overflow-x-hidden" ref={commentRef}>
+    <div
+      className=" h-screen overflow-y-auto w-full overflow-x-hidden"
+      ref={commentRef}
+    >
       <ConfigProvider
         theme={{
           token: {
             colorBgContainer: 'rgb(247,247,248)',
             colorTextPlaceholder: 'rgb(77,79,87)',
             colorBgSpotlight: 'rgb(97,97,97)',
-            colorText: 'black'
+            colorText: 'black',
           },
           components: {
             Message: {
-              contentBg: 'transparent'
+              contentBg: 'transparent',
             },
             Menu: {
               itemColor: 'rgb(116,117,124)',
-              itemHoverColor: 'rgb(116,117,124)'
+              itemHoverColor: 'rgb(116,117,124)',
             },
             Input: {
-              activeBorderColor: 'rgb(197,197,201)'
-            }
-          }
+              activeBorderColor: 'rgb(197,197,201)',
+            },
+          },
         }}
       >
         <Card
           style={{
             width: 496,
-            margin: 16
+            margin: 16,
           }}
         >
           <Meta
@@ -135,7 +145,7 @@ export default function layout() {
                     style={{
                       width: '100px',
                       color: 'white',
-                      backgroundColor: 'rgb(254,44,85)'
+                      backgroundColor: 'rgb(254,44,85)',
                     }}
                     className="hover:!bg-rose-500"
                   >
@@ -169,7 +179,7 @@ export default function layout() {
         </Card>
         <Row
           style={{
-            padding: '0px 15px'
+            padding: '0px 15px',
           }}
           justify={'space-between'}
         >
@@ -183,14 +193,18 @@ export default function layout() {
                 height: '32px',
                 width: '32px',
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)'
+                color: 'rgb(22,24,35)',
               }}
-              className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
+              className={`active:!bg-gray-200 ${
+                isLike ? '!text-rose-500' : ''
+              }`}
               size="large"
               icon={<HeartFilled className={'!text-l'} />}
               onClick={handleLikeClick}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">{123124}</strong>
+            <strong className="w-full text-center text-xs mr-2">
+              {123124}
+            </strong>
             <Button
               type="round"
               style={{
@@ -201,12 +215,14 @@ export default function layout() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)'
+                color: 'rgb(22,24,35)',
               }}
               icon={<MessageFilled className="!text-l" />}
               className={`active:!bg-gray-200`}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">{123124}</strong>
+            <strong className="w-full text-center text-xs mr-2">
+              {123124}
+            </strong>
             <Button
               type="round"
               style={{
@@ -217,13 +233,17 @@ export default function layout() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)'
+                color: 'rgb(22,24,35)',
               }}
               icon={<StarFilled className="!text-l" />}
-              className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
+              className={`active:!bg-gray-200 ${
+                isFavorite ? '!text-yellow-400' : ''
+              }`}
               onClick={handleFavorites}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">{123124}</strong>
+            <strong className="w-full text-center text-xs mr-2">
+              {123124}
+            </strong>
           </Col>
           <Col span={3}>
             <Tooltip placement="top" title="发送给朋友">
@@ -237,7 +257,7 @@ export default function layout() {
                   width: '32px',
                   border: 0,
                   backgroundColor: 'rgb(254,44,85)',
-                  color: 'white'
+                  color: 'white',
                 }}
                 icon={<SendOutlined className="!text-l" />}
                 // onClick={handleFavorites}
@@ -250,11 +270,15 @@ export default function layout() {
             margin: '0px 15px',
             width: '494px',
             backgroundColor: 'rgb(241,241,242)',
-            borderRadius: '5px'
+            borderRadius: '5px',
           }}
         >
           <Col span={19}>
-            <div className={'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'}>
+            <div
+              className={
+                'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'
+              }
+            >
               {`current/host/current/current/${path}`}
             </div>
           </Col>
@@ -267,7 +291,7 @@ export default function layout() {
                   border: 0,
                   width: '100%',
                   backgroundColor: 'transparent',
-                  color: 'black'
+                  color: 'black',
                 }}
                 className="hover:!bg-gray-200"
                 onClick={copyHandler}
@@ -288,7 +312,7 @@ export default function layout() {
               top: 0,
               color: 'black',
               backgroundColor: 'white',
-              zIndex: 99
+              zIndex: 99,
             }}
           />
           {isComments ? (
@@ -304,7 +328,9 @@ export default function layout() {
               </div>
             </div>
           ) : (
-            <>creator</>
+            <Row style={{ padding: '15px' }}>
+                <PlayerCard></PlayerCard>
+            </Row>
           )}
         </div>
         <BackTop

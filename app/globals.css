@@ -6,3 +6,6 @@
 /* body::-webkit-scrollbar {
   display: none; 
 } */
+.react-player__shadow{
+  display: none !important;
+}
