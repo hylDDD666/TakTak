@@ -1,12 +1,7 @@
 'use client'
 import { Avatar, Button, Col, Row } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  HeartFilled,
-  MergeFilled,
-  MessageFilled,
-  StarFilled,
-} from '@ant-design/icons'
+import { HeartFilled, MergeFilled, MessageFilled, StarFilled } from '@ant-design/icons'
 import VideoPlayer from '../video-player'
 import { Transition } from 'react-transition-group'
 import { useHomeStore } from '@/app/stores/homeStore'
@@ -14,10 +9,10 @@ import { useHomeStore } from '@/app/stores/homeStore'
 const defaultStyle = {
   transition: 'all 300ms linear',
   display: 'block',
-  maxHeight: '1000px',
+  maxHeight: '1000px'
 }
 const transitionStyles = {
-  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' },
+  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' }
   // exited: { maxHeight: 0,  padding: 0 },
 }
 
@@ -47,9 +42,7 @@ export default React.memo(function HomeItem(props) {
     nodeRef.current.parentNode.scrollTo({
       behavior: 'smooth',
       top:
-        nodeRef.current.parentNode.scrollTop +
-        nodeRef.current.getBoundingClientRect().bottom -
-        63,
+        nodeRef.current.parentNode.scrollTop + nodeRef.current.getBoundingClientRect().bottom - 63
     })
   }
   useEffect(() => {
@@ -57,13 +50,13 @@ export default React.memo(function HomeItem(props) {
       pauseAllItems()
     }
     const options = {
-      rootMargin: '-80px 0px 0px -200px',
-      threshold: [0, 0.2, 0.6, 0.8, 1],
+      rootMargin: '-20% 0px 0px -50%',
+      threshold: [0, 0.5, 1]
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (entry.intersectionRatio >= 0.8) {
+          if (entry.intersectionRatio >= 0.4) {
             if (!isDetailOn) {
               playItem(id)
             }
@@ -92,12 +85,7 @@ export default React.memo(function HomeItem(props) {
   }, [curId])
 
   return (
-    <Transition
-      nodeRef={nodeRef}
-      timeout={500}
-      in={!disLike}
-      unmountOnExit={true}
-    >
+    <Transition nodeRef={nodeRef} timeout={500} in={!disLike} unmountOnExit={true}>
       {(state) => {
         return (
           <div
@@ -141,7 +129,7 @@ export default React.memo(function HomeItem(props) {
                   style={{
                     width: '100px',
                     color: 'rgb(254,44,85)',
-                    borderColor: 'rgb(254,44,85)',
+                    borderColor: 'rgb(254,44,85)'
                   }}
                   className="hover:!bg-rose-100"
                 >
@@ -151,11 +139,7 @@ export default React.memo(function HomeItem(props) {
             </Row>
             <Row justify={'center'} wrap={false}>
               <Col flex={'60px'}></Col>
-              <Col
-                flex={'auto'}
-                style={{ maxWidth: '610px', display: 'flex' }}
-                className="pb-10"
-              >
+              <Col flex={'auto'} style={{ maxWidth: '610px', display: 'flex' }} className="pb-10">
                 <VideoPlayer
                   videoInfo={videoInfo.videoInfo}
                   id={id}
@@ -171,18 +155,14 @@ export default React.memo(function HomeItem(props) {
                       marginBottom: '5px',
                       padding: 0,
                       height: '48px',
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
-                    className={`active:!bg-gray-200 ${
-                      isLike ? '!text-rose-500' : ''
-                    }`}
+                    className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
                     size="large"
                     icon={<HeartFilled className={'!text-xl'} />}
                     onClick={handleLikeClick}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">
-                    {videoInfo.likeNum}
-                  </strong>
+                  <strong className="w-full text-center text-xs mb-2">{videoInfo.likeNum}</strong>
                   <Button
                     type="round"
                     style={{
@@ -191,7 +171,7 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
                     size="large"
                     icon={<MessageFilled className="!text-xl" />}
@@ -208,13 +188,11 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
                     size="large"
                     icon={<StarFilled className="!text-xl" />}
-                    className={`active:!bg-gray-200 ${
-                      isFavorite ? '!text-yellow-400' : ''
-                    }`}
+                    className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
                     onClick={handleFavorites}
                   ></Button>
                   <strong className="w-full text-center text-xs mb-2">
@@ -228,15 +206,13 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
                     size="large"
                     icon={<MergeFilled className="!text-xl" />}
                     className={`active:!bg-gray-200 `}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">
-                    {videoInfo.shareNum}
-                  </strong>
+                  <strong className="w-full text-center text-xs mb-2">{videoInfo.shareNum}</strong>
                 </div>
               </Col>
             </Row>
