@@ -97,7 +97,6 @@ export default React.memo(function HomeItem(props) {
       if (!isDetailOn) {
         playItem(id)
       }
-      console.log(nodeRef.current.offsetTop)
     }
   }, [props.scrollHeight])
   return (

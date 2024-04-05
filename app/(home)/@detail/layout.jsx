@@ -1,9 +1,12 @@
+'use client'
+import { useHomeStore } from '@/app/stores/homeStore'
 import VideoSkeleton from '@/app/ui/detail/VideoSkeleton'
 import VideoDetail from '@/app/ui/detail/video-detail'
 import { Col, ConfigProvider, Row } from 'antd'
 import React, { Suspense } from 'react'
 
-export default function layout({ videoPlayer,videoInfo }) {
+export default function layout({ creatorVideos, videoInfo }) {
+  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   return (
     <>
       <ConfigProvider
@@ -23,9 +26,10 @@ export default function layout({ videoPlayer,videoInfo }) {
         <div className="fixed  h-screen left-0 top-0 right-0 z-50">
           <div className="flex flex-nowrap h-full overflow-hidden">
             <div className="h-full bg-black  grow basis-[500px] shrink-0">
-              <Suspense fallback={<VideoSkeleton></VideoSkeleton>}>
+              {/* <Suspense fallback={<VideoSkeleton></VideoSkeleton>}>
                 <VideoDetail/>
-              </Suspense>
+              </Suspense> */}
+              {isCreatorVideosOn ? creatorVideos : <VideoDetail/>}
             </div>
             <div className="h-screen basis-[544px] bg-white relative">
               {videoInfo}

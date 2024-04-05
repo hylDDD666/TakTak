@@ -31,6 +31,7 @@ import Compact from 'antd/es/space/Compact'
 import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
+import { useHomeStore } from '@/app/stores/homeStore'
 
 const items = [
   {
@@ -59,6 +60,8 @@ export default function layout() {
   const [showCollopse, setshowCollopse] = useState(false)
   const [isComments, setIsComments] = useState(true)
   const router = useRouter()
+  const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
+  const creatorVideos = useHomeStore((state) => state.creatorVideos)
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
@@ -86,13 +89,16 @@ export default function layout() {
     if (key === 'comments') {
       setIsComments(true)
     } else {
+      getCreatorVideos()
       setIsComments(false)
     }
   }
 
   return (
     <div
-      className=" h-screen overflow-y-auto w-full overflow-x-hidden"
+      className={`h-screen ${
+        isComments ? 'overflow-y-auto' : 'overflow-hidden'
+      } w-full overflow-x-hidden flex flex-col`}
       ref={commentRef}
     >
       <ConfigProvider
@@ -301,38 +307,45 @@ export default function layout() {
             </CopyToClipboard>
           </Col>
         </Row>
-        <div>
-          <Menu
-            onClick={handleMenuClick}
-            defaultSelectedKeys="comments"
-            mode="horizontal"
-            items={items}
-            style={{
-              position: 'sticky',
-              top: 0,
-              color: 'black',
-              backgroundColor: 'white',
-              zIndex: 99,
-            }}
-          />
-          {isComments ? (
-            <div className="px-[20px] pt-[10px] w-full pb-[90px] ">
-              <Comment></Comment>
-              <Comment></Comment>
-              <Comment></Comment>
-              <Comment></Comment>
-              <Comment></Comment>
-              <Comment></Comment>
-              <div className=" border-t border-gray-300 border-solid h-[85px]  absolute bottom-0 py-[20px] pl-[15px] bg-white left-0 right-0">
-                <Reply placeholder="添加评论..."></Reply>
-              </div>
+        <Menu
+          onClick={handleMenuClick}
+          defaultSelectedKeys="comments"
+          mode="horizontal"
+          items={items}
+          style={{
+            position: 'sticky',
+            top: 0,
+            color: 'black',
+            backgroundColor: 'white',
+            zIndex: 99,
+          }}
+        />
+
+        {isComments ? (
+          <div className="px-[20px] pt-[10px] w-full pb-[90px] ">
+            <Comment></Comment>
+            <Comment></Comment>
+            <Comment></Comment>
+            <Comment></Comment>
+            <Comment></Comment>
+            <Comment></Comment>
+            <div className=" border-t border-gray-300 border-solid h-[85px]  absolute bottom-0 py-[20px] pl-[15px] bg-white left-0 right-0">
+              <Reply placeholder="添加评论..."></Reply>
             </div>
-          ) : (
-            <Row style={{ padding: '15px' }}>
-                <PlayerCard></PlayerCard>
-            </Row>
-          )}
-        </div>
+          </div>
+        ) : (
+          <Row style={{ padding: '15px', overflowY: 'auto', flex: 1 }}>
+            {creatorVideos.map((item) => {
+              return (
+                <PlayerCard
+                  videoUrl={item.video.videoInfo.url}
+                  key={item.id}
+                  id={item.id}
+                ></PlayerCard>
+              )
+            })}
+          </Row>
+        )}
         <BackTop
           target={() => commentRef.current}
           tooltip="回到顶部"
