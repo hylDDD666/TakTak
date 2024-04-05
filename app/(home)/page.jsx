@@ -1,21 +1,23 @@
 'use client'
-import React, { Suspense, useEffect, useRef } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import { usePathname } from 'next/navigation'
 import { Content } from 'antd/es/layout/layout'
 import BackTop from 'antd/es/float-button/BackTop'
+import debounce from '../lib/debounce'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
   const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
   const contentRef = useRef()
+  const [scrollHeight, setScrollHeight] = useState(0)
   useEffect(() => {
     const options = {
       rootMargin: '-64px 0px 0px 0px',
-      threshold: [0]
+      threshold: [0],
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -29,10 +31,12 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
-  // useEffect(() => {
-  //   console.log(contentRef.current.offsetTop)
-  //   contentRef.current.scrollTo(0, scrollHeight)
-  // }, [])
+  const handleScroll = (e) => {
+    const debounceScroll = debounce((e) => {
+      setScrollHeight(e.target.scrollTop)
+    }, 500)
+    debounceScroll(e)
+  }
   return (
     <Content
       ref={contentRef}
@@ -40,8 +44,9 @@ export default React.memo(function Home() {
         height: '100vh',
         padding: '10px 10px 10px 100px',
         backgroundColor: 'white',
-        overflowY: 'scroll'
+        overflowY: 'scroll',
       }}
+      onScroll={handleScroll}
     >
       {itemList.map((item) => {
         return (
@@ -53,6 +58,7 @@ export default React.memo(function Home() {
             disLike={item.disLike}
             id={item.id}
             isPlaying={item.isPlaying}
+            scrollHeight={scrollHeight}
           ></HomeItem>
         )
       })}

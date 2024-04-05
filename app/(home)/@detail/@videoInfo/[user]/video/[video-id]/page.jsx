@@ -316,7 +316,7 @@ export default function layout() {
             }}
           />
           {isComments ? (
-            <div className="px-[20px] pt-[10px] pb-[5px] w-full pb-[90px] ">
+            <div className="px-[20px] pt-[10px] w-full pb-[90px] ">
               <Comment></Comment>
               <Comment></Comment>
               <Comment></Comment>
