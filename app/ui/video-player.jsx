@@ -38,7 +38,7 @@ export default React.memo(function VideoPlayer(props) {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
   }
-
+  const setCurId = useHomeStore((state) => state.setCurId)
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
   const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
   const toggleAutoRoll = useHomeStore((state) => state.toggleAutoRoll)
@@ -86,8 +86,9 @@ export default React.memo(function VideoPlayer(props) {
     }
   }
   const videoClickHandler = () => {
+    setCurId(id)
     pauseItemById(id)
-    router.push(`/${user.userName}/video/${id}`,{scroll:false})
+    router.push(`/${user.userName}/video/${id}`, { scroll: false })
   }
   return (
     <>
@@ -95,7 +96,7 @@ export default React.memo(function VideoPlayer(props) {
         <div
           className={`${
             type === 'col' ? 'w-3/5 max-w-96 min-w-52' : 'w-full '
-          } rounded-lg relative   overflow-hidden bg-black z-0`}
+          } rounded-lg relative   overflow-hidden bg-white z-0`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onClick={videoClickHandler}

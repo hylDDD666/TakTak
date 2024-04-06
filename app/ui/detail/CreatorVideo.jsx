@@ -49,11 +49,8 @@ export default function CreatorVideo() {
   const previewRef = useRef()
   const router = useRouter()
   const item = useHomeStore((state) => {
-    console.log(id)
     return state.creatorVideos.find((item) => item.id == id)
   })
-  console.log(params)
-  console.log(item)
   const index = useHomeStore((state) => {
     return state.creatorVideos.findIndex((item) => item.id == id)
   })

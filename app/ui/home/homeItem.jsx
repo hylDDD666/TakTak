@@ -26,6 +26,7 @@ export default React.memo(function HomeItem(props) {
   const playItem = useHomeStore((state) => state.playItemById)
   const isDetailOn = useHomeStore((state) => state.isDetailOn)
   const pauseAllItems = useHomeStore((state) => state.pauseAllItems)
+  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLike, setIsLike] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -84,7 +85,7 @@ export default React.memo(function HomeItem(props) {
     }
   }, [])
   useEffect(() => {
-    if (curId === id) {
+    if (curId === id && !isCreatorVideosOn) {
       nodeRef.current.parentNode.scrollTo(0, nodeRef.current.offsetTop - 65)
     }
   }, [curId])

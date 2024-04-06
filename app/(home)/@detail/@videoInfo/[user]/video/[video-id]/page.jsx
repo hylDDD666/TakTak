@@ -62,6 +62,7 @@ export default function layout() {
   const router = useRouter()
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
+  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
@@ -89,7 +90,9 @@ export default function layout() {
     if (key === 'comments') {
       setIsComments(true)
     } else {
-      getCreatorVideos()
+      if (!isCreatorVideosOn) {
+        getCreatorVideos()
+      }
       setIsComments(false)
     }
   }
@@ -334,7 +337,13 @@ export default function layout() {
             </div>
           </div>
         ) : (
-          <Row style={{ padding: '15px', overflowY: 'auto', flex: 1 }}>
+          <Row
+            style={{
+              padding: '15px',
+              overflowY: 'auto',
+              flex: 1,
+            }}
+          >
             {creatorVideos.map((item) => {
               return (
                 <PlayerCard

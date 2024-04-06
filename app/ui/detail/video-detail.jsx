@@ -12,7 +12,7 @@ import {
   PlayCircleFilled,
   SearchOutlined,
   SoundOutlined,
-  UpOutlined
+  UpOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
@@ -43,7 +43,12 @@ export default function VideoDetail() {
   const [previewImg, setPreviewImg] = useState('')
   const [show, setShow] = useState(true)
   const params = useParams()
-  const id = params['video-id'] * 1
+  const curDetailId = useHomeStore((state) => state.curDetailId)
+  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
+  const setIsCreatorVideosOn = useHomeStore(
+    (state) => state.setIsCreatorVideosOn
+  )
+  const id = useHomeStore((state) => state.currentPlayId)
   const playerRef = useRef()
   const previewRef = useRef()
   const router = useRouter()
@@ -52,25 +57,51 @@ export default function VideoDetail() {
   const playItemById = useHomeStore((state) => state.playItemById)
   const fetchItemData = useHomeStore((state) => state.fetchItemData)
   const item = useHomeStore((state) => {
-    return state.itemList.find((item) => item.id == id)
+    if (isCreatorVideosOn) {
+      return state.creatorVideos.find((item) => item.id == id)
+    } else {
+      return state.itemList.find((item) => item.id == id)
+    }
   })
   const index = useHomeStore((state) => {
-    return state.itemList.findIndex((item) => item.id == id)
+    if (isCreatorVideosOn) {
+      return state.creatorVideos.findIndex((item) => item.id == id)
+    } else {
+      return state.itemList.findIndex((item) => item.id == id)
+    }
   })
   const listLength = useHomeStore((state) => {
-    return state.itemList.length
+    if (isCreatorVideosOn) {
+      return state.creatorVideos.length
+    } else {
+      return state.itemList.length
+    }
   })
   const setCurId = useHomeStore((state) => state.setCurId)
   const nextItem = useHomeStore((state) => {
-    if (index < state.itemList.length) {
-      return state.itemList[index + 1]
+    if (isCreatorVideosOn) {
+      if (index < state.creatorVideos.length) {
+        return state.creatorVideos[index + 1]
+      }
+    } else {
+      if (index < state.itemList.length) {
+        return state.itemList[index + 1]
+      }
     }
   })
   const preItem = useHomeStore((state) => {
-    if (index > 0) {
-      return state.itemList[index - 1]
+    if (isCreatorVideosOn) {
+      if (index > 0) {
+        return state.creatorVideos[index - 1]
+      } else {
+        return null
+      }
     } else {
-      return null
+      if (index > 0) {
+        return state.itemList[index - 1]
+      } else {
+        return null
+      }
     }
   })
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
@@ -89,8 +120,10 @@ export default function VideoDetail() {
   }, [id])
   useEffect(() => {
     setIsPlay(true)
-    if (index === listLength - 2) {
-      fetchItemData()
+    if (!isCreatorVideosOn) {
+      if (index === listLength - 2) {
+        fetchItemData()
+      }
     }
   }, [id])
   const onChange = (newValue) => {
@@ -131,14 +164,22 @@ export default function VideoDetail() {
   }
 
   const handleClose = () => {
-    playItemById(id)
+    if (isCreatorVideosOn) {
+      setIsCreatorVideosOn(false)
+      setCurId(curDetailId)
+    } else {
+      playItemById(id)
+    }
+    console.log(curDetailId, isCreatorVideosOn)
     router.back()
   }
   const handleToNext = () => {
+    setCurId(nextItem.id)
     router.replace(`/${nextItem.user.userName}/video/${nextItem.id}`)
   }
   const handleToPre = () => {
     if (index !== 0) {
+      setCurId(preItem.id)
       router.replace(`/${preItem.user.userName}/video/${preItem.id}`)
     }
   }
@@ -163,13 +204,14 @@ export default function VideoDetail() {
   const getPreviewDebonced = debounce(async (e) => {
     const mouseX = e.clientX
     const width = e.target.clientWidth
-    const time = (mouseX / width) * duration
+    const time = (mouseX / width).toFixed(2) * duration
     const res = await getVideoPreviewImg(url, time)
-    setPreviewImg(res)
+    setPreviewImg(res.imgSrc)
   }, 300)
   const showVideoPreview = (e) => {
     const mouseX = e.clientX
-    previewRef.current.style.left = mouseX - previewRef.current.clientWidth / 2 + 'px'
+    previewRef.current.style.left =
+      mouseX - previewRef.current.clientWidth / 2 + 'px'
     getPreviewDebonced(e)
     setPreviewShow(true)
   }
@@ -193,19 +235,26 @@ export default function VideoDetail() {
               onClick={(e) => e.stopPropagation()}
             >
               <Row wrap={false}>
-                <Col flex={'80px'} className="text-center">
+                <Col
+                  flex={isCreatorVideosOn ? '180px' : '80px'}
+                  className="text-center"
+                >
                   <Button
                     size="large"
-                    icon={<CloseOutlined className={'!text-2xl'} />}
+                    icon={<CloseOutlined className={'!text-xl'} />}
                     style={{
                       fontWeight: 'bold',
                       border: 0,
-                      backgroundColor: 'rgba(255,255,255,.3)',
-                      color: 'white'
+                      backgroundColor: 'rgb(45,45,44)',
+                      color: 'white',
+                      padding: '5px 5px',
+                      textAlign: 'center',
                     }}
-                    className="hover:!opacity-50"
+                    className={`hover:!opacity-70 `}
                     onClick={handleClose}
-                  ></Button>
+                  >
+                    {isCreatorVideosOn && '退出创作者视频'}
+                  </Button>
                 </Col>
                 <Col flex={'auto'}>
                   <Input
@@ -214,7 +263,7 @@ export default function VideoDetail() {
                     size="large"
                     style={{
                       width: '100%',
-                      color: 'white'
+                      color: 'white',
                     }}
                     addonAfter={
                       <Button
@@ -226,65 +275,68 @@ export default function VideoDetail() {
                           backgroundColor: 'transparent',
                           color: 'white',
                           height: '38px',
-                          width: '24px'
+                          width: '24px',
                         }}
                         className="hover:!opacity-50"
                       ></Button>
                     }
                   />
                 </Col>
+                {isCreatorVideosOn && <Col flex={'100px'}></Col>}
                 <Col flex={'80px'} className="text-center">
-                  <Popover
-                    color="rgba(27,27,27,0.2)"
-                    content={
-                      <div>
+                  {!isCreatorVideosOn && (
+                    <Popover
+                      color="rgba(27,27,27,0.2)"
+                      content={
                         <div>
-                          <Button
-                            style={{
-                              fontWeight: 'bold',
-                              border: 0,
-                              backgroundColor: 'rgb(27,27,27,0)',
-                              color: 'white'
-                            }}
-                            icon={<DislikeOutlined />}
-                            onClick={handleDislike}
-                            className="hover:!opacity-50"
-                          >
-                            不感兴趣
-                          </Button>
+                          <div>
+                            <Button
+                              style={{
+                                fontWeight: 'bold',
+                                border: 0,
+                                backgroundColor: 'rgb(27,27,27,0)',
+                                color: 'white',
+                              }}
+                              icon={<DislikeOutlined />}
+                              onClick={handleDislike}
+                              className="hover:!opacity-50"
+                            >
+                              不感兴趣
+                            </Button>
+                          </div>
+                          <div>
+                            <Button
+                              style={{
+                                fontWeight: 'bold',
+                                border: 0,
+                                backgroundColor: 'rgb(27,27,27,0)',
+                                color: 'white',
+                              }}
+                              icon={<FlagOutlined />}
+                              className="hover:!opacity-50"
+                            >
+                              举报
+                            </Button>
+                          </div>
                         </div>
-                        <div>
-                          <Button
-                            style={{
-                              fontWeight: 'bold',
-                              border: 0,
-                              backgroundColor: 'rgb(27,27,27,0)',
-                              color: 'white'
-                            }}
-                            icon={<FlagOutlined />}
-                            className="hover:!opacity-50"
-                          >
-                            举报
-                          </Button>
-                        </div>
-                      </div>
-                    }
-                    placement="bottomRight"
-                    arrow={false}
-                    className="rounded"
-                  >
-                    <Button
-                      size="large"
-                      icon={<EllipsisOutlined className={'!text-2xl'} />}
-                      style={{
-                        fontWeight: 'bold',
-                        border: 0,
-                        backgroundColor: 'rgba(255,255,255,.3)',
-                        color: 'white'
-                      }}
-                      className="hover:!opacity-50"
-                    ></Button>
-                  </Popover>
+                      }
+                      placement="bottomRight"
+                      arrow={false}
+                      className="rounded "
+                    >
+                      <Button
+                        size="large"
+                        icon={<EllipsisOutlined className={'!text-2xl'} />}
+                        style={{
+                          fontWeight: 'bold',
+                          border: 0,
+                          backgroundColor: 'rgb(45,45,44)',
+                          color: 'white',
+                        }}
+                        className="hover:!opacity-70"
+                      ></Button>
+                    </Popover>
+                  )}
                 </Col>
               </Row>
             </div>
@@ -293,35 +345,33 @@ export default function VideoDetail() {
               onClick={(e) => e.stopPropagation()}
             >
               {index != 0 && (
-                <Link replace={true} href={`/${preItem.user.userName}/video/${preItem.id}`}>
-                  <Button
-                    size="large"
-                    icon={<UpOutlined className={'!text-2xl'} />}
-                    style={{
-                      fontWeight: 'bold',
-                      border: 0,
-                      backgroundColor: 'rgba(255,255,255,.3)',
-                      color: 'white',
-                      marginBottom: '20px'
-                    }}
-                    className="hover:!opacity-50"
-                  ></Button>
-                </Link>
+                <Button
+                  size="large"
+                  icon={<UpOutlined className={'!text-2xl'} />}
+                  style={{
+                    fontWeight: 'bold',
+                    border: 0,
+                    backgroundColor: 'rgba(255,255,255,.3)',
+                    color: 'white',
+                    marginBottom: '20px',
+                  }}
+                  className="hover:!opacity-50"
+                  onClick={handleToPre}
+                ></Button>
               )}
               {index < listLength - 1 && (
-                <Link replace={true} href={`/${nextItem.user.userName}/video/${nextItem.id}`}>
-                  <Button
-                    size="large"
-                    icon={<DownOutlined className={'!text-2xl'} />}
-                    style={{
-                      fontWeight: 'bold',
-                      border: 0,
-                      backgroundColor: 'rgba(255,255,255,.3)',
-                      color: 'white'
-                    }}
-                    className="hover:!opacity-50"
-                  ></Button>
-                </Link>
+                <Button
+                  size="large"
+                  icon={<DownOutlined className={'!text-2xl'} />}
+                  style={{
+                    fontWeight: 'bold',
+                    border: 0,
+                    backgroundColor: 'rgba(255,255,255,.3)',
+                    color: 'white',
+                  }}
+                  className="hover:!opacity-50"
+                  onClick={handleToNext}
+                ></Button>
               )}
             </div>
             <div
@@ -345,7 +395,7 @@ export default function VideoDetail() {
                       border: 0,
                       padding: 0,
                       backgroundColor: 'transparent',
-                      color: 'white'
+                      color: 'white',
                     }}
                     onClick={togglePlaying}
                   ></Button>
@@ -373,7 +423,7 @@ export default function VideoDetail() {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '36px'
+                        width: '36px',
                       }}
                     ></Button>
                   </Tooltip>
@@ -407,7 +457,7 @@ export default function VideoDetail() {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '36px'
+                        width: '36px',
                       }}
                       onClick={handleMute}
                     ></Button>
@@ -417,8 +467,16 @@ export default function VideoDetail() {
               <Row>
                 <Col flex={'10vw'}></Col>
               </Row>
-              <Row className={`!opacity-0 ${show ? '!opacity-100' : ''} !transition-opacity`}>
-                <Col flex={'auto'} onMouseMove={showVideoPreview} onMouseLeave={hideVideoPreview}>
+              <Row
+                className={`!opacity-0 ${
+                  show ? '!opacity-100' : ''
+                } !transition-opacity`}
+              >
+                <Col
+                  flex={'auto'}
+                  onMouseMove={showVideoPreview}
+                  onMouseLeave={hideVideoPreview}
+                >
                   <Slider
                     min={0}
                     max={100}
@@ -426,7 +484,7 @@ export default function VideoDetail() {
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
-                      open: false
+                      open: false,
                     }}
                   />
                 </Col>
@@ -463,7 +521,12 @@ export default function VideoDetail() {
               previewShow ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <Image src={previewImg} placeholder={true} width={'120px'} preview={false} />
+            <Image
+              src={previewImg}
+              placeholder={true}
+              width={'120px'}
+              preview={false}
+            />
           </div>
 
           <div className="z-0 h-full">

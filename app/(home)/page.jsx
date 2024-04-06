@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation'
 import { Content } from 'antd/es/layout/layout'
 import BackTop from 'antd/es/float-button/BackTop'
 import debounce from '../lib/debounce'
+import { getVideoPreviewImg } from '../lib/getVideoPreview'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
