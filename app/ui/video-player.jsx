@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation'
 
 export default React.memo(function VideoPlayer(props) {
   const { url, type, cover } = props.videoInfo
-  const { id, isPlay, user, isIntersect, isLoad } = props
+  const { id, isPlay, user, isLoad } = props
   const [domLoaded, setDomLoaded] = useState(false)
   // const [isPlaying, setIsPlaying] = useState(true)
   const [volume, setVolume] = useState(20)
@@ -102,7 +102,7 @@ export default React.memo(function VideoPlayer(props) {
           onClick={videoClickHandler}
         >
           {isLoad && <img src={cover} className="w-full h-full z-0" />}
-          {isIntersect && (
+          {isLoad && (
             <>
               <div
                 className={`w-full h-full top-0 absolute bg-transparent z-20 opacity-0 ${

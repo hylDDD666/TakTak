@@ -23,7 +23,6 @@ export default React.memo(function HomeItem(props) {
   const pauseAllItems = useHomeStore((state) => state.pauseAllItems)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const [isCollipse, setIsCollipse] = useState(true)
-  const [isIntersect, setIsIntersect] = useState(false)
   const [isLoad, setIsLoad] = useState(false)
   const [isLike, setIsLike] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -87,7 +86,6 @@ export default React.memo(function HomeItem(props) {
       props.scrollHeight <= nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
     ) {
       if (!isDetailOn) {
-        setIsIntersect(true)
         playItem(id)
       }
     }
@@ -154,7 +152,6 @@ export default React.memo(function HomeItem(props) {
                   user={user}
                   isPlay={isPlaying}
                   scrollNext={scrollNext}
-                  isIntersect={isIntersect}
                   isLoad={isLoad}
                 ></VideoPlayer>
 
