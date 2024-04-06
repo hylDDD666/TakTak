@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google'
 import '../globals.css'
+import { Content } from 'antd/es/layout/layout'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider, FloatButton, Layout } from 'antd'
 import Header from '../ui/home/header'
@@ -63,8 +64,7 @@ export default function RootLayout({ children, detail }) {
                   <Header></Header>
                   <Layout className={'h-full !bg-white'} hasSider>
                     <Sider></Sider>
-
-                    {children}
+                    <Content>{children}</Content>
                   </Layout>
                 </Layout>
               </div>

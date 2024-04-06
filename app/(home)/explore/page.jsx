@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div>explore</div>
+    <div className='text-center'>explore</div>
   )
 }

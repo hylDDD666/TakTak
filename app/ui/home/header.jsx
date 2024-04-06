@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  MessageOutlined,
-  PlusOutlined,
-  SendOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
+import { MessageOutlined, PlusOutlined, SendOutlined, UserOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { Header } from 'antd/es/layout/layout'
 import Search from 'antd/es/input/Search'
@@ -24,24 +19,23 @@ export default function PriHeader() {
           justifyContent: 'space-between',
           fontWeight: 'bold',
           borderBottom: '1px solid rgb(224,224,224)',
-          zIndex:10
+          zIndex: 10
         }}
       >
         <div className={'h-full py-1'}>
-          <img
-            src="/8bc522dd45f65212ca69dfcd81fc665.jpg"
-            alt="LOGO"
-            style={{ height: '100%' }}
+          <img src="/8bc522dd45f65212ca69dfcd81fc665.jpg" alt="LOGO" style={{ height: '100%' }} />
+        </div>
+        <div className="flex-auto flex justify-center">
+          <Search
+            className={'ml-40 mr-5 !hidden md:!inline-block'}
+            placeholder="搜索"
+            allowClear
+            size="large"
+            // onSearch={onSearch}
+            style={{ maxWidth:'500px',flex:1 }}
           />
         </div>
-        <Search
-          className={'ml-40 mr-5 !hidden md:!inline-block'}
-          placeholder="搜索"
-          allowClear
-          size="large"
-          // onSearch={onSearch}
-          style={{ flex: 1 }}
-        />
+
         <div className={'h-full'}>
           <Button
             style={{ fontWeight: 'bold', marginleft: '10px' }}

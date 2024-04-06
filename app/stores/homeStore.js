@@ -479,7 +479,7 @@ export const useHomeStore = create((set) => ({
   pauseItemById: (id) => {
     set((state) => {
       const newList = [...state.itemList]
-      const index = newList.findIndex((item) => item.id === id)
+      const index = newList.findIndex((item) => item.id == id)
       newList[index].isPlaying = false
       return { itemList: newList }
     })
@@ -490,7 +490,7 @@ export const useHomeStore = create((set) => ({
       newList.forEach((item) => {
         item.isPlaying = false
       })
-      const index = newList.findIndex((item) => item.id === id)
+      const index = newList.findIndex((item) => item.id == id)
       newList[index].isPlaying = true
       return { itemList: newList }
     })

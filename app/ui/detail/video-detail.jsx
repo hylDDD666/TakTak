@@ -12,7 +12,7 @@ import {
   PlayCircleFilled,
   SearchOutlined,
   SoundOutlined,
-  UpOutlined,
+  UpOutlined
 } from '@ant-design/icons'
 import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
@@ -45,9 +45,7 @@ export default function VideoDetail() {
   const params = useParams()
   const curDetailId = useHomeStore((state) => state.curDetailId)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
-  const setIsCreatorVideosOn = useHomeStore(
-    (state) => state.setIsCreatorVideosOn
-  )
+  const setIsCreatorVideosOn = useHomeStore((state) => state.setIsCreatorVideosOn)
   const id = useHomeStore((state) => state.currentPlayId)
   const playerRef = useRef()
   const previewRef = useRef()
@@ -168,9 +166,10 @@ export default function VideoDetail() {
       setIsCreatorVideosOn(false)
       setCurId(curDetailId)
     } else {
+      setCurId(id)
+      console.log(id);
       playItemById(id)
     }
-    console.log(curDetailId, isCreatorVideosOn)
     router.back()
   }
   const handleToNext = () => {
@@ -210,8 +209,7 @@ export default function VideoDetail() {
   }, 300)
   const showVideoPreview = (e) => {
     const mouseX = e.clientX
-    previewRef.current.style.left =
-      mouseX - previewRef.current.clientWidth / 2 + 'px'
+    previewRef.current.style.left = mouseX - previewRef.current.clientWidth / 2 + 'px'
     getPreviewDebonced(e)
     setPreviewShow(true)
   }
@@ -235,10 +233,7 @@ export default function VideoDetail() {
               onClick={(e) => e.stopPropagation()}
             >
               <Row wrap={false}>
-                <Col
-                  flex={isCreatorVideosOn ? '180px' : '80px'}
-                  className="text-center"
-                >
+                <Col flex={isCreatorVideosOn ? '180px' : '80px'} className="text-center">
                   <Button
                     size="large"
                     icon={<CloseOutlined className={'!text-xl'} />}
@@ -248,7 +243,7 @@ export default function VideoDetail() {
                       backgroundColor: 'rgb(45,45,44)',
                       color: 'white',
                       padding: '5px 5px',
-                      textAlign: 'center',
+                      textAlign: 'center'
                     }}
                     className={`hover:!opacity-70 `}
                     onClick={handleClose}
@@ -263,7 +258,7 @@ export default function VideoDetail() {
                     size="large"
                     style={{
                       width: '100%',
-                      color: 'white',
+                      color: 'white'
                     }}
                     addonAfter={
                       <Button
@@ -275,7 +270,7 @@ export default function VideoDetail() {
                           backgroundColor: 'transparent',
                           color: 'white',
                           height: '38px',
-                          width: '24px',
+                          width: '24px'
                         }}
                         className="hover:!opacity-50"
                       ></Button>
@@ -295,7 +290,7 @@ export default function VideoDetail() {
                                 fontWeight: 'bold',
                                 border: 0,
                                 backgroundColor: 'rgb(27,27,27,0)',
-                                color: 'white',
+                                color: 'white'
                               }}
                               icon={<DislikeOutlined />}
                               onClick={handleDislike}
@@ -310,7 +305,7 @@ export default function VideoDetail() {
                                 fontWeight: 'bold',
                                 border: 0,
                                 backgroundColor: 'rgb(27,27,27,0)',
-                                color: 'white',
+                                color: 'white'
                               }}
                               icon={<FlagOutlined />}
                               className="hover:!opacity-50"
@@ -331,7 +326,7 @@ export default function VideoDetail() {
                           fontWeight: 'bold',
                           border: 0,
                           backgroundColor: 'rgb(45,45,44)',
-                          color: 'white',
+                          color: 'white'
                         }}
                         className="hover:!opacity-70"
                       ></Button>
@@ -353,7 +348,7 @@ export default function VideoDetail() {
                     border: 0,
                     backgroundColor: 'rgba(255,255,255,.3)',
                     color: 'white',
-                    marginBottom: '20px',
+                    marginBottom: '20px'
                   }}
                   className="hover:!opacity-50"
                   onClick={handleToPre}
@@ -367,7 +362,7 @@ export default function VideoDetail() {
                     fontWeight: 'bold',
                     border: 0,
                     backgroundColor: 'rgba(255,255,255,.3)',
-                    color: 'white',
+                    color: 'white'
                   }}
                   className="hover:!opacity-50"
                   onClick={handleToNext}
@@ -395,7 +390,7 @@ export default function VideoDetail() {
                       border: 0,
                       padding: 0,
                       backgroundColor: 'transparent',
-                      color: 'white',
+                      color: 'white'
                     }}
                     onClick={togglePlaying}
                   ></Button>
@@ -423,7 +418,7 @@ export default function VideoDetail() {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '36px',
+                        width: '36px'
                       }}
                     ></Button>
                   </Tooltip>
@@ -457,7 +452,7 @@ export default function VideoDetail() {
                         padding: 0,
                         backgroundColor: 'transparent',
                         color: 'white',
-                        width: '36px',
+                        width: '36px'
                       }}
                       onClick={handleMute}
                     ></Button>
@@ -467,16 +462,8 @@ export default function VideoDetail() {
               <Row>
                 <Col flex={'10vw'}></Col>
               </Row>
-              <Row
-                className={`!opacity-0 ${
-                  show ? '!opacity-100' : ''
-                } !transition-opacity`}
-              >
-                <Col
-                  flex={'auto'}
-                  onMouseMove={showVideoPreview}
-                  onMouseLeave={hideVideoPreview}
-                >
+              <Row className={`!opacity-0 ${show ? '!opacity-100' : ''} !transition-opacity`}>
+                <Col flex={'auto'} onMouseMove={showVideoPreview} onMouseLeave={hideVideoPreview}>
                   <Slider
                     min={0}
                     max={100}
@@ -484,7 +471,7 @@ export default function VideoDetail() {
                     value={sliderValue}
                     style={{ margin: 0, marginTop: '3px' }}
                     tooltip={{
-                      open: false,
+                      open: false
                     }}
                   />
                 </Col>
@@ -521,12 +508,7 @@ export default function VideoDetail() {
               previewShow ? 'opacity-100' : 'opacity-0'
             }`}
           >
-            <Image
-              src={previewImg}
-              placeholder={true}
-              width={'120px'}
-              preview={false}
-            />
+            <Image src={previewImg} placeholder={true} width={'120px'} preview={false} />
           </div>
 
           <div className="z-0 h-full">

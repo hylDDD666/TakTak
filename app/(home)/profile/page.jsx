@@ -1,7 +1,5 @@
 import React from 'react'
 
 export default function page() {
-  return (
-    <div>userInfo</div>
-  )
+  return <div className="text-center">userInfo</div>
 }

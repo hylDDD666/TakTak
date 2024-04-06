@@ -39,7 +39,7 @@ export default React.memo(function Home() {
     debounceScroll(e)
   }
   return (
-    <Content
+    <div
       ref={contentRef}
       style={{
         height: '100vh',
@@ -67,6 +67,6 @@ export default React.memo(function Home() {
         <Spin size="large" className="!my-3 " />
       </div>
       <BackTop target={() => contentRef.current} tooltip="返回到顶部"></BackTop>
-    </Content>
+    </div>
   )
 })

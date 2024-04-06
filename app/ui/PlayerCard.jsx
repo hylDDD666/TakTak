@@ -39,9 +39,9 @@ export default function PlayerCard(props) {
     if (!isCreatorVideosOn) {
       setIsCreatorVideosOn(true)
       setDetailId(params['video-id'])
-      router.push(`/${user}/video/${props.id}`)
+      router.push(`/${params.user}/video/${props.id}`)
     } else {
-      router.replace(`/${user}/video/${props.id}`)
+      router.replace(`/${params.user}/video/${props.id}`)
     }
   }
   useEffect(() => {
