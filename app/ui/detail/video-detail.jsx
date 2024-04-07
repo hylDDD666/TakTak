@@ -167,7 +167,6 @@ export default function VideoDetail() {
       setCurId(curDetailId)
     } else {
       setCurId(id)
-      console.log(id);
       playItemById(id)
     }
     router.back()

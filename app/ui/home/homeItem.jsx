@@ -63,10 +63,8 @@ export default React.memo(function HomeItem(props) {
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-            if (!isDetailOn) {
               setIsLoad(true)
               observer.unobserve(nodeRef.current)
-            }
         }
       }
     }, options)
@@ -76,7 +74,7 @@ export default React.memo(function HomeItem(props) {
     
   }, [])
   useEffect(() => {
-    if (curId === id && !isCreatorVideosOn) {
+    if (curId === id ) {
       nodeRef.current.parentNode.scrollTo(0, nodeRef.current.offsetTop - 65)
     }
   }, [curId])
