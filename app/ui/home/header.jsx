@@ -9,8 +9,10 @@ export default function PriHeader() {
     <>
       <Header
         style={{
-          position: 'sticky',
+          position: 'absolute',
           top: 0,
+          right:0,
+          left:0,
           zIndex: 1,
           display: 'flex',
           alignItems: 'center',
@@ -36,9 +38,9 @@ export default function PriHeader() {
           />
         </div>
 
-        <div className={'h-full'}>
+        <div className={'h-full basis-64 min-w-64'}>
           <Button
-            style={{ fontWeight: 'bold', marginleft: '10px' }}
+            style={{ fontWeight: 'bold', marginRight: '10px' }}
             icon={<PlusOutlined></PlusOutlined>}
             size="large"
           >

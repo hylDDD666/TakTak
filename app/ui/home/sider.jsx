@@ -46,7 +46,7 @@ export default function PriSider() {
           boxShadow: '2px 1px 10px rgb(249,249,249)',
         }}
         breakpoint="lg"
-        className={'lg:!border-r-0 lg:!shadow-none'}
+        className={'lg:!border-r-0 lg:!shadow-none z-20'}
         collapsedWidth="60px"
         defaultCollapsed
       >

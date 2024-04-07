@@ -346,11 +346,20 @@ export default function layout() {
           >
             {creatorVideos.map((item) => {
               return (
-                <PlayerCard
-                  videoUrl={item.video.videoInfo.url}
-                  key={item.id}
-                  id={item.id}
-                ></PlayerCard>
+                <Col
+                  span={8}
+                  style={{
+                    height: 240,
+                    paddingLeft: 10,
+                    paddingBottom: 10,
+                  }}
+                >
+                  <PlayerCard
+                    videoUrl={item.video.videoInfo.url}
+                    key={item.id}
+                    id={item.id}
+                  ></PlayerCard>
+                </Col>
               )
             })}
           </Row>

@@ -63,20 +63,13 @@ export default function PlayerCard(props) {
   }, [params['video-id']])
 
   return (
-    <Col
-      span={8}
-      style={{
-        height: 240,
-        paddingLeft: 10,
-        paddingBottom: 10,
-      }}
-      onMouseEnter={playCard}
-      onMouseLeave={pauseCard}
-      onClick={jumpToCreatorVideo}
-    >
+
       <div
         className="h-full w-full bg-white  rounded overflow-hidden relative"
         ref={containerRef}
+        onMouseEnter={playCard}
+        onMouseLeave={pauseCard}
+        onClick={jumpToCreatorVideo}
       >
         {isCurrentPlaying && (
           <div className="absolute top-1/2 left-1/2 -translate-x-2/4 -translate-y-1/2 text-center z-30 w-[60px] h-[40px]  text-white font-bold">
@@ -111,6 +104,5 @@ export default function PlayerCard(props) {
           </div>
         </div>
       </div>
-    </Col>
   )
 }

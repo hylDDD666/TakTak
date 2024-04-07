@@ -59,10 +59,10 @@ export default function RootLayout({ children, detail }) {
               <div className="absolute left-0 top-0 bottom-0 -right-[17px] overflow-x-hiden overflow-y-auto">
                 {detail}
               </div>
-              <div className="absolute left-0 top-0 bottom-0 right-0 overflow-x-hiden ">
+              <div className="absolute h-screen w-screen overflow-x-hiden ">
                 <Layout>
                   <Header></Header>
-                  <Layout className={'h-full !bg-white'} hasSider>
+                  <Layout className={'!h-screen pt-[64px] w-full !bg-white'} hasSider>
                     <Sider></Sider>
                     <Content>{children}</Content>
                   </Layout>
