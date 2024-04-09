@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Uses connection pooling
+  url       = env("POSTGRES_PRISMA_URL")
+  // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+  // or you'll have dangling databases from migrations
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  userName        String    @unique
+  avatar          String?
+  comment         Comment[]
+  likedNum        Int?
+  followedBy      User[]    @relation("UserFollows")
+  following       User[]    @relation("UserFollows")
+  likedVideos     Video[]   @relation("likeRelation")
+  collectedVideos Video[]   @relation("collectorRelation")
+  creatorVideos   Video[]   @relation("creatorVideos")
+}
+
+model Video {
+  id          Int       @id @default(autoincrement())
+  desc        String
+  author      User      @relation("creatorVideos", fields: [authorId], references: [id])
+  authorId    Int
+  url         String
+  type        String
+  tag         String
+  cover       String
+  likeNum     Int       @default(0)
+  commentsNum Int       @default(0)
+  collectNum  Int       @default(0)
+  shareNum    Int       @default(0)
+  comment     Comment[]
+  liker       User[]    @relation("likeRelation")
+  collector   User[]    @relation("collectorRelation")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime  @default(now())
+  likedNum  Int       @default(0)
+  video     Video     @relation(fields: [videoId], references: [id])
+  videoId   Int
+  commentOn Comment?   @relation("subComment", fields: [commentId], references: [id])
+  commentBy Comment[] @relation("subComment")
+  commentId Int?    
+}
