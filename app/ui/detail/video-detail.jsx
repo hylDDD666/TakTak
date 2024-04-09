@@ -518,7 +518,7 @@ export default function VideoDetail() {
               volume={isMuted ? 0 : volume / 100}
               width={'100%'}
               height={'100%'}
-              url={url}
+              url={'https://videos.pexels.com/video-files/6060027/6060027-sd_540_960_25fps.mp4'}
               onDuration={handleDuration}
               onProgress={handllePlay}
               onEnded={handleAutoPlay}

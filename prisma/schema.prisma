@@ -22,6 +22,7 @@ model User {
   likedVideos     Video[]   @relation("likeRelation")
   collectedVideos Video[]   @relation("collectorRelation")
   creatorVideos   Video[]   @relation("creatorVideos")
+  password        String
 }
 
 model Video {
@@ -51,7 +52,7 @@ model Comment {
   likedNum  Int       @default(0)
   video     Video     @relation(fields: [videoId], references: [id])
   videoId   Int
-  commentOn Comment?   @relation("subComment", fields: [commentId], references: [id])
+  commentOn Comment?  @relation("subComment", fields: [commentId], references: [id])
   commentBy Comment[] @relation("subComment")
-  commentId Int?    
+  commentId Int?
 }
