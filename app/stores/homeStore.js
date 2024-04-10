@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-
+import { fetchHomeVideos } from '../action/action'
 const userNames = [
   'BananaWarrior',
   'PixelNinja',
@@ -323,33 +323,18 @@ const comments = [
   '这个视频真的很适合放松心情，缓解压力。',
   '作者真是个有才华的人，期待你未来能带来更多精彩作品。',
 ]
-const getItemList = () => {
-  const itemList = []
+const getItemList = async (page) => {
+  const itemList = await fetchHomeVideos(page)
   for (let i = 0; i < 5; i++) {
-    const id = (Date.now() + i) * 1
-    itemList.push({
-      id: id,
-      user: {
-        id: id,
-        userName: userNames[i],
-        avatar: 'https://api.btstu.cn/sjbz/api.php',
+    itemList[i] = {
+      ...itemList[i],
+      author: {
+        ...itemList[i].author,
         isFollowed: false,
-      },
-      desc: desces[Math.floor(Math.random() * 10)],
-      video: {
-        id: id,
-        videoInfo: {
-          ...videos[Math.floor(Math.random() * videos.length)],
-          isPlaying: false,
-        },
-        likeNum: Math.floor(Math.random() * 1000),
-        commentsNum: Math.floor(Math.random() * 1000),
-        collectNum: Math.floor(Math.random() * 1000),
-        shareNum: Math.floor(Math.random() * 1000),
       },
       disLike: false,
       isPlaying: false,
-    })
+    }
   }
   return itemList
 }
@@ -378,30 +363,28 @@ const getItemList = () => {
 //     isPlaying: false,
 //   })
 // }
-const getCreatorVideos = (userName) => {
+const getCreatorVideos = () => {
   const itemList = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 5; i++) {
     const id = (Date.now() + i) * 1
     itemList.push({
       id: id,
-      user: {
+      author: {
         id: id,
         userName: userNames[i],
         avatar: 'https://api.btstu.cn/sjbz/api.php',
         isFollowed: false,
       },
       desc: desces[Math.floor(Math.random() * 10)],
-      video: {
-        id: id,
-        videoInfo: {
-          ...videos[Math.floor(Math.random() * videos.length)],
-          isPlaying: false,
-        },
-        likeNum: Math.floor(Math.random() * 1000),
-        commentsNum: Math.floor(Math.random() * 1000),
-        collectNum: Math.floor(Math.random() * 1000),
-        shareNum: Math.floor(Math.random() * 1000),
-      },
+
+      ...videos[Math.floor(Math.random() * videos.length)],
+      isPlaying: false,
+
+      likeNum: Math.floor(Math.random() * 1000),
+      commentsNum: Math.floor(Math.random() * 1000),
+      collectNum: Math.floor(Math.random() * 1000),
+      shareNum: Math.floor(Math.random() * 1000),
+
       disLike: false,
       isPlaying: false,
     })
@@ -413,7 +396,7 @@ const getCommentList = (id) => {
 }
 export const useHomeStore = create((set) => ({
   isAutoRoll: false,
-  itemList: getItemList(),
+  itemList: [],
   creatorVideos: [],
   page: 0,
   currentPlayId: 0,
@@ -437,9 +420,10 @@ export const useHomeStore = create((set) => ({
       return { creatorVideos: newList }
     })
   },
-  fetchItemData: () => {
-    set((state) => {
-      const newList = [...state.itemList, ...getItemList()]
+  fetchItemData: async (page) => {
+    const res = await getItemList(page)
+    set( (state) => {
+      const newList = [...state.itemList, ...res]
       return { itemList: newList, page: state.page + 1 }
     })
   },

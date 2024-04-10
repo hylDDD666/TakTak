@@ -15,11 +15,10 @@ import {
   UpOutlined
 } from '@ant-design/icons'
 import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
 import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { getVideoPreviewImg } from '@/app/lib/getVideoPreview'
 
 const debounce = (func, delay) => {
@@ -103,7 +102,7 @@ export default function VideoDetail() {
     }
   })
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
-  const { url } = item.video.videoInfo
+  const { url } = item
 
   useEffect(() => {
     setIsDetailOn(true)
@@ -173,12 +172,12 @@ export default function VideoDetail() {
   }
   const handleToNext = () => {
     setCurId(nextItem.id)
-    router.replace(`/${nextItem.user.userName}/video/${nextItem.id}`)
+    router.replace(`/${nextItem.author.userName}/video/${nextItem.id}`)
   }
   const handleToPre = () => {
     if (index !== 0) {
       setCurId(preItem.id)
-      router.replace(`/${preItem.user.userName}/video/${preItem.id}`)
+      router.replace(`/${preItem.author.userName}/video/${preItem.id}`)
     }
   }
   const handleAutoPlay = () => {
@@ -518,7 +517,7 @@ export default function VideoDetail() {
               volume={isMuted ? 0 : volume / 100}
               width={'100%'}
               height={'100%'}
-              url={'https://videos.pexels.com/video-files/6060027/6060027-sd_540_960_25fps.mp4'}
+              url={url}
               onDuration={handleDuration}
               onProgress={handllePlay}
               onEnded={handleAutoPlay}

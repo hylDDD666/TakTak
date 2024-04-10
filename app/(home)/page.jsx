@@ -1,17 +1,16 @@
 'use client'
-import React, { Suspense, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
-import { usePathname } from 'next/navigation'
-import { Content } from 'antd/es/layout/layout'
 import BackTop from 'antd/es/float-button/BackTop'
 import debounce from '../lib/debounce'
-import { getVideoPreviewImg } from '../lib/getVideoPreview'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
+
+
 export default React.memo(function Home() {
-  const { itemList, fetchItemData } = useHomeStore((state) => state)
+  const { itemList, fetchItemData,page } = useHomeStore((state) => state)
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
@@ -22,7 +21,7 @@ export default React.memo(function Home() {
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        fetchItemData()
+        fetchItemData(page)
       }
     }, options)
     if (spinRef.current) {
@@ -31,7 +30,7 @@ export default React.memo(function Home() {
     return () => {
       observer.disconnect(spinRef.current)
     }
-  }, [])
+  }, [page])
   const handleScroll = (e) => {
     const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)
@@ -42,7 +41,7 @@ export default React.memo(function Home() {
     <div
       ref={contentRef}
       style={{
-        height: '100vh',
+        height: 'calc(100vh - 63px)',
         padding: '10px 10px 10px 100px',
         backgroundColor: 'white',
         overflowY: 'scroll',
@@ -50,12 +49,26 @@ export default React.memo(function Home() {
       onScroll={handleScroll}
     >
       {itemList.map((item) => {
+        const video = {
+          videoInfo: {
+            url:item.url,
+            isPlaying: item.isPlaying,
+            cover:item.cover,
+            videoHeight:item.videoHeight,
+            videoWidth:item.videoWidth,
+            type:item.type
+          },
+          likeNum: item.likeNum,
+          commentsNum: item.commentsNum,
+          collectNum: item.collectNum,
+          shareNum: item.shareNum,
+        }
         return (
           <HomeItem
             key={item.id}
-            user={item.user}
+            user={item.author}
             desc={item.desc}
-            videoInfo={item.video}
+            videoInfo={video}
             disLike={item.disLike}
             id={item.id}
             isPlaying={item.isPlaying}

@@ -38,6 +38,8 @@ model Video {
   commentsNum Int       @default(0)
   collectNum  Int       @default(0)
   shareNum    Int       @default(0)
+  videoHeight Int
+  videoWidth  Int
   comment     Comment[]
   liker       User[]    @relation("likeRelation")
   collector   User[]    @relation("collectorRelation")

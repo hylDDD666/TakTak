@@ -7,7 +7,6 @@ import Header from '../ui/home/header'
 import Sider from '../ui/home/sider'
 
 const inter = Inter({ subsets: ['latin'] })
-
 export const metadata = {
   title: 'TakTak',
   description: '仿TikTok的短视频网站'
