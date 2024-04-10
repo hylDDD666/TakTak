@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { fetchHomeVideos } from '../action/action'
+import { fetchHomeVideos,fetchCreatorVideos } from '../action/action'
 const userNames = [
   'BananaWarrior',
   'PixelNinja',
@@ -363,31 +363,18 @@ const getItemList = async (page) => {
 //     isPlaying: false,
 //   })
 // }
-const getCreatorVideos = () => {
-  const itemList = []
-  for (let i = 0; i < 5; i++) {
-    const id = (Date.now() + i) * 1
-    itemList.push({
-      id: id,
+const getCreatorVideos =async (userId) => {
+  const itemList = await fetchCreatorVideos(userId)
+  for (let i = 0; i < itemList.length; i++) {
+    itemList[i] = {
+      ...itemList[i],
       author: {
-        id: id,
-        userName: userNames[i],
-        avatar: 'https://api.btstu.cn/sjbz/api.php',
+        ...itemList[i].author,
         isFollowed: false,
       },
-      desc: desces[Math.floor(Math.random() * 10)],
-
-      ...videos[Math.floor(Math.random() * videos.length)],
-      isPlaying: false,
-
-      likeNum: Math.floor(Math.random() * 1000),
-      commentsNum: Math.floor(Math.random() * 1000),
-      collectNum: Math.floor(Math.random() * 1000),
-      shareNum: Math.floor(Math.random() * 1000),
-
       disLike: false,
       isPlaying: false,
-    })
+    }
   }
   return itemList
 }
@@ -414,9 +401,10 @@ export const useHomeStore = create((set) => ({
       return { isCreatorVideosOn: boolean }
     })
   },
-  getCreatorVideos: () => {
+  getCreatorVideos:async (userId) => {
+    const res = await getCreatorVideos(userId)
     set((state) => {
-      const newList = [...getCreatorVideos()]
+      const newList = [...res]
       return { creatorVideos: newList }
     })
   },

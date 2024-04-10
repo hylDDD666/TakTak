@@ -63,23 +63,23 @@ export default React.memo(function HomeItem(props) {
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-              setIsLoad(true)
-              observer.unobserve(nodeRef.current)
+          setIsLoad(true)
+          observer.unobserve(nodeRef.current)
         }
       }
     }, options)
     if (nodeRef.current) {
       observer.observe(nodeRef.current)
     }
-    
   }, [])
   useEffect(() => {
-    if (curId === id ) {
+    if (curId === id) {
       nodeRef.current.parentNode.scrollTo(0, nodeRef.current.offsetTop - 65)
     }
   }, [curId])
   useEffect(() => {
     if (
+      nodeRef.current &&
       props.scrollHeight >= nodeRef.current.offsetTop - 300 &&
       props.scrollHeight <= nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
     ) {

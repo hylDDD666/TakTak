@@ -6,9 +6,7 @@ import {
   Card,
   Col,
   ConfigProvider,
-  Input,
   Menu,
-  Popover,
   Row,
   Tooltip,
   message,
@@ -19,15 +17,11 @@ import {
   HeartFilled,
   MessageFilled,
   SendOutlined,
-  SmileOutlined,
   StarFilled,
 } from '@ant-design/icons'
-import { usePathname, useRouter } from 'next/navigation'
-import { withRouter } from 'next/router'
+import { usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
-import EmojiPicker from 'emoji-picker-react'
-import Compact from 'antd/es/space/Compact'
 import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
@@ -50,7 +44,7 @@ const items = [
   },
 ]
 
-export default function layout() {
+export default function page() {
   const [messageApi, contextHolder] = message.useMessage()
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLike, setIsLike] = useState(false)
@@ -59,7 +53,11 @@ export default function layout() {
   const path = usePathname()
   const [showCollopse, setshowCollopse] = useState(false)
   const [isComments, setIsComments] = useState(true)
-  const router = useRouter()
+  const userId = useHomeStore(state=>{
+    const videoId = state.currentPlayId 
+    const userId = state.itemList.find(item=>item.id === videoId).author.id
+    return userId
+  })
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
@@ -91,7 +89,7 @@ export default function layout() {
       setIsComments(true)
     } else {
       if (!isCreatorVideosOn) {
-        getCreatorVideos()
+        getCreatorVideos(userId)
       }
       setIsComments(false)
     }
@@ -353,10 +351,10 @@ export default function layout() {
                     paddingLeft: 10,
                     paddingBottom: 10,
                   }}
+                  key={item.id}
                 >
                   <PlayerCard
-                    videoUrl={item.video.videoInfo.url}
-                    key={item.id}
+                    videoUrl={item.url}
                     id={item.id}
                   ></PlayerCard>
                 </Col>

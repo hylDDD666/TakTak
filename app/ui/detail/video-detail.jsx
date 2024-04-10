@@ -15,10 +15,10 @@ import {
   UpOutlined
 } from '@ant-design/icons'
 import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
-import React, {  useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { getVideoPreviewImg } from '@/app/lib/getVideoPreview'
 
 const debounce = (func, delay) => {
@@ -41,7 +41,6 @@ export default function VideoDetail() {
   const [previewShow, setPreviewShow] = useState(false)
   const [previewImg, setPreviewImg] = useState('')
   const [show, setShow] = useState(true)
-  const params = useParams()
   const curDetailId = useHomeStore((state) => state.curDetailId)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const setIsCreatorVideosOn = useHomeStore((state) => state.setIsCreatorVideosOn)
@@ -53,18 +52,21 @@ export default function VideoDetail() {
   // const [isAutoRoll, setIsAutoRoll] = useState(false)
   const playItemById = useHomeStore((state) => state.playItemById)
   const fetchItemData = useHomeStore((state) => state.fetchItemData)
-  const item = useHomeStore((state) => {
+  const page = useHomeStore((state)=>state.page)
+  const url = useHomeStore((state) => {
     if (isCreatorVideosOn) {
-      return state.creatorVideos.find((item) => item.id == id)
+      const item = state.creatorVideos.find((item) => item.id === id)
+      return item.url
     } else {
-      return state.itemList.find((item) => item.id == id)
+      const item = state.itemList.find((item) => item.id === id)
+      return item.url
     }
   })
   const index = useHomeStore((state) => {
     if (isCreatorVideosOn) {
-      return state.creatorVideos.findIndex((item) => item.id == id)
+      return state.creatorVideos.findIndex((item) => item.id === id)
     } else {
-      return state.itemList.findIndex((item) => item.id == id)
+      return state.itemList.findIndex((item) => item.id === id)
     }
   })
   const listLength = useHomeStore((state) => {
@@ -102,7 +104,6 @@ export default function VideoDetail() {
     }
   })
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
-  const { url } = item
 
   useEffect(() => {
     setIsDetailOn(true)
@@ -119,7 +120,7 @@ export default function VideoDetail() {
     setIsPlay(true)
     if (!isCreatorVideosOn) {
       if (index === listLength - 2) {
-        fetchItemData()
+        fetchItemData(page)
       }
     }
   }, [id])

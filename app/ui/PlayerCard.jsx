@@ -1,7 +1,6 @@
 'use client'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
-import { Col, Row } from 'antd'
 import { PlayCircleOutlined, SmallDashOutlined } from '@ant-design/icons'
 import { useParams, useRouter } from 'next/navigation'
 import { useHomeStore } from '../stores/homeStore'
@@ -14,7 +13,7 @@ export default function PlayerCard(props) {
   })
   const setCurId = useHomeStore((state) => state.setCurId)
   const setDetailId = useHomeStore((state) => state.setDetailId)
-  const { cover } = item.video.videoInfo
+  const { cover } = item
   const containerRef = useRef()
   const [isCurrentPlaying, setIsCurrentPlaying] = useState(false)
   const videoRef = useRef()
@@ -45,7 +44,7 @@ export default function PlayerCard(props) {
     }
   }
   useEffect(() => {
-    const { videoWidth, videoHeight } = item.video.videoInfo
+    const { videoWidth, videoHeight } = item
     const containerHeight = 230
     const containerWidth = 155.66
     let scale

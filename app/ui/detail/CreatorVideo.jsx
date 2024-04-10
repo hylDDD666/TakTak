@@ -3,10 +3,7 @@ import {
   ArrowUpOutlined,
   CloseCircleOutlined,
   CloseOutlined,
-  DislikeOutlined,
   DownOutlined,
-  EllipsisOutlined,
-  FlagOutlined,
   MutedOutlined,
   PauseOutlined,
   PlayCircleFilled,
@@ -15,7 +12,7 @@ import {
   UpOutlined,
 } from '@ant-design/icons'
 import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react'
+import React, {  useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
 import { useParams, useRouter } from 'next/navigation'
@@ -128,11 +125,11 @@ export default function CreatorVideo() {
     router.back()
   }
   const handleToNext = () => {
-    router.replace(`/${nextItem.user.userName}/video/${nextItem.id}`)
+    router.replace(`/${nextItem.author.userName}/video/${nextItem.id}`)
   }
   const handleToPre = () => {
     if (index !== 0) {
-      router.replace(`/${preItem.user.userName}/video/${preItem.id}`)
+      router.replace(`/${preItem.author.userName}/video/${preItem.id}`)
     }
   }
   const handleAutoPlay = () => {

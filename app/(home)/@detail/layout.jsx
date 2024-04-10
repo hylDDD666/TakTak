@@ -1,12 +1,10 @@
 'use client'
-import { useHomeStore } from '@/app/stores/homeStore'
 import VideoSkeleton from '@/app/ui/detail/VideoSkeleton'
 import VideoDetail from '@/app/ui/detail/video-detail'
-import { Col, ConfigProvider, Row } from 'antd'
+import {  ConfigProvider} from 'antd'
 import React, { Suspense } from 'react'
 
 export default function layout({ creatorVideos, videoInfo }) {
-  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   return (
     <>
       <ConfigProvider
