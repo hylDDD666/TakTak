@@ -381,7 +381,7 @@ const getCreatorVideos =async (userId) => {
 const getCommentList = (id) => {
   const commentList = []
 }
-export const useHomeStore = create((set) => ({
+export const useHomeStore = create((set,get) => ({
   isAutoRoll: false,
   itemList: [],
   creatorVideos: [],
@@ -408,8 +408,8 @@ export const useHomeStore = create((set) => ({
       return { creatorVideos: newList }
     })
   },
-  fetchItemData: async (page) => {
-    const res = await getItemList(page)
+  fetchItemData: async () => {
+    const res = await getItemList(get().page)
     set( (state) => {
       const newList = [...state.itemList, ...res]
       return { itemList: newList, page: state.page + 1 }

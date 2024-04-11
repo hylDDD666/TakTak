@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google'
 import '../globals.css'
 import { Content } from 'antd/es/layout/layout'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
-import { ConfigProvider, FloatButton, Layout } from 'antd'
+import { ConfigProvider, Layout } from 'antd'
 import Header from '../ui/home/header'
 import Sider from '../ui/home/sider'
 
@@ -12,7 +12,7 @@ export const metadata = {
   description: '仿TikTok的短视频网站'
 }
 
-export default function RootLayout({ children, detail }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="text-black min-w-[500px]">
@@ -55,9 +55,6 @@ export default function RootLayout({ children, detail }) {
         >
           <AntdRegistry>
             <div className="overflow-hidden w-screen h-screen relative">
-              <div className="absolute left-0 top-0 bottom-0 -right-[17px] overflow-x-hiden overflow-y-auto">
-                {detail}
-              </div>
               <div className="absolute h-screen w-screen overflow-x-hiden ">
                 <Layout>
                   <Header></Header>

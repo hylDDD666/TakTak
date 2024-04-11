@@ -63,8 +63,11 @@ export default React.memo(function HomeItem(props) {
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          setIsLoad(true)
-          observer.unobserve(nodeRef.current)
+          if (isLoad) {
+            observer.unobserve(nodeRef.current)
+          } else {
+            setIsLoad(true)
+          }
         }
       }
     }, options)

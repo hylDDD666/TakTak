@@ -52,7 +52,7 @@ export default function PriSider() {
       >
         <Menu
           mode="inline"
-          defaultSelectedKeys={[defaultSelectedKey]}
+          defaultSelectedKeys={defaultSelectedKey || ''}
           className={'!h-full !text-xl !font-bold !border-r-0 '}
           items={items2}
           style={{ minWidth: 0, flex: 'auto' }}

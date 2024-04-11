@@ -88,6 +88,7 @@ export default function PersonCard(props) {
           />
           {isPlaying && (
             <ReactPlayer
+            volume={0}
               ref={playerRef}
               width={'100%'}
               height={'100%'}

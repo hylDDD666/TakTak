@@ -10,7 +10,7 @@ const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 
 export default React.memo(function Home() {
-  const { itemList, fetchItemData,page } = useHomeStore((state) => state)
+  const { itemList, fetchItemData } = useHomeStore((state) => state)
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
@@ -21,7 +21,7 @@ export default React.memo(function Home() {
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        fetchItemData(page)
+        fetchItemData()
       }
     }, options)
     if (spinRef.current) {
@@ -30,7 +30,7 @@ export default React.memo(function Home() {
     return () => {
       observer.disconnect(spinRef.current)
     }
-  }, [page])
+  }, [])
   const handleScroll = (e) => {
     const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)

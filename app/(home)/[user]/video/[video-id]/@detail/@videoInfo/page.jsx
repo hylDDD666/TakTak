@@ -1,24 +1,9 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Menu,
-  Row,
-  Tooltip,
-  message,
-} from 'antd'
+import { Avatar, Button, Card, Col, ConfigProvider, Menu, Row, Tooltip, message } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
-import {
-  HeartFilled,
-  MessageFilled,
-  SendOutlined,
-  StarFilled,
-} from '@ant-design/icons'
+import { HeartFilled, MessageFilled, SendOutlined, StarFilled } from '@ant-design/icons'
 import { usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
@@ -26,23 +11,6 @@ import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
 import { useHomeStore } from '@/app/stores/homeStore'
-
-const items = [
-  {
-    label: (
-      <div className="font-bold w-[231px] text-center">
-        Comments({'number'})
-      </div>
-    ),
-    key: 'comments',
-  },
-  {
-    label: (
-      <div className="font-bold w-[231px] text-center">Creator videos</div>
-    ),
-    key: 'Creator videos',
-  },
-]
 
 export default function page() {
   const [messageApi, contextHolder] = message.useMessage()
@@ -52,15 +20,35 @@ export default function page() {
   const textRef = useRef()
   const path = usePathname()
   const [showCollopse, setshowCollopse] = useState(false)
-  const [isComments, setIsComments] = useState(true)
-  const userId = useHomeStore(state=>{
-    const videoId = state.currentPlayId 
-    const userId = state.itemList.find(item=>item.id === videoId).author.id
-    return userId
+  const user = useHomeStore((state) => {
+    const videoId = state.currentPlayId * 1
+    const item = state.itemList.find((item) => item.id === videoId)
+    if(item){
+      return item.author
+    }
   })
+  const curVideo = useHomeStore((state) => {
+    const videoId = state.currentPlayId * 1
+   const video= state.itemList.find((item) => item.id === videoId)
+      return video
+  })
+  const { desc, likeNum, commentsNum, collectNum } = curVideo
+  const items = [
+    {
+      label: <div className="font-bold w-[231px] text-center">{`Comments(${commentsNum})`}</div>,
+      key: 'comments'
+    },
+    {
+      label: <div className="font-bold w-[231px] text-center">Creator videos</div>,
+      key: 'Creator videos'
+    }
+  ]
+  const { userName, id: userId, avatar } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
+  const [isComments, setIsComments] = useState(!isCreatorVideosOn)
+
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
@@ -74,7 +62,7 @@ export default function page() {
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
-      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
+      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60'
     })
   }
   useEffect(() => {
@@ -108,42 +96,38 @@ export default function page() {
             colorBgContainer: 'rgb(247,247,248)',
             colorTextPlaceholder: 'rgb(77,79,87)',
             colorBgSpotlight: 'rgb(97,97,97)',
-            colorText: 'black',
+            colorText: 'black'
           },
           components: {
             Message: {
-              contentBg: 'transparent',
+              contentBg: 'transparent'
             },
             Menu: {
               itemColor: 'rgb(116,117,124)',
-              itemHoverColor: 'rgb(116,117,124)',
+              itemHoverColor: 'rgb(116,117,124)'
             },
             Input: {
-              activeBorderColor: 'rgb(197,197,201)',
-            },
-          },
+              activeBorderColor: 'rgb(197,197,201)'
+            }
+          }
         }}
       >
         <Card
           style={{
             width: 496,
-            margin: 16,
+            margin: 16
           }}
         >
           <Meta
             title={
               <Row>
                 <Col span={18}>
-                  <Avatar
-                    size={42}
-                    src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
-                    className="!mr-2"
-                  />
+                  <Avatar size={42} src={avatar} className="!mr-2" />
                   <Link
                     href="/username"
                     className="text-lg font-bold text-black hover:underline hover:text-black "
                   >
-                    <span>usreName</span>
+                    <span>{userName}</span>
                   </Link>
                 </Col>
                 <Col span={6}>
@@ -152,7 +136,7 @@ export default function page() {
                     style={{
                       width: '100px',
                       color: 'white',
-                      backgroundColor: 'rgb(254,44,85)',
+                      backgroundColor: 'rgb(254,44,85)'
                     }}
                     className="hover:!bg-rose-500"
                   >
@@ -177,8 +161,7 @@ export default function page() {
                       {isCollipse ? '展开' : '收起'}
                     </label>
                   )}
-                  {/* {desc} */}
-                  '这部视频带你领略了世界著名的巴黎艾菲尔铁塔的壮丽景色，从日出到日落，每一刻都美得令人窒息。这部视频带你领略了世界著名的巴黎艾菲尔铁塔的壮丽景色，从日出到日落，每一刻都美得令人窒息。',
+                  {desc}
                 </div>
               </div>
             }
@@ -186,7 +169,7 @@ export default function page() {
         </Card>
         <Row
           style={{
-            padding: '0px 15px',
+            padding: '0px 15px'
           }}
           justify={'space-between'}
         >
@@ -200,18 +183,14 @@ export default function page() {
                 height: '32px',
                 width: '32px',
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
-              className={`active:!bg-gray-200 ${
-                isLike ? '!text-rose-500' : ''
-              }`}
+              className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
               size="large"
               icon={<HeartFilled className={'!text-l'} />}
               onClick={handleLikeClick}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {123124}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{likeNum}</strong>
             <Button
               type="round"
               style={{
@@ -222,14 +201,12 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
               icon={<MessageFilled className="!text-l" />}
               className={`active:!bg-gray-200`}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {123124}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{commentsNum}</strong>
             <Button
               type="round"
               style={{
@@ -240,17 +217,13 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
               icon={<StarFilled className="!text-l" />}
-              className={`active:!bg-gray-200 ${
-                isFavorite ? '!text-yellow-400' : ''
-              }`}
+              className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
               onClick={handleFavorites}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {123124}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{collectNum}</strong>
           </Col>
           <Col span={3}>
             <Tooltip placement="top" title="发送给朋友">
@@ -264,7 +237,7 @@ export default function page() {
                   width: '32px',
                   border: 0,
                   backgroundColor: 'rgb(254,44,85)',
-                  color: 'white',
+                  color: 'white'
                 }}
                 icon={<SendOutlined className="!text-l" />}
                 // onClick={handleFavorites}
@@ -277,15 +250,11 @@ export default function page() {
             margin: '0px 15px',
             width: '494px',
             backgroundColor: 'rgb(241,241,242)',
-            borderRadius: '5px',
+            borderRadius: '5px'
           }}
         >
           <Col span={19}>
-            <div
-              className={
-                'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'
-              }
-            >
+            <div className={'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'}>
               {`current/host/current/current/${path}`}
             </div>
           </Col>
@@ -298,7 +267,7 @@ export default function page() {
                   border: 0,
                   width: '100%',
                   backgroundColor: 'transparent',
-                  color: 'black',
+                  color: 'black'
                 }}
                 className="hover:!bg-gray-200"
                 onClick={copyHandler}
@@ -310,7 +279,7 @@ export default function page() {
         </Row>
         <Menu
           onClick={handleMenuClick}
-          defaultSelectedKeys="comments"
+          defaultSelectedKeys={isCreatorVideosOn ? 'Creator videos' : 'comments'}
           mode="horizontal"
           items={items}
           style={{
@@ -318,7 +287,7 @@ export default function page() {
             top: 0,
             color: 'black',
             backgroundColor: 'white',
-            zIndex: 99,
+            zIndex: 99
           }}
         />
 
@@ -339,7 +308,7 @@ export default function page() {
             style={{
               padding: '15px',
               overflowY: 'auto',
-              flex: 1,
+              flex: 1
             }}
           >
             {creatorVideos.map((item) => {
@@ -349,14 +318,11 @@ export default function page() {
                   style={{
                     height: 240,
                     paddingLeft: 10,
-                    paddingBottom: 10,
+                    paddingBottom: 10
                   }}
                   key={item.id}
                 >
-                  <PlayerCard
-                    videoUrl={item.url}
-                    id={item.id}
-                  ></PlayerCard>
+                  <PlayerCard videoUrl={item.url} id={item.id}></PlayerCard>
                 </Col>
               )
             })}

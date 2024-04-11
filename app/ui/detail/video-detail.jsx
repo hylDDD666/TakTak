@@ -44,7 +44,7 @@ export default function VideoDetail() {
   const curDetailId = useHomeStore((state) => state.curDetailId)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const setIsCreatorVideosOn = useHomeStore((state) => state.setIsCreatorVideosOn)
-  const id = useHomeStore((state) => state.currentPlayId)
+  const id = useHomeStore((state) => state.currentPlayId) * 1
   const playerRef = useRef()
   const previewRef = useRef()
   const router = useRouter()
@@ -52,15 +52,17 @@ export default function VideoDetail() {
   // const [isAutoRoll, setIsAutoRoll] = useState(false)
   const playItemById = useHomeStore((state) => state.playItemById)
   const fetchItemData = useHomeStore((state) => state.fetchItemData)
-  const page = useHomeStore((state)=>state.page)
+  const page = useHomeStore((state) => state.page)
   const url = useHomeStore((state) => {
+    let item
     if (isCreatorVideosOn) {
-      const item = state.creatorVideos.find((item) => item.id === id)
-      return item.url
+      item = state.creatorVideos.find((item) => item.id === id)
     } else {
-      const item = state.itemList.find((item) => item.id === id)
-      return item.url
+      item = state.itemList.find((item) => item.id === id)
     }
+    if (item) {
+      return item.url
+    } 
   })
   const index = useHomeStore((state) => {
     if (isCreatorVideosOn) {
@@ -163,8 +165,8 @@ export default function VideoDetail() {
 
   const handleClose = () => {
     if (isCreatorVideosOn) {
-      setIsCreatorVideosOn(false)
       setCurId(curDetailId)
+      setIsCreatorVideosOn(false)
     } else {
       setCurId(id)
       playItemById(id)
@@ -172,12 +174,18 @@ export default function VideoDetail() {
     router.back()
   }
   const handleToNext = () => {
-    setCurId(nextItem.id)
-    router.replace(`/${nextItem.author.userName}/video/${nextItem.id}`)
+    if (nextItem) {
+      if (!isCreatorVideosOn) {
+        setCurId(nextItem.id)
+      }
+      router.replace(`/${nextItem.author.userName}/video/${nextItem.id}`)
+    }
   }
   const handleToPre = () => {
     if (index !== 0) {
-      setCurId(preItem.id)
+      if (!isCreatorVideosOn) {
+        setCurId(preItem.id)
+      }
       router.replace(`/${preItem.author.userName}/video/${preItem.id}`)
     }
   }

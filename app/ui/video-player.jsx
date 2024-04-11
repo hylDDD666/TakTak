@@ -38,6 +38,7 @@ export default React.memo(function VideoPlayer(props) {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
   }
+  const setIsDetailOn = useHomeStore(state=>state.setIsDetailOn)
   const setCurId = useHomeStore((state) => state.setCurId)
   const disLikeItem = useHomeStore((state) => state.disLikeItem)
   const isAutoRoll = useHomeStore((state) => state.isAutoRoll)
@@ -86,6 +87,7 @@ export default React.memo(function VideoPlayer(props) {
     }
   }
   const videoClickHandler = () => {
+    setIsDetailOn(true)
     setCurId(id)
     pauseItemById(id)
     router.push(`/${user.userName}/video/${id}`, { scroll: false })
