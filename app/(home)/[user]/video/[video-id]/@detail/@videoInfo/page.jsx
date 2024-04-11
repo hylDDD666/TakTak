@@ -20,17 +20,29 @@ export default function page() {
   const textRef = useRef()
   const path = usePathname()
   const [showCollopse, setshowCollopse] = useState(false)
+  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
+  const [isComments, setIsComments] = useState(!isCreatorVideosOn)
   const user = useHomeStore((state) => {
     const videoId = state.currentPlayId * 1
-    const item = state.itemList.find((item) => item.id === videoId)
-    if(item){
+    let item
+    if (isCreatorVideosOn) {
+      item = state.creatorVideos.find((item) => item.id === videoId)
+    } else {
+      item = state.itemList.find((item) => item.id === videoId)
+    }
+    if (item) {
       return item.author
     }
   })
   const curVideo = useHomeStore((state) => {
     const videoId = state.currentPlayId * 1
-   const video= state.itemList.find((item) => item.id === videoId)
-      return video
+    let video
+    if (isCreatorVideosOn) {
+      video = state.creatorVideos.find((item) => item.id === videoId)
+    } else {
+      video = state.itemList.find((item) => item.id === videoId)
+    }
+    return video
   })
   const { desc, likeNum, commentsNum, collectNum } = curVideo
   const items = [
@@ -46,8 +58,6 @@ export default function page() {
   const { userName, id: userId, avatar } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
-  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
-  const [isComments, setIsComments] = useState(!isCreatorVideosOn)
 
   const commentRef = useRef()
   const toggleCollopse = () => {

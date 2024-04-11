@@ -18,7 +18,7 @@ import { Button, Col, Image, Input, Popover, Row, Slider, Tooltip } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { useHomeStore } from '../../stores/homeStore'
 import ReactPlayer from 'react-player'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { getVideoPreviewImg } from '@/app/lib/getVideoPreview'
 
 const debounce = (func, delay) => {
@@ -44,7 +44,9 @@ export default function VideoDetail() {
   const curDetailId = useHomeStore((state) => state.curDetailId)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const setIsCreatorVideosOn = useHomeStore((state) => state.setIsCreatorVideosOn)
-  const id = useHomeStore((state) => state.currentPlayId) * 1
+  const params = useParams()
+  const id = params['video-id']*1
+  // const id = useHomeStore((state) => state.currentPlayId) * 1
   const playerRef = useRef()
   const previewRef = useRef()
   const router = useRouter()
@@ -62,7 +64,7 @@ export default function VideoDetail() {
     }
     if (item) {
       return item.url
-    } 
+    }
   })
   const index = useHomeStore((state) => {
     if (isCreatorVideosOn) {
@@ -109,23 +111,16 @@ export default function VideoDetail() {
 
   useEffect(() => {
     setIsDetailOn(true)
-    return () => {
-      setIsDetailOn(false)
-    }
-  }, [])
-
-  useEffect(() => {
     setDomLoaded(true)
-    setCurId(id)
-  }, [id])
-  useEffect(() => {
-    setIsPlay(true)
     if (!isCreatorVideosOn) {
       if (index === listLength - 2) {
         fetchItemData(page)
       }
     }
-  }, [id])
+    return () => {
+      setIsDetailOn(false)
+    }
+  }, [])
   const onChange = (newValue) => {
     setSliderValue(newValue)
     playerRef.current.seekTo(newValue / 100)
@@ -175,17 +170,13 @@ export default function VideoDetail() {
   }
   const handleToNext = () => {
     if (nextItem) {
-      if (!isCreatorVideosOn) {
-        setCurId(nextItem.id)
-      }
       router.replace(`/${nextItem.author.userName}/video/${nextItem.id}`)
+      setCurId(nextItem.id)
     }
   }
   const handleToPre = () => {
     if (index !== 0) {
-      if (!isCreatorVideosOn) {
-        setCurId(preItem.id)
-      }
+      setCurId(preItem.id)
       router.replace(`/${preItem.author.userName}/video/${preItem.id}`)
     }
   }
@@ -226,7 +217,7 @@ export default function VideoDetail() {
   }
   return (
     <>
-      {domLoaded && (
+      {
         <div
           className={`h-full w-full  relative overflow-hidden bg-black z-0`}
           onMouseEnter={handleMouseEnter}
@@ -519,22 +510,24 @@ export default function VideoDetail() {
           </div>
 
           <div className="z-0 h-full">
-            <ReactPlayer
-              ref={playerRef}
-              playing={isPlay}
-              loop={!isAutoRoll}
-              volume={isMuted ? 0 : volume / 100}
-              width={'100%'}
-              height={'100%'}
-              url={url}
-              onDuration={handleDuration}
-              onProgress={handllePlay}
-              onEnded={handleAutoPlay}
-              // style={type === 'row' ? { position: 'absolute' } : {}}
-            ></ReactPlayer>
+            {domLoaded && (
+              <ReactPlayer
+                ref={playerRef}
+                playing={isPlay}
+                loop={!isAutoRoll}
+                volume={isMuted ? 0 : volume / 100}
+                width={'100%'}
+                height={'100%'}
+                url={url}
+                onDuration={handleDuration}
+                onProgress={handllePlay}
+                onEnded={handleAutoPlay}
+                // style={type === 'row' ? { position: 'absolute' } : {}}
+              ></ReactPlayer>
+            )}
           </div>
         </div>
-      )}
+      }
     </>
   )
 }
