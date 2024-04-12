@@ -58,9 +58,9 @@ export default React.memo(function Home() {
             videoWidth:item.videoWidth,
             type:item.type
           },
-          likeNum: item.likeNum,
-          commentsNum: item.commentsNum,
-          collectNum: item.collectNum,
+          likeNum: item._count.liker,
+          commentsNum: item._count.comment,
+          collectNum: item._count.collector,
           shareNum: item.shareNum,
         }
         return (

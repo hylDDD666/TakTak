@@ -8,8 +8,6 @@ import {
   MutedOutlined,
   PauseOutlined,
   PlayCircleFilled,
-  PlayCircleOutlined,
-  SendOutlined,
   SoundOutlined
 } from '@ant-design/icons'
 import { Button, Col, Popover, Row, Slider, Tooltip } from 'antd'
@@ -22,7 +20,6 @@ export default React.memo(function VideoPlayer(props) {
   const { url, type, cover } = props.videoInfo
   const { id, isPlay, user, isLoad } = props
   const [domLoaded, setDomLoaded] = useState(false)
-  // const [isPlaying, setIsPlaying] = useState(true)
   const [volume, setVolume] = useState(20)
   const [isMuted, setIsMuted] = useState(true)
   const [duration, setDuration] = useState(0)

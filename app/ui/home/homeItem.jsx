@@ -5,6 +5,7 @@ import { HeartFilled, MergeFilled, MessageFilled, StarFilled } from '@ant-design
 import VideoPlayer from '../video-player'
 import { Transition } from 'react-transition-group'
 import { useHomeStore } from '@/app/stores/homeStore'
+import { useRouter } from 'next/navigation'
 
 const defaultStyle = {
   transition: 'all 300ms linear',
@@ -21,7 +22,10 @@ export default React.memo(function HomeItem(props) {
   const playItem = useHomeStore((state) => state.playItemById)
   const isDetailOn = useHomeStore((state) => state.isDetailOn)
   const pauseAllItems = useHomeStore((state) => state.pauseAllItems)
-  const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
+  const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
+  const setCurId = useHomeStore((state) => state.setCurId)
+  const router = useRouter()
+  const pauseItemById = useHomeStore((state) => state.pauseItemById)
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLoad, setIsLoad] = useState(false)
   const [isLike, setIsLike] = useState(false)
@@ -44,6 +48,12 @@ export default React.memo(function HomeItem(props) {
       top:
         nodeRef.current.parentNode.scrollTop + nodeRef.current.getBoundingClientRect().bottom - 63
     })
+  }
+  const videoClickHandler = () => {
+    setIsDetailOn(true)
+    setCurId(id)
+    pauseItemById(id)
+    router.push(`/${user.userName}/video/${id}`, { scroll: false })
   }
   useEffect(() => {
     if (isDetailOn) {
@@ -185,6 +195,7 @@ export default React.memo(function HomeItem(props) {
                     size="large"
                     icon={<MessageFilled className="!text-xl" />}
                     className={`active:!bg-gray-200`}
+                    onClick={videoClickHandler}
                   ></Button>
                   <strong className="w-full text-center text-xs mb-2">
                     {videoInfo.commentsNum}
