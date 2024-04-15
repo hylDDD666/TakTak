@@ -121,3 +121,12 @@ export const fetchSubCommentById=async (id,page)=>{
   })
   return  comments
 }
+export const authenticate = async(username,password)=>{
+  const res = await prisma.user.findUnique({
+    where:{
+      userName:username,
+      password
+    }
+  })
+  return  res
+}

@@ -1,26 +1,34 @@
 'use client'
 import { useHomeStore } from '@/app/stores/homeStore'
-import {
-  CloseOutlined,
-  LeftOutlined,
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons'
-import { Button, Checkbox, Form, Input } from 'antd'
+import { CloseOutlined, LeftOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
+import { signIn } from 'next-auth/react'
+import Login from '@/app/ui/Login'
 
 export default function page() {
   const showLogin = useHomeStore((state) => state.showLogin)
-  const setShowLogin = useHomeStore(state=>state.setShowLogin)
-  const [isRegister,setIsRegister] = useState(false)
-  const handleRegisterClick = ()=>{
+  const setShowLogin = useHomeStore((state) => state.setShowLogin)
+  const [isRegister, setIsRegister] = useState(false)
+  const handleRegisterClick = () => {
     setIsRegister(true)
   }
-  const handleBack = ()=>{
+  const handleBack = () => {
     setIsRegister(false)
   }
-  const handleClose=()=>{
+  const handleClose = () => {
     setShowLogin(false)
+  }
+  const handleSubmit =async (values)=>{
+
+    console.log(values);
+    try {
+      const res = await signIn('Credentials',{
+        ...values,
+      })
+    } catch (error) {
+      console.log(error);
+    }
   }
   return (
     <>
@@ -29,11 +37,13 @@ export default function page() {
           <div className="h-screen w-screen bg-gray-600 absolute z-50 bg-opacity-50">
             <div className="w-[480px] h-[500px] bg-white rounded-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-5 py-5">
               <div className=" w-full h-[40px]">
-               {isRegister &&  <Button
-                  icon={<LeftOutlined />}
-                  className=" float-left"
-                  onClick={handleBack}
-                ></Button>}
+                {isRegister && (
+                  <Button
+                    icon={<LeftOutlined />}
+                    className=" float-left"
+                    onClick={handleBack}
+                  ></Button>
+                )}
                 <Button
                   icon={<CloseOutlined />}
                   className=" float-right"
@@ -41,22 +51,23 @@ export default function page() {
                 ></Button>
               </div>
               <h1 className="font-bold text-center text-black text-3xl mb-5">
-                {isRegister?'注册':'登录'}TakTak
+                {isRegister ? '注册' : '登录'}TakTak
               </h1>
               <Form
                 name="normal_login"
                 className=" !px-8"
                 initialValues={{
-                  remember: true,
+                  remember: true
                 }}
+                onFinish={handleSubmit}
               >
                 <Form.Item
                   name="username"
                   rules={[
                     {
                       required: true,
-                      message: 'Please input your Username!',
-                    },
+                      message: 'Please input your Username!'
+                    }
                   ]}
                 >
                   <Input
@@ -69,8 +80,8 @@ export default function page() {
                   rules={[
                     {
                       required: true,
-                      message: 'Please input your Password!',
-                    },
+                      message: 'Please input your Password!'
+                    }
                   ]}
                 >
                   <Input.Password
@@ -81,15 +92,19 @@ export default function page() {
 
                 <Form.Item>
                   <Button type="primary" htmlType="submit" className="!w-full">
-                    {isRegister?'注册':'登录'}
+                    {isRegister ? '注册' : '登录'}
                   </Button>
-                  {!isRegister && <span 
-                  onClick={handleRegisterClick}
-                  className="float-right cursor-pointer hover:underline mt-3">
-                    注册
-                  </span>}
+                  {!isRegister && (
+                    <span
+                      onClick={handleRegisterClick}
+                      className="float-right cursor-pointer hover:underline mt-3"
+                    >
+                      注册
+                    </span>
+                  )}
                 </Form.Item>
               </Form>
+              <Login></Login>
             </div>
           </div>
         </>
