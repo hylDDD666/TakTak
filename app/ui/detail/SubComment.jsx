@@ -2,29 +2,42 @@
 import { CloseOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons'
 import { Avatar, Button, Col, Row } from 'antd'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Reply from './Reply'
+import { useHomeStore } from '@/app/stores/homeStore'
 
-export default function SubComment() {
+export default function SubComment(props) {
+  const { content, author, createdAt, likedNum, _count, id } = props
+  const [showReplyInput, setShowReplyInput] = useState(false)
+  const lastReplyShow = useHomeStore((state) => state.lastReplyShow)
+  const curReplyShow = useHomeStore((state) => state.curReplyShow)
+  const setLastReplyShow = useHomeStore((state) => state.setLastReplyShow)
+  const setCurReplyShow = useHomeStore((state) => state.setCurReplyShow)
+  useEffect(() => {
+    if (id === lastReplyShow) {
+      setShowReplyInput(false)
+    }
+  }, [lastReplyShow])
   const handleReply = () => {
     setShowReplyInput(true)
+    setLastReplyShow(curReplyShow)
+    setCurReplyShow(id)
   }
   const [isLike, setIsLike] = useState(false)
   const handleLikeClick = () => {
     setIsLike((pre) => !pre)
   }
-  const [showReplyInput, setShowReplyInput] = useState(false)
   const hideReplyInput = () => {
     setShowReplyInput(false)
   }
   return (
     <div>
-      <Row wrap={false}>
+      <Row wrap={false} className="mt-3">
         <Col span={2}></Col>
         <Col span={2}>
           <Avatar
             size={30}
-            src="https://api.dicebear.com/7.x/miniavs/svg?seed=1"
+            src={author.avatar}
             className="!mr-2"
           ></Avatar>
         </Col>
@@ -33,15 +46,13 @@ export default function SubComment() {
             href="/username"
             className="font-medium text-black hover:underline hover:text-black "
           >
-            <span className="text-sm">usreName</span>
+            <span className="text-sm">{author.usreName}</span>
           </Link>
           <p className=" text-base leading-[18px]">
-            I've been a kdrama fan since i was 12 and now I'm 23 I'm telling y'all from all of the
-            kdramas I've watched..queen of tears is one of the good ones that'll remain in my heart
-            ... it's so damn good
+            {content}
           </p>
           <div className="text-gray-500 my-0.5">
-            <span>time</span>
+            <span>{createdAt.toLocaleString()}</span>
             <span className="ml-8 hover:cursor-pointer" onClick={handleReply}>
               Reply
             </span>
@@ -68,7 +79,7 @@ export default function SubComment() {
             }
             onClick={handleLikeClick}
           ></Button>
-          <p className="w-full text-center text-gray-500 ">{1231}</p>
+          <p className="w-full text-center text-gray-500 ">{likedNum}</p>
         </Col>
       </Row>
       {showReplyInput && (

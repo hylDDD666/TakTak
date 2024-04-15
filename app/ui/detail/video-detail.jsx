@@ -238,7 +238,7 @@ export default function VideoDetail() {
                     style={{
                       fontWeight: 'bold',
                       border: 0,
-                      backgroundColor: 'rgb(45,45,44)',
+                      backgroundColor: 'rgb(45,45,44,.5)',
                       color: 'white',
                       padding: '5px 5px',
                       textAlign: 'center'
@@ -323,7 +323,7 @@ export default function VideoDetail() {
                         style={{
                           fontWeight: 'bold',
                           border: 0,
-                          backgroundColor: 'rgb(45,45,44)',
+                          backgroundColor: 'rgb(45,45,44,.5)',
                           color: 'white'
                         }}
                         className="hover:!opacity-70"

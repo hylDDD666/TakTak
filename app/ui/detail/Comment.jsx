@@ -5,7 +5,7 @@ import {
   DownOutlined,
   HeartFilled,
   HeartOutlined,
-  UpOutlined,
+  UpOutlined
 } from '@ant-design/icons'
 import { Avatar, Button, Col, Row, Spin } from 'antd'
 import Link from 'next/link'
@@ -26,7 +26,7 @@ export default function Comment(props) {
   const setCurReplyShow = useHomeStore((state) => state.setCurReplyShow)
   const [subCommentPage, setSubCommentPage] = useState(0)
   const [subCommentList, setSubCommentList] = useState([])
-  const [showSpin,setShowSpin] =useState(false)
+  const [showSpin, setShowSpin] = useState(false)
   const handleLikeClick = () => {
     setIsLike((pre) => !pre)
   }
@@ -44,17 +44,24 @@ export default function Comment(props) {
     }
   }, [lastReplyShow])
   const handleReplyShow = async () => {
-    console.log('fetchSubCommentData')
-    const res = await fetchSubCommentById(id)
-
-    setShowSpin(true)
+    if (subCommentList.length === 0) {
+      setShowSpin(true)
+      const res = await fetchSubCommentById(id, subCommentPage)
+      setSubCommentList((pre) => [...pre, ...res])
+      setSubCommentPage((pre) => pre + 1)
+    }
     setShowReply(true)
   }
-  useEffect(()=>{
-    setShowSpin(false)
-  },[subCommentList])
-  const handleShowMore = () => {
-    console.log('fecthMoreComments')
+  useEffect(() => {
+    return () => {
+      setShowSpin(false)
+    }
+  }, [subCommentList])
+  const handleShowMore = async () => {
+    setShowSpin(true)
+    const res = await fetchSubCommentById(id, subCommentPage)
+    setSubCommentList((pre) => [...pre, ...res])
+    setSubCommentPage((pre) => pre + 1)
   }
   const handleHideMore = () => {
     setShowReply(false)
@@ -89,7 +96,7 @@ export default function Comment(props) {
               fontWeight: 'bold',
               backgroundColor: 'white',
               color: 'rgb(138,139,145)',
-              padding: '0 10px',
+              padding: '0 10px'
             }}
             className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
             size="large"
@@ -122,36 +129,59 @@ export default function Comment(props) {
       )}
       {showReply && (
         <>
-          <SubComment></SubComment>
-          <Row>
-            <Col span={2}></Col>
-            <Col span={2}>
-            </Col>
-            <Col span={16}>
-              <p
-                onClick={handleShowMore}
-                className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
-              >
-                View {6} more
-                <DownOutlined className="!text-sm ml-1 font-semibold" />
-              </p>
-            </Col>
-            <Col span={4}>
-              <p
-                onClick={handleHideMore}
-                className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
-              >
-                Hide
-                <UpOutlined className="!text-sm ml-1 font-semibold" />
-              </p>
-            </Col>
-          </Row>
+          {subCommentList.map((item) => {
+            const { content, author, createdAt, likedNum, _count } = item
+
+            return (
+              <SubComment
+                key={item.id}
+                id={item.id}
+                content={content}
+                author={author}
+                createdAt={createdAt}
+                likedNum={likedNum}
+                _count={_count}
+              ></SubComment>
+            )
+          })}
+
+          {!showSpin && (
+            <Row>
+              <Col span={2}></Col>
+              <Col span={2}></Col>
+              <Col span={16}>
+                {_count.commentBy - subCommentList.length !== 0 && (
+                  <p
+                    onClick={handleShowMore}
+                    className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
+                  >
+                    View {_count.commentBy - subCommentList.length} more
+                    <DownOutlined className="!text-sm ml-1 font-semibold" />
+                  </p>
+                )}
+              </Col>
+              <Col span={4}>
+                <p
+                  onClick={handleHideMore}
+                  className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
+                >
+                  Hide
+                  <UpOutlined className="!text-sm ml-1 font-semibold" />
+                </p>
+              </Col>
+            </Row>
+          )}
         </>
       )}
       <Row>
         <Col span={2}></Col>
         <Col span={18}>
-          {_count.commentBy !== 0 && !showReply && (
+          {_count.commentBy !== 0 && showSpin && (
+            <div className="text-center">
+              <Spin size="large" className="!my-3 " />
+            </div>
+          )}
+          {_count.commentBy !== 0 && !showReply && !showSpin && (
             <p
               onClick={handleReplyShow}
               className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
@@ -159,11 +189,6 @@ export default function Comment(props) {
               View {_count.commentBy} replies
               <DownOutlined className="!text-sm ml-1 font-semibold" />
             </p>
-          )}
-          {_count.commentBy !== 0 && !showReply && showSpin && (
-            <div className="text-center">
-              <Spin size="large" className="!my-3 " />
-            </div>
           )}
         </Col>
       </Row>
