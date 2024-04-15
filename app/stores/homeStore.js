@@ -35,6 +35,8 @@ const getCommentList = (id) => {
   const commentList = []
 }
 export const useHomeStore = create((set, get) => ({
+  isLogin: false,
+  showLogin: false,
   isAutoRoll: false,
   itemList: [],
   creatorVideos: [],
@@ -45,7 +47,17 @@ export const useHomeStore = create((set, get) => ({
   isDetailOn: false,
   isCreatorVideosOn: false,
   lastReplyShow: -1,
-  curReplyShow:-1,
+  curReplyShow: -1,
+  setShowLogin: (boolen) => {
+    set(() => {
+      return { showLogin: boolen }
+    })
+  },
+  setIsLogin: (boolen) => {
+    set(() => {
+      return { isLogin: boolen }
+    })
+  },
   setCurReplyShow: (id) => {
     set(() => {
       return { curReplyShow: id }

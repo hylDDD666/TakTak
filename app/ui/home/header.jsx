@@ -3,6 +3,7 @@ import { MessageOutlined, PlusOutlined, SendOutlined, UserOutlined } from '@ant-
 import { Button } from 'antd'
 import { Header } from 'antd/es/layout/layout'
 import Search from 'antd/es/input/Search'
+import LoginButton from './LoginButton'
 
 export default function PriHeader() {
   return (
@@ -46,21 +47,7 @@ export default function PriHeader() {
           >
             上传
           </Button>
-          <Button
-            style={{ fontWeight: 'bold', border: 0, marginRight: '10px' }}
-            icon={<SendOutlined />}
-            size="large"
-          ></Button>{' '}
-          <Button
-            style={{ fontWeight: 'bold', border: 0, marginRight: '10px' }}
-            icon={<MessageOutlined />}
-            size="large"
-          ></Button>{' '}
-          <Button
-            style={{ fontWeight: 'bold', border: 0, marginRight: '10px' }}
-            icon={<UserOutlined />}
-            size="large"
-          ></Button>
+          <LoginButton></LoginButton>
         </div>
       </Header>
     </>
