@@ -1,34 +1,55 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { authenticate } from '@/app/action/action'
-import Login from '@/app/ui/Login'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import prisma from '@/lib/prisma'
+
 export const authOptions = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         userName: { label: 'username', type: 'text' },
-        password: { label: 'password', type: 'password' }
+        password: { label: 'password', type: 'password' },
       },
       async authorize(credentials, req) {
-        try {
-          if (typeof credentials !== 'undefined') {
-            const res = await authenticate(credentials.userName, credentials.password)
-            if (typeof res !== 'undefined') {
-              return { ...res.user, apiToken: res.token }
-            } else {
-              return null
-            }
+        if (typeof credentials !== 'undefined') {
+          const user = await authenticate(
+            credentials.userName,
+            credentials.password
+          )
+          if (typeof user !== 'undefined') {
+            // console.log(user);
+            return user
           } else {
             return null
           }
-        } catch (error) {
-          console.log(error)
+        } else {
+          return null
         }
-      }
-    })
+      },
+    }),
   ],
-  session: { strategy: 'jwt' }
+  session: { strategy: 'jwt' },
+  jwt: {
+    secret: 'test',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id
+      }
+      return token
+    },
+    async session({ session, token, user }) {
+      if (session?.user && token) {
+        session.user.id = token.id
+      }
+      console.log(session, user)
+      return session
+    },
+  },
 }
 
 const handler = NextAuth(authOptions)

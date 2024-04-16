@@ -10,7 +10,6 @@ export default function LoginButton() {
   const showLogin = useHomeStore(state=>state.showLogin)
   const handleLoginClick = ()=>{
     setShowLogin(true)
-    console.log(showLogin);
   }
   return (
     <>

@@ -3,7 +3,7 @@
 import prisma from '@/lib/prisma'
 
 export const fetchHomeVideos = async (page) => {
-  const res = await prisma.video.findMany({
+  let res = await prisma.video.findMany({
     skip: (page * 5) % 380,
     take: 5,
     select: {
@@ -18,8 +18,8 @@ export const fetchHomeVideos = async (page) => {
       author: {
         select: {
           id: true,
-          userName: true,
-          avatar: true,
+          name: true,
+          image: true,
         },
       },
       _count: {
@@ -31,10 +31,20 @@ export const fetchHomeVideos = async (page) => {
       },
     },
   })
+  res = res.map((item) => {
+    return {
+      ...item,
+      author: {
+        id: item.author.id,
+        userName: item.author.name,
+        avatar: item.author.image,
+      },
+    }
+  })
   return res
 }
 export const fetchCreatorVideos = async (userId) => {
-  const res = await prisma.video.findMany({
+  let res = await prisma.video.findMany({
     where: {
       authorId: userId,
     },
@@ -50,27 +60,37 @@ export const fetchCreatorVideos = async (userId) => {
       author: {
         select: {
           id: true,
-          userName: true,
-          avatar: true,
+          name: true,
+          image: true,
         },
       },
     },
   })
+  res = res.map((item) => {
+    return {
+      ...item,
+      author: {
+        id: item.author.id,
+        userName: item.author.name,
+        avatar: item.author.image,
+      },
+    }
+  })
   return res
 }
 
-export const fetchCommentByVideoId = async (videoId,page) => {
+export const fetchCommentByVideoId = async (videoId, page) => {
   let comments
   const commentNum = await prisma.comment.count({
     where: {
       videoId: videoId,
       commentOn: null,
-    }
+    },
   })
   try {
     comments = await prisma.comment.findMany({
-      skip:page*15,
-      take:15,
+      skip: page * 15,
+      take: 15,
       where: {
         videoId: videoId,
         commentOn: null,
@@ -79,54 +99,71 @@ export const fetchCommentByVideoId = async (videoId,page) => {
         author: {
           select: {
             id: true,
-            userName: true,
-            avatar: true,
+            name: true,
+            image: true,
           },
         },
-        _count:{
-          select:{
-            commentBy:true
-          }
-        }
+        _count: {
+          select: {
+            commentBy: true,
+          },
+        },
       },
-      
     })
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
-  
-  return ({
-    comments,commentNum
+  comments = comments.map((item) => {
+    return {
+      ...item,
+      author: {
+        id: item.author.id,
+        userName: item.author.name,
+        avatar: item.author.image,
+      },
+    }
   })
+  return {
+    comments,
+    commentNum,
+  }
 }
 
-export const fetchSubCommentById=async (id,page)=>{
-
-  const comments =await prisma.comment.findMany({
-    skip:page*5,
-    take:5,
-    where:{
-      commentId:id
+export const fetchSubCommentById = async (id, page) => {
+  let comments = await prisma.comment.findMany({
+    skip: page * 5,
+    take: 5,
+    where: {
+      commentId: id,
     },
     include: {
       author: {
         select: {
           id: true,
-          userName: true,
-          avatar: true,
+          name: true,
+          image: true,
         },
       },
     },
-    
   })
-  return  comments
-}
-export const authenticate = async(username,password)=>{
-  const res = await prisma.user.findUnique({
-    where:{
-      userName:username,
-      password
+  comments = comments.map((item) => {
+    return {
+      ...item,
+      author: {
+        id: item.author.id,
+        userName: item.author.name,
+        avatar: item.author.image,
+      },
     }
   })
-  return  res
+  return comments
+}
+export const authenticate = async (username, password) => {
+  const res = await prisma.user.findUnique({
+    where: {
+      name: username,
+      password,
+    },
+  })
+  return res
 }

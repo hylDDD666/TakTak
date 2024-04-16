@@ -1,10 +1,9 @@
 'use client'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { CloseOutlined, LeftOutlined, LockOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
-import Login from '@/app/ui/Login'
 
 export default function page() {
   const showLogin = useHomeStore((state) => state.showLogin)
@@ -20,15 +19,16 @@ export default function page() {
     setShowLogin(false)
   }
   const handleSubmit =async (values)=>{
+    // console.log(values);
+   
+      const res =  await signIn('credentials',{...values,redirect: false,})
+      if(res.error){
+        message.error('用户名或密码错误')
+      }else{
+        setShowLogin(false)
+      }
 
-    console.log(values);
-    try {
-      const res = await signIn('Credentials',{
-        ...values,
-      })
-    } catch (error) {
-      console.log(error);
-    }
+    
   }
   return (
     <>
@@ -62,7 +62,7 @@ export default function page() {
                 onFinish={handleSubmit}
               >
                 <Form.Item
-                  name="username"
+                  name="userName"
                   rules={[
                     {
                       required: true,
@@ -104,7 +104,6 @@ export default function page() {
                   )}
                 </Form.Item>
               </Form>
-              <Login></Login>
             </div>
           </div>
         </>
