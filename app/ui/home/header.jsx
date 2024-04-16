@@ -5,7 +5,7 @@ import { Header } from 'antd/es/layout/layout'
 import Search from 'antd/es/input/Search'
 import LoginButton from './LoginButton'
 
-export default function PriHeader() {
+export default function PriHeader(props) {
   return (
     <>
       <Header
@@ -47,7 +47,7 @@ export default function PriHeader() {
           >
             上传
           </Button>
-          <LoginButton></LoginButton>
+          <LoginButton session={props.session}></LoginButton>
         </div>
       </Header>
     </>

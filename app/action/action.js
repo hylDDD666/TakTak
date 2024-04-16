@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma'
 
+
 export const fetchHomeVideos = async (page) => {
   let res = await prisma.video.findMany({
     skip: (page * 5) % 380,

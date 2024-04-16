@@ -5,7 +5,8 @@ import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider, Layout } from 'antd'
 import Header from '../ui/home/header'
 import Sider from '../ui/home/sider'
-
+import { getServerSession } from "next-auth/next"
+import { authOptions } from './api/auth/[...nextauth]/route' 
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
@@ -13,7 +14,8 @@ export const metadata = {
   description: '仿TikTok的短视频网站',
 }
 
-export default function RootLayout({ children, login }) {
+export default async function RootLayout({ children, login }) {
+  const session = await getServerSession(authOptions)
   return (
     <html lang="en">
       <body className="text-black min-w-[500px]">
@@ -58,7 +60,7 @@ export default function RootLayout({ children, login }) {
             <div className="overflow-hidden w-screen h-screen relative">
               <div className="absolute h-screen w-screen overflow-x-hiden ">
                 <Layout>
-                  <Header></Header>
+                  <Header session={session}></Header>
                   <Layout
                     className={'!h-screen pt-[64px] w-full !bg-white'}
                     hasSider

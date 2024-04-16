@@ -8,6 +8,8 @@ import { signIn } from 'next-auth/react'
 export default function page() {
   const showLogin = useHomeStore((state) => state.showLogin)
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
+  const setIsLogin =useHomeStore(state=>state.setIsLogin)
+  const setUser = useHomeStore(state=>state.setUser)
   const [isRegister, setIsRegister] = useState(false)
   const handleRegisterClick = () => {
     setIsRegister(true)
@@ -20,12 +22,13 @@ export default function page() {
   }
   const handleSubmit =async (values)=>{
     // console.log(values);
-   
+    
       const res =  await signIn('credentials',{...values,redirect: false,})
       if(res.error){
         message.error('用户名或密码错误')
       }else{
         setShowLogin(false)
+        setIsLogin(true)
       }
 
     

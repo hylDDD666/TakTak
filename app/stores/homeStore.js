@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { fetchHomeVideos, fetchCreatorVideos } from '../action/action'
+
 const getItemList = async (page) => {
   const itemList = await fetchHomeVideos(page)
   for (let i = 0; i < 5; i++) {
@@ -35,6 +36,8 @@ const getCommentList = (id) => {
   const commentList = []
 }
 export const useHomeStore = create((set, get) => ({
+  session:null,
+  user:null,
   isLogin: false,
   showLogin: false,
   isAutoRoll: false,
@@ -48,6 +51,16 @@ export const useHomeStore = create((set, get) => ({
   isCreatorVideosOn: false,
   lastReplyShow: -1,
   curReplyShow: -1,
+  setSession:(session)=>{
+    set(()=>{
+      return {session}
+    })
+  },
+  setUser:(token)=>{
+    set(()=>{
+      return {user:token}
+    })
+  },
   setShowLogin: (boolen) => {
     set(() => {
       return { showLogin: boolen }
