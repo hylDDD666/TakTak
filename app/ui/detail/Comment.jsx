@@ -14,6 +14,7 @@ import SubComment from './SubComment'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { fetchSubCommentById } from '@/app/action/action'
+import useAuth from '@/app/hooks/useAuth'
 
 export default function Comment(props) {
   const [showReplyInput, setShowReplyInput] = useState(false)
@@ -27,17 +28,17 @@ export default function Comment(props) {
   const [subCommentPage, setSubCommentPage] = useState(0)
   const [subCommentList, setSubCommentList] = useState([])
   const [showSpin, setShowSpin] = useState(false)
-  const handleLikeClick = () => {
+  const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
-  }
+  })
   const hideReplyInput = () => {
     setShowReplyInput(false)
   }
-  const handleReply = () => {
+  const handleReply = useAuth(() => {
     setShowReplyInput(true)
     setLastReplyShow(curReplyShow)
     setCurReplyShow(id)
-  }
+  })
   useEffect(() => {
     if (id === lastReplyShow) {
       setShowReplyInput(false)
@@ -83,7 +84,7 @@ export default function Comment(props) {
           <div className="text-gray-500 my-0.5">
             <span>{createdAt.toLocaleString()}</span>
             <span className="ml-8 hover:cursor-pointer" onClick={handleReply}>
-              Reply
+              回复
             </span>
           </div>
         </Col>

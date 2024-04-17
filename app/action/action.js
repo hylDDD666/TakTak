@@ -1,7 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-
+import bcrypt from 'bcrypt'
 
 export const fetchHomeVideos = async (page) => {
   let res = await prisma.video.findMany({
@@ -20,17 +20,17 @@ export const fetchHomeVideos = async (page) => {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           comment: true,
           liker: true,
-          collector: true,
-        },
-      },
-    },
+          collector: true
+        }
+      }
+    }
   })
   res = res.map((item) => {
     return {
@@ -38,8 +38,8 @@ export const fetchHomeVideos = async (page) => {
       author: {
         id: item.author.id,
         userName: item.author.name,
-        avatar: item.author.image,
-      },
+        avatar: item.author.image
+      }
     }
   })
   return res
@@ -47,7 +47,7 @@ export const fetchHomeVideos = async (page) => {
 export const fetchCreatorVideos = async (userId) => {
   let res = await prisma.video.findMany({
     where: {
-      authorId: userId,
+      authorId: userId
     },
     select: {
       id: true,
@@ -62,10 +62,17 @@ export const fetchCreatorVideos = async (userId) => {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
-    },
+      _count: {
+        select: {
+          comment: true,
+          liker: true,
+          collector: true
+        }
+      }
+    }
   })
   res = res.map((item) => {
     return {
@@ -73,8 +80,8 @@ export const fetchCreatorVideos = async (userId) => {
       author: {
         id: item.author.id,
         userName: item.author.name,
-        avatar: item.author.image,
-      },
+        avatar: item.author.image
+      }
     }
   })
   return res
@@ -85,8 +92,8 @@ export const fetchCommentByVideoId = async (videoId, page) => {
   const commentNum = await prisma.comment.count({
     where: {
       videoId: videoId,
-      commentOn: null,
-    },
+      commentOn: null
+    }
   })
   try {
     comments = await prisma.comment.findMany({
@@ -94,22 +101,22 @@ export const fetchCommentByVideoId = async (videoId, page) => {
       take: 15,
       where: {
         videoId: videoId,
-        commentOn: null,
+        commentOn: null
       },
       include: {
         author: {
           select: {
             id: true,
             name: true,
-            image: true,
-          },
+            image: true
+          }
         },
         _count: {
           select: {
-            commentBy: true,
-          },
-        },
-      },
+            commentBy: true
+          }
+        }
+      }
     })
   } catch (error) {
     console.log(error)
@@ -120,13 +127,13 @@ export const fetchCommentByVideoId = async (videoId, page) => {
       author: {
         id: item.author.id,
         userName: item.author.name,
-        avatar: item.author.image,
-      },
+        avatar: item.author.image
+      }
     }
   })
   return {
     comments,
-    commentNum,
+    commentNum
   }
 }
 
@@ -135,17 +142,17 @@ export const fetchSubCommentById = async (id, page) => {
     skip: page * 5,
     take: 5,
     where: {
-      commentId: id,
+      commentId: id
     },
     include: {
       author: {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
-      },
-    },
+          image: true
+        }
+      }
+    }
   })
   comments = comments.map((item) => {
     return {
@@ -153,8 +160,8 @@ export const fetchSubCommentById = async (id, page) => {
       author: {
         id: item.author.id,
         userName: item.author.name,
-        avatar: item.author.image,
-      },
+        avatar: item.author.image
+      }
     }
   })
   return comments
@@ -163,8 +170,29 @@ export const authenticate = async (username, password) => {
   const res = await prisma.user.findUnique({
     where: {
       name: username,
-      password,
-    },
+    }
   })
+  if(!(await bcrypt.compare(password,res.password))){
+    return null
+  }
   return res
+}
+
+export const resgister = async(username, password)=>{
+  const existUser = await prisma.user.findUnique({
+    where:{
+      name:username
+    }
+  })
+  if(existUser){
+    return {error:'用户名已存在'}
+  }
+  const hashPassword = await bcrypt.hash(password,10)
+  const res = await prisma.user.create({
+    data:{
+      name:username,
+      password:hashPassword
+    }
+  })
+  return {success:'注册成功'}
 }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
+import useAuth from '@/app/hooks/useAuth'
 
 export default function SubComment(props) {
   const { content, author, createdAt, likedNum, _count, id } = props
@@ -18,15 +19,15 @@ export default function SubComment(props) {
       setShowReplyInput(false)
     }
   }, [lastReplyShow])
-  const handleReply = () => {
+  const handleReply = useAuth(() => {
     setShowReplyInput(true)
     setLastReplyShow(curReplyShow)
     setCurReplyShow(id)
-  }
+  })
   const [isLike, setIsLike] = useState(false)
-  const handleLikeClick = () => {
+  const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
-  }
+  })
   const hideReplyInput = () => {
     setShowReplyInput(false)
   }
@@ -35,11 +36,7 @@ export default function SubComment(props) {
       <Row wrap={false} className="mt-3">
         <Col span={2}></Col>
         <Col span={2}>
-          <Avatar
-            size={30}
-            src={author.avatar}
-            className="!mr-2"
-          ></Avatar>
+          <Avatar size={30} src={author.avatar} className="!mr-2"></Avatar>
         </Col>
         <Col span={17}>
           <Link
@@ -48,13 +45,11 @@ export default function SubComment(props) {
           >
             <span className="text-sm">{author.usreName}</span>
           </Link>
-          <p className=" text-base leading-[18px]">
-            {content}
-          </p>
+          <p className=" text-base leading-[18px]">{content}</p>
           <div className="text-gray-500 my-0.5">
             <span>{createdAt.toLocaleString()}</span>
             <span className="ml-8 hover:cursor-pointer" onClick={handleReply}>
-              Reply
+              回复
             </span>
           </div>
         </Col>
@@ -87,9 +82,7 @@ export default function SubComment(props) {
           <Col span={2}></Col>
           <Col span={2}></Col>
           <Col span={17}>
-            <Reply
-              placeholder="回复..."
-            ></Reply>
+            <Reply placeholder="回复..."></Reply>
           </Col>
           <Col span={2}>
             <Button

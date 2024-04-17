@@ -5,6 +5,7 @@ import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { resgister } from '@/app/action/action'
 
 export default function page() {
   const showLogin = useHomeStore((state) => state.showLogin)
@@ -20,18 +21,25 @@ export default function page() {
   const handleClose = () => {
     setShowLogin(false)
   }
-  const handleSubmit =async (values)=>{
+  const handleSubmit = async (values) => {
     // console.log(values);
-    
-      const res =  await signIn('credentials',{...values,redirect: false,})
+    if (isRegister) {
+      const res = await resgister(values.userName,values.password)
       if(res.error){
-        message.error('用户名或密码错误')
+        message.error(res.error)
       }else{
+        message.success('注册成功')
+        setIsRegister(false)
+      }
+    } else {
+      const res = await signIn('credentials', { ...values, redirect: false })
+      if (res.error) {
+        message.error('用户名或密码错误')
+      } else {
         router.refresh()
         setShowLogin(false)
       }
-
-    
+    }
   }
   return (
     <>

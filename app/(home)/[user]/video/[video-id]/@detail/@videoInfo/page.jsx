@@ -1,25 +1,10 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { Spin } from 'antd'
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Menu,
-  Row,
-  Tooltip,
-  message,
-} from 'antd'
+import { Avatar, Button, Card, Col, ConfigProvider, Menu, Row, Tooltip, message } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
-import {
-  HeartFilled,
-  MessageFilled,
-  SendOutlined,
-  StarFilled,
-} from '@ant-design/icons'
+import { HeartFilled, MessageFilled, SendOutlined, StarFilled } from '@ant-design/icons'
 import { usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
@@ -28,6 +13,7 @@ import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { fetchCommentByVideoId } from '@/app/action/action'
+import useAuth from '@/app/hooks/useAuth'
 
 export default function page() {
   const [messageApi, contextHolder] = message.useMessage()
@@ -42,9 +28,9 @@ export default function page() {
   const [commentList, setCommentList] = useState([])
   const spinRef = useRef()
   const [commentpage, setCommentPage] = useState(0)
-  const [commentNum,setCommentNum] = useState(-1)
+  const [commentNum, setCommentNum] = useState(-1)
   const user = useHomeStore((state) => {
-    const videoId = state.currentPlayId 
+    const videoId = state.currentPlayId
     let item
     if (isCreatorVideosOn) {
       item = state.creatorVideos.find((item) => item.id == videoId)
@@ -57,10 +43,11 @@ export default function page() {
   })
   const videoId = useHomeStore((state) => state.currentPlayId)
   const curVideo = useHomeStore((state) => {
-    const videoId = state.currentPlayId 
+    const videoId = state.currentPlayId
     let video
     if (isCreatorVideosOn) {
       video = state.creatorVideos.find((item) => item.id == videoId)
+      console.log(video)
     } else {
       video = state.itemList.find((item) => item.id == videoId)
     }
@@ -69,36 +56,37 @@ export default function page() {
   const { desc, _count } = curVideo
   const items = [
     {
-      label: (
-        <div className="font-bold w-[231px] text-center">{`Comments(${_count.comment})`}</div>
-      ),
-      key: 'comments',
+      label: <div className="font-bold w-[231px] text-center">{`Comments(${_count.comment})`}</div>,
+      key: 'comments'
     },
     {
-      label: (
-        <div className="font-bold w-[231px] text-center">Creator videos</div>
-      ),
-      key: 'Creator videos',
-    },
+      label: <div className="font-bold w-[231px] text-center">Creator videos</div>,
+      key: 'Creator videos'
+    }
   ]
   const { userName, id: userId, avatar } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
-
+  const [isFollow,setIsFollw] =useState(false)
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
   }
-  const handleLikeClick = () => {
+  const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
-  }
-  const handleFavorites = () => {
+  })
+  const handleFavorites = useAuth(() => {
     setIsFavorite((pre) => !pre)
-  }
+  })
+  const handleFollow =useAuth(
+    ()=>{
+      setIsFollw(pre=>!pre)
+    }
+  )
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
-      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
+      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60'
     })
   }
   useEffect(() => {
@@ -111,7 +99,7 @@ export default function page() {
   useEffect(() => {
     const options = {
       rootMargin: '0px 0px 0px -90px',
-      threshold: [0],
+      threshold: [0]
     }
     const observer = new IntersectionObserver(async ([entry]) => {
       if (entry.isIntersecting) {
@@ -152,26 +140,26 @@ export default function page() {
             colorBgContainer: 'rgb(247,247,248)',
             colorTextPlaceholder: 'rgb(77,79,87)',
             colorBgSpotlight: 'rgb(97,97,97)',
-            colorText: 'black',
+            colorText: 'black'
           },
           components: {
             Message: {
-              contentBg: 'transparent',
+              contentBg: 'transparent'
             },
             Menu: {
               itemColor: 'rgb(116,117,124)',
-              itemHoverColor: 'rgb(116,117,124)',
+              itemHoverColor: 'rgb(116,117,124)'
             },
             Input: {
-              activeBorderColor: 'rgb(197,197,201)',
-            },
-          },
+              activeBorderColor: 'rgb(197,197,201)'
+            }
+          }
         }}
       >
         <Card
           style={{
             width: 496,
-            margin: 16,
+            margin: 16
           }}
         >
           <Meta
@@ -191,12 +179,11 @@ export default function page() {
                     size="large"
                     style={{
                       width: '100px',
-                      color: 'white',
-                      backgroundColor: 'rgb(254,44,85)',
                     }}
-                    className="hover:!bg-rose-500"
+                    className={isFollow?'hover:!bg-gray-600 !bg-gray-400 !text-black':"hover:!bg-rose-700 !bg-rose-500 !text-white"}
+                    onClick={handleFollow}
                   >
-                    关注
+                    {isFollow?'已关注':'关注'}
                   </Button>
                 </Col>
               </Row>
@@ -225,7 +212,7 @@ export default function page() {
         </Card>
         <Row
           style={{
-            padding: '0px 15px',
+            padding: '0px 15px'
           }}
           justify={'space-between'}
         >
@@ -239,18 +226,14 @@ export default function page() {
                 height: '32px',
                 width: '32px',
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
-              className={`active:!bg-gray-200 ${
-                isLike ? '!text-rose-500' : ''
-              }`}
+              className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
               size="large"
               icon={<HeartFilled className={'!text-l'} />}
               onClick={handleLikeClick}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {_count.liker}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{_count.liker}</strong>
             <Button
               type="round"
               style={{
@@ -261,14 +244,12 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
               icon={<MessageFilled className="!text-l" />}
               className={`active:!bg-gray-200`}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {_count.comment}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{_count.comment}</strong>
             <Button
               type="round"
               style={{
@@ -279,17 +260,13 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
               icon={<StarFilled className="!text-l" />}
-              className={`active:!bg-gray-200 ${
-                isFavorite ? '!text-yellow-400' : ''
-              }`}
+              className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
               onClick={handleFavorites}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {_count.collector}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{_count.collector}</strong>
           </Col>
           <Col span={3}>
             <Tooltip placement="top" title="发送给朋友">
@@ -303,7 +280,7 @@ export default function page() {
                   width: '32px',
                   border: 0,
                   backgroundColor: 'rgb(254,44,85)',
-                  color: 'white',
+                  color: 'white'
                 }}
                 icon={<SendOutlined className="!text-l" />}
                 // onClick={handleFavorites}
@@ -316,15 +293,11 @@ export default function page() {
             margin: '0px 15px',
             width: '494px',
             backgroundColor: 'rgb(241,241,242)',
-            borderRadius: '5px',
+            borderRadius: '5px'
           }}
         >
           <Col span={19}>
-            <div
-              className={
-                'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'
-              }
-            >
+            <div className={'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'}>
               {`current/host/current/current/${path}`}
             </div>
           </Col>
@@ -337,7 +310,7 @@ export default function page() {
                   border: 0,
                   width: '100%',
                   backgroundColor: 'transparent',
-                  color: 'black',
+                  color: 'black'
                 }}
                 className="hover:!bg-gray-200"
                 onClick={copyHandler}
@@ -349,9 +322,7 @@ export default function page() {
         </Row>
         <Menu
           onClick={handleMenuClick}
-          defaultSelectedKeys={
-            isCreatorVideosOn ? 'Creator videos' : 'comments'
-          }
+          defaultSelectedKeys={isCreatorVideosOn ? 'Creator videos' : 'comments'}
           mode="horizontal"
           items={items}
           style={{
@@ -359,7 +330,7 @@ export default function page() {
             top: 0,
             color: 'black',
             backgroundColor: 'white',
-            zIndex: 99,
+            zIndex: 99
           }}
         />
 
@@ -393,7 +364,7 @@ export default function page() {
             style={{
               padding: '15px',
               overflowY: 'auto',
-              flex: 1,
+              flex: 1
             }}
           >
             {creatorVideos.map((item) => {
@@ -403,7 +374,7 @@ export default function page() {
                   style={{
                     height: 240,
                     paddingLeft: 10,
-                    paddingBottom: 10,
+                    paddingBottom: 10
                   }}
                   key={item.id}
                 >

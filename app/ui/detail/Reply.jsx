@@ -1,4 +1,5 @@
 'use client'
+import { useHomeStore } from '@/app/stores/homeStore'
 import { SmileOutlined } from '@ant-design/icons'
 import { Button, Input, Popover, Tooltip } from 'antd'
 import Compact from 'antd/es/space/Compact'
@@ -6,6 +7,7 @@ import EmojiPicker from 'emoji-picker-react'
 import React, { useState } from 'react'
 
 export default function Reply(props) {
+  const session = useHomeStore(state=>state.session)
   const { placeholder } = props
   const [commentInput, setCommentInput] = useState('')
   const inputChange = (e) => {
@@ -26,7 +28,8 @@ export default function Reply(props) {
           color: 'black',
           backgroundColor: 'rgb(241,241,242)',
         }}
-        placeholder={placeholder}
+        disabled={!session}
+        placeholder={!session?'请登录后再评论...':placeholder}
         suffix={
           <Popover
             placement="topLeft"
