@@ -5,8 +5,7 @@ import { AntdRegistry } from '@ant-design/nextjs-registry'
 import { ConfigProvider, Layout } from 'antd'
 import Header from '../ui/home/header'
 import Sider from '../ui/home/sider'
-import { getServerSession } from "next-auth/next"
-import { authOptions } from './api/auth/[...nextauth]/route' 
+import { auth } from "@/auth"
 
 const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
@@ -15,7 +14,7 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children, login }) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   return (
     <html lang="en">
       <body className="text-black min-w-[500px]">

@@ -32,13 +32,9 @@ const getCreatorVideos = async (userId) => {
   }
   return itemList
 }
-const getCommentList = (id) => {
-  const commentList = []
-}
 export const useHomeStore = create((set, get) => ({
   session:null,
   user:null,
-  isLogin: false,
   showLogin: false,
   isAutoRoll: false,
   itemList: [],
@@ -64,11 +60,6 @@ export const useHomeStore = create((set, get) => ({
   setShowLogin: (boolen) => {
     set(() => {
       return { showLogin: boolen }
-    })
-  },
-  setIsLogin: (boolen) => {
-    set(() => {
-      return { isLogin: boolen }
     })
   },
   setCurReplyShow: (id) => {

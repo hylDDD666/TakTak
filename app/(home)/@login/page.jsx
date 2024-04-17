@@ -4,13 +4,13 @@ import { CloseOutlined, LeftOutlined, LockOutlined, UserOutlined } from '@ant-de
 import { Button, Form, Input, message } from 'antd'
 import React, { useState } from 'react'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function page() {
   const showLogin = useHomeStore((state) => state.showLogin)
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
-  const setIsLogin =useHomeStore(state=>state.setIsLogin)
-  const setUser = useHomeStore(state=>state.setUser)
   const [isRegister, setIsRegister] = useState(false)
+  const router = useRouter()
   const handleRegisterClick = () => {
     setIsRegister(true)
   }
@@ -27,8 +27,8 @@ export default function page() {
       if(res.error){
         message.error('用户名或密码错误')
       }else{
+        router.refresh()
         setShowLogin(false)
-        setIsLogin(true)
       }
 
     

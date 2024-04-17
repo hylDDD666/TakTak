@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Menu } from 'antd'
 import Sider from 'antd/es/layout/Sider'
 import {
@@ -9,9 +9,8 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import dynamic from 'next/dynamic'
-import { usePathname } from 'next/navigation'
-const NavLink = dynamic(() => import('../nav-link'))
+import { usePathname, useRouter } from 'next/navigation'
+import { useHomeStore } from '@/app/stores/homeStore'
 
 const items1 = [
   [HomeOutlined, '推荐', ''],
@@ -25,16 +24,31 @@ const items2 = items1.map((icon, index) => {
   return {
     key: key,
     icon: React.createElement(icon[0], { className: '!text-2xl' }),
-    label: <NavLink path={`/${icon[2]}`}>{icon[1]}</NavLink>,
+    label: icon[1],
     style: { marginTop: '8px', paddingLeft: '15px' },
   }
 })
 export default function PriSider() {
+  const session = useHomeStore((state) => state.session)
+  const setShowLogin = useHomeStore((state) => state.setShowLogin)
+  const router = useRouter()
   const pathName = usePathname()
   const defaultSelectedKey =
     items1.findIndex((item) => {
       return '/' + item[2] === pathName
     }) + ''
+  const [current, setCurrent] = useState([defaultSelectedKey])
+
+  const handleSelect = useCallback(({ key }) => {
+    console.log(session);
+    if ((key === '2' || key === '4') && session === null) {
+      setShowLogin(true)
+    } else {
+      const path = items1[key * 1][2]
+      setCurrent([key])
+      router.push(`/${path}`)
+    }
+  },[session])
   return (
     <>
       <Sider
@@ -52,10 +66,11 @@ export default function PriSider() {
       >
         <Menu
           mode="inline"
-          defaultSelectedKeys={defaultSelectedKey || ''}
           className={'!h-full !text-xl !font-bold !border-r-0 '}
           items={items2}
           style={{ minWidth: 0, flex: 'auto' }}
+          onSelect={handleSelect}
+          selectedKeys={current}
         />
       </Sider>
     </>

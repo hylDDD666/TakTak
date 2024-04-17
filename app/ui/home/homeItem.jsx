@@ -1,19 +1,25 @@
 'use client'
 import { Avatar, Button, Col, Row } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
-import { HeartFilled, MergeFilled, MessageFilled, StarFilled } from '@ant-design/icons'
+import {
+  HeartFilled,
+  MergeFilled,
+  MessageFilled,
+  StarFilled,
+} from '@ant-design/icons'
 import VideoPlayer from '../video-player'
 import { Transition } from 'react-transition-group'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { useRouter } from 'next/navigation'
+import useAuth from '@/app/hooks/useAuth'
 
 const defaultStyle = {
   transition: 'all 300ms linear',
   display: 'block',
-  maxHeight: '1000px'
+  maxHeight: '1000px',
 }
 const transitionStyles = {
-  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' }
+  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' },
 }
 
 export default React.memo(function HomeItem(props) {
@@ -26,6 +32,7 @@ export default React.memo(function HomeItem(props) {
   const setCurId = useHomeStore((state) => state.setCurId)
   const router = useRouter()
   const pauseItemById = useHomeStore((state) => state.pauseItemById)
+  const [isFollow, setIsFollow] = useState(false)
   const [isCollipse, setIsCollipse] = useState(true)
   const [isLoad, setIsLoad] = useState(false)
   const [isLike, setIsLike] = useState(false)
@@ -36,17 +43,25 @@ export default React.memo(function HomeItem(props) {
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
   }
-  const handleLikeClick = () => {
+  const handleFollow = useAuth(() => {
+    setIsFollow((pre) => !pre)
+  })
+  const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
-  }
-  const handleFavorites = () => {
+  })
+  const handleFavorites = useAuth(() => {
     setIsFavorite((pre) => !pre)
-  }
+  })
+  const handleShare = useAuth(()=>{
+    console.log('share');
+  })
   const scrollNext = () => {
     nodeRef.current.parentNode.scrollTo({
       behavior: 'smooth',
       top:
-        nodeRef.current.parentNode.scrollTop + nodeRef.current.getBoundingClientRect().bottom - 63
+        nodeRef.current.parentNode.scrollTop +
+        nodeRef.current.getBoundingClientRect().bottom -
+        63,
     })
   }
   const videoClickHandler = () => {
@@ -55,6 +70,8 @@ export default React.memo(function HomeItem(props) {
     pauseItemById(id)
     router.push(`/${user.userName}/video/${id}`, { scroll: false })
   }
+  const handleCommentClick = useAuth(videoClickHandler)
+
   useEffect(() => {
     if (isDetailOn) {
       pauseAllItems()
@@ -68,7 +85,7 @@ export default React.memo(function HomeItem(props) {
     }
     const options = {
       rootMargin: '-10% 0px 0px 200%',
-      threshold: [0, 0.5, 1]
+      threshold: [0, 0.5, 1],
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
@@ -94,7 +111,8 @@ export default React.memo(function HomeItem(props) {
     if (
       nodeRef.current &&
       props.scrollHeight >= nodeRef.current.offsetTop - 300 &&
-      props.scrollHeight <= nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
+      props.scrollHeight <=
+        nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
     ) {
       if (!isDetailOn) {
         playItem(id)
@@ -102,7 +120,12 @@ export default React.memo(function HomeItem(props) {
     }
   }, [props.scrollHeight])
   return (
-    <Transition nodeRef={nodeRef} timeout={500} in={!disLike} unmountOnExit={true}>
+    <Transition
+      nodeRef={nodeRef}
+      timeout={500}
+      in={!disLike}
+      unmountOnExit={true}
+    >
       {(state) => {
         return (
           <div
@@ -146,17 +169,22 @@ export default React.memo(function HomeItem(props) {
                   style={{
                     width: '100px',
                     color: 'rgb(254,44,85)',
-                    borderColor: 'rgb(254,44,85)'
+                    borderColor: 'rgb(254,44,85)',
                   }}
                   className="hover:!bg-rose-100"
+                  onClick={handleFollow}
                 >
-                  关注
+                  {isFollow ? '已关注' : '关注'}
                 </Button>
               </Col>
             </Row>
             <Row justify={'center'} wrap={false}>
               <Col flex={'60px'}></Col>
-              <Col flex={'auto'} style={{ maxWidth: '610px', display: 'flex' }} className="pb-10">
+              <Col
+                flex={'auto'}
+                style={{ maxWidth: '610px', display: 'flex' }}
+                className="pb-10"
+              >
                 <VideoPlayer
                   videoInfo={videoInfo.videoInfo}
                   id={id}
@@ -174,14 +202,18 @@ export default React.memo(function HomeItem(props) {
                       marginBottom: '5px',
                       padding: 0,
                       height: '48px',
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
-                    className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
+                    className={`active:!bg-gray-200 ${
+                      isLike ? '!text-rose-500' : ''
+                    }`}
                     size="large"
                     icon={<HeartFilled className={'!text-xl'} />}
                     onClick={handleLikeClick}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">{videoInfo.likeNum}</strong>
+                  <strong className="w-full text-center text-xs mb-2">
+                    {videoInfo.likeNum}
+                  </strong>
                   <Button
                     type="round"
                     style={{
@@ -190,12 +222,12 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<MessageFilled className="!text-xl" />}
                     className={`active:!bg-gray-200`}
-                    onClick={videoClickHandler}
+                    onClick={handleCommentClick }
                   ></Button>
                   <strong className="w-full text-center text-xs mb-2">
                     {videoInfo.commentsNum}
@@ -208,11 +240,13 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<StarFilled className="!text-xl" />}
-                    className={`active:!bg-gray-200 ${isFavorite ? '!text-yellow-400' : ''}`}
+                    className={`active:!bg-gray-200 ${
+                      isFavorite ? '!text-yellow-400' : ''
+                    }`}
                     onClick={handleFavorites}
                   ></Button>
                   <strong className="w-full text-center text-xs mb-2">
@@ -226,13 +260,16 @@ export default React.memo(function HomeItem(props) {
                       padding: 0,
                       height: '48px',
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)'
+                      backgroundColor: 'rgb(241,241,242)',
                     }}
                     size="large"
                     icon={<MergeFilled className="!text-xl" />}
                     className={`active:!bg-gray-200 `}
+                    onClick={handleShare}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">{videoInfo.shareNum}</strong>
+                  <strong className="w-full text-center text-xs mb-2">
+                    {videoInfo.shareNum}
+                  </strong>
                 </div>
               </Col>
             </Row>

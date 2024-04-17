@@ -1,13 +1,17 @@
 'use client'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { LogoutOutlined, MessageOutlined, SendOutlined, UserOutlined } from '@ant-design/icons'
+import {
+  LogoutOutlined,
+  MessageOutlined,
+  SendOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import { Avatar, Button, Popover, Tooltip } from 'antd'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
+import { signOut } from 'next-auth/react'
 
 export default function LoginButton(props) {
-  const isLogin = useHomeStore((state) => state.isLogin)
-  const setIsLogin = useHomeStore((state) => state.setIsLogin)
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
   const setSession = useHomeStore((state) => state.setSession)
   const router = useRouter()
@@ -17,19 +21,19 @@ export default function LoginButton(props) {
   useEffect(() => {
     if (props.session) {
       setSession(props.session)
-      setIsLogin(true)
     }
-  }, [])
+  }, [props.session])
 
-  const handleProfileClick = ()=>{
+  const handleProfileClick = () => {
     router.push(`/${props.session.user.name}`)
   }
-  const handleLogoutClick =()=>{
-    
+  const handleLogoutClick = () => {
+    signOut()
+    router.refresh()
   }
   return (
     <>
-      {!isLogin && (
+      {!props.session && (
         <Button
           style={{ fontWeight: 'bold', marginRight: '10px' }}
           size="large"
@@ -39,7 +43,7 @@ export default function LoginButton(props) {
           登录
         </Button>
       )}
-      {isLogin && (
+      {props.session && (
         <>
           <Tooltip title={'消息'}>
             <Button

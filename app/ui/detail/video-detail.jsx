@@ -45,7 +45,7 @@ export default function VideoDetail() {
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const setIsCreatorVideosOn = useHomeStore((state) => state.setIsCreatorVideosOn)
   const params = useParams()
-  const id = params['video-id']*1
+  const id = params['video-id']
   // const id = useHomeStore((state) => state.currentPlayId) * 1
   const playerRef = useRef()
   const previewRef = useRef()
@@ -58,9 +58,9 @@ export default function VideoDetail() {
   const url = useHomeStore((state) => {
     let item
     if (isCreatorVideosOn) {
-      item = state.creatorVideos.find((item) => item.id === id)
+      item = state.creatorVideos.find((item) => item.id == id)
     } else {
-      item = state.itemList.find((item) => item.id === id)
+      item = state.itemList.find((item) => item.id == id)
     }
     if (item) {
       return item.url
@@ -68,9 +68,9 @@ export default function VideoDetail() {
   })
   const index = useHomeStore((state) => {
     if (isCreatorVideosOn) {
-      return state.creatorVideos.findIndex((item) => item.id === id)
+      return state.creatorVideos.findIndex((item) => item.id == id)
     } else {
-      return state.itemList.findIndex((item) => item.id === id)
+      return state.itemList.findIndex((item) => item.id == id)
     }
   })
   const listLength = useHomeStore((state) => {

@@ -44,25 +44,25 @@ export default function page() {
   const [commentpage, setCommentPage] = useState(0)
   const [commentNum,setCommentNum] = useState(-1)
   const user = useHomeStore((state) => {
-    const videoId = state.currentPlayId * 1
+    const videoId = state.currentPlayId 
     let item
     if (isCreatorVideosOn) {
-      item = state.creatorVideos.find((item) => item.id === videoId)
+      item = state.creatorVideos.find((item) => item.id == videoId)
     } else {
-      item = state.itemList.find((item) => item.id === videoId)
+      item = state.itemList.find((item) => item.id == videoId)
     }
     if (item) {
       return item.author
     }
   })
-  const videoId = useHomeStore((state) => state.currentPlayId * 1)
+  const videoId = useHomeStore((state) => state.currentPlayId)
   const curVideo = useHomeStore((state) => {
-    const videoId = state.currentPlayId * 1
+    const videoId = state.currentPlayId 
     let video
     if (isCreatorVideosOn) {
-      video = state.creatorVideos.find((item) => item.id === videoId)
+      video = state.creatorVideos.find((item) => item.id == videoId)
     } else {
-      video = state.itemList.find((item) => item.id === videoId)
+      video = state.itemList.find((item) => item.id == videoId)
     }
     return video
   })
