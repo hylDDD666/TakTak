@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Menu } from 'antd'
 import Sider from 'antd/es/layout/Sider'
 import {
@@ -34,21 +34,38 @@ export default function PriSider() {
   const router = useRouter()
   const pathName = usePathname()
   const defaultSelectedKey =
-    items1.findIndex((item) => {
-      return '/' + item[2] === pathName
-    }) + ''
+    session && '/' + session.user.name === pathName
+      ? '4'
+      : items1.findIndex((item) => {
+          return '/' + item[2] === pathName
+        }) + ''
   const [current, setCurrent] = useState([defaultSelectedKey])
+  useEffect(() => {
+    setCurrent(
+      session && '/' + session.user.name === pathName
+        ? '4'
+        : items1.findIndex((item) => {
+            return '/' + item[2] === pathName
+          }) + ''
+    )
+  }, [session])
 
-  const handleSelect = useCallback(({ key }) => {
-    console.log(session);
-    if ((key === '2' || key === '4') && session === null) {
-      setShowLogin(true)
-    } else {
-      const path = items1[key * 1][2]
-      setCurrent([key])
-      router.push(`/${path}`)
-    }
-  },[session])
+  const handleSelect = useCallback(
+    ({ key }) => {
+      if ((key === '2' || key === '4') && session === null) {
+        setShowLogin(true)
+      } else {
+        const path = items1[key * 1][2]
+        setCurrent([key])
+        if (key !== '4') {
+          router.push(`/${path}`)
+        } else {
+          router.push(`/${session.user.name}`)
+        }
+      }
+    },
+    [session]
+  )
   return (
     <>
       <Sider

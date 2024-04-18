@@ -78,8 +78,12 @@ export default function page() {
                     {
                       required: true,
                       message: 'Please input your Username!'
+                    },{
+                      pattern:/\S\w/,
+                      message:'用户名不合法'
                     }
                   ]}
+                  extra={isRegister?'用户名只能包含字母、数字、下划线和句点。':''}
                 >
                   <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}

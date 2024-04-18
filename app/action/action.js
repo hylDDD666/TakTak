@@ -196,3 +196,28 @@ export const resgister = async(username, password)=>{
   })
   return {success:'注册成功'}
 }
+export const getUserInfo = async (username)=>{
+  const res = await prisma.user.findUnique({
+    where:{
+      name:username
+    },
+    include:{
+      creatorVideos:{
+        select:{
+          id:true,
+          cover:true,
+          desc:true
+        }
+      }
+      ,
+      _count:{
+        select:{
+          following:true,
+          followedBy:true
+        }
+      }
+
+    }
+  })
+  return  res
+}
