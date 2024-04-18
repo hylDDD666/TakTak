@@ -47,7 +47,6 @@ export default function page() {
     let video
     if (isCreatorVideosOn) {
       video = state.creatorVideos.find((item) => item.id == videoId)
-      console.log(video)
     } else {
       video = state.itemList.find((item) => item.id == videoId)
     }

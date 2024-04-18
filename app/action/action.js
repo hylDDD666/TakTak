@@ -169,55 +169,47 @@ export const fetchSubCommentById = async (id, page) => {
 export const authenticate = async (username, password) => {
   const res = await prisma.user.findUnique({
     where: {
-      name: username,
+      name: username
     }
   })
-  if(!(await bcrypt.compare(password,res.password))){
+  if (!(await bcrypt.compare(password, res.password))) {
     return null
   }
   return res
 }
 
-export const resgister = async(username, password)=>{
+export const resgister = async (username, password) => {
   const existUser = await prisma.user.findUnique({
-    where:{
-      name:username
+    where: {
+      name: username
     }
   })
-  if(existUser){
-    return {error:'用户名已存在'}
+  if (existUser) {
+    return { error: '用户名已存在' }
   }
-  const hashPassword = await bcrypt.hash(password,10)
+  const hashPassword = await bcrypt.hash(password, 10)
   const res = await prisma.user.create({
-    data:{
-      name:username,
-      password:hashPassword
+    data: {
+      name: username,
+      password: hashPassword
     }
   })
-  return {success:'注册成功'}
+  return { success: '注册成功' }
 }
-export const getUserInfo = async (username)=>{
+export const getUserInfo = async (username) => {
   const res = await prisma.user.findUnique({
-    where:{
-      name:username
+    where: {
+      name: username
     },
-    include:{
-      creatorVideos:{
-        select:{
-          id:true,
-          cover:true,
-          desc:true
+    include: {
+      creatorVideos: true,
+      _count: {
+        select: {
+          following: true,
+          followedBy: true
         }
       }
-      ,
-      _count:{
-        select:{
-          following:true,
-          followedBy:true
-        }
-      }
-
     }
   })
-  return  res
+  return res
 }

@@ -57,7 +57,7 @@ export default async function page({ params }) {
           </span>
         </Col>
       </Row>
-     <UserMenu></UserMenu>
+     <UserMenu videos={userInfo.creatorVideos}></UserMenu>
     </div>
   )
 }
