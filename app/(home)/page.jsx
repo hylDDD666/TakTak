@@ -7,10 +7,10 @@ import BackTop from 'antd/es/float-button/BackTop'
 import debounce from '../lib/debounce'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
-
-
 export default React.memo(function Home() {
-  const { itemList, fetchItemData } = useHomeStore((state) => state)
+  const { itemList, fetchItemData, addPage } = useHomeStore(
+    (state) => state
+  )
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
@@ -22,6 +22,7 @@ export default React.memo(function Home() {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         fetchItemData()
+        addPage()
       }
     }, options)
     if (spinRef.current) {
@@ -51,12 +52,12 @@ export default React.memo(function Home() {
       {itemList.map((item) => {
         const video = {
           videoInfo: {
-            url:item.url,
+            url: item.url,
             isPlaying: item.isPlaying,
-            cover:item.cover,
-            videoHeight:item.videoHeight,
-            videoWidth:item.videoWidth,
-            type:item.type
+            cover: item.cover,
+            videoHeight: item.videoHeight,
+            videoWidth: item.videoWidth,
+            type: item.type,
           },
           likeNum: item._count.liker,
           commentsNum: item._count.comment,

@@ -48,7 +48,7 @@ export default function PriSider() {
             return '/' + item[2] === pathName
           }) + ''
     )
-  }, [session])
+  }, [session,pathName])
 
   const handleSelect = useCallback(
     ({ key }) => {

@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { PlayCircleOutlined, SmallDashOutlined } from '@ant-design/icons'
 import { useParams, useRouter } from 'next/navigation'
@@ -41,7 +41,7 @@ export default function PlayerCard(props) {
       router.replace(`/${params.user}/video/${props.id}`)
     }
   }
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { videoWidth, videoHeight } = item
     const containerHeight = 230
     const containerWidth = 155.66

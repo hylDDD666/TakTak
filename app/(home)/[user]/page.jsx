@@ -7,7 +7,6 @@ import React from 'react'
 
 export default async function page({ params }) {
   const userInfo = await getUserInfo(params.user)
-  console.log(userInfo)
   return (
     <div
       style={{

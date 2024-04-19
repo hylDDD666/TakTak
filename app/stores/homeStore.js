@@ -39,6 +39,8 @@ export const useHomeStore = create((set, get) => ({
   isAutoRoll: false,
   itemList: [],
   creatorVideos: [],
+  userItemList:[],
+  isUserVideoDetailOn:false,
   page: 0,
   currentPlayId: 0,
   curDetailId: 0,
@@ -47,6 +49,26 @@ export const useHomeStore = create((set, get) => ({
   isCreatorVideosOn: false,
   lastReplyShow: -1,
   curReplyShow: -1,
+  setIsUserVideoDetailOn:(boolean)=>{
+    set(()=>{
+      return {isUserVideoDetailOn:boolean}
+    })
+  },
+  setUserItemList:(list)=>{
+    set(()=>{
+      return {userItemList:list}
+    })
+  },
+  initItemList:()=>{
+    set(()=>{
+      return {itemList:[],page:0}
+    })
+  },
+  setItemList:(list)=>{
+    set(()=>{
+      return {itemList:list}
+    })
+  },
   setSession:(session)=>{
     set(()=>{
       return {session}
@@ -90,10 +112,16 @@ export const useHomeStore = create((set, get) => ({
     })
   },
   fetchItemData: async () => {
+    // console.log(get().itemList);
     const res = await getItemList(get().page)
     set((state) => {
       const newList = [...state.itemList, ...res]
-      return { itemList: newList, page: state.page + 1 }
+      return { itemList: newList }
+    })
+  },
+  addPage:()=>{
+    set((state)=>{
+      return {page:state.page+1}
     })
   },
   setCurId: (id) => {

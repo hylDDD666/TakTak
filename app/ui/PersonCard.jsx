@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Avatar, Button } from 'antd'
 import ReactPlayer from 'react-player'
 import { useRouter } from 'next/navigation'
@@ -33,7 +33,7 @@ export default function PersonCard(props) {
   const toggleFollow = () => {
     setIsFollowed((pre) => !pre)
   }
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { videoWidth, videoHeight } = video
     // const { videoWidth, videoHeight } = item.video.videoInfo
     const containerHeight = 300

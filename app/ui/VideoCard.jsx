@@ -1,10 +1,13 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { usePathname, useRouter } from 'next/navigation'
+import { useHomeStore } from '../stores/homeStore'
 
 export default function VideoCard(props) {
   const [isPlaying, setIsPlaying] = useState(false)
+  const setIsDetailOn =useHomeStore(state=>state.setIsDetailOn)
+  const setIsUserVideoDetailOn =useHomeStore(state=>state.setIsUserVideoDetailOn)
   const router = useRouter()
   const cover = props.video.cover
   const containerRef = useRef()
@@ -17,11 +20,14 @@ export default function VideoCard(props) {
     setIsPlaying(false)
   }
   const path = usePathname()
-  const handleVideoClick =()=>{
+  const handleVideoClick =async()=>{
+    await setIsDetailOn(true)
+    setIsUserVideoDetailOn(true)
     router.push(`${path}/video/${props.video.id}`)
+    
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { videoWidth, videoHeight } = props.video
     const containerHeight = 300
     const containerWidth = 210
