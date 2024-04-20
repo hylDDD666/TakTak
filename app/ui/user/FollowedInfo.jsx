@@ -92,7 +92,7 @@ export default function FollowedInfo(props) {
           mode="horizontal"
           onSelect={handleSelect}
         ></Menu>
-        <div className=" h-128 w-full px-3">
+        <div className=" h-128 w-full px-3 overflow-y-auto scrollbar-w-0 scrollbar ">
           <List
             itemLayout="horizontal"
             dataSource={followedList}
