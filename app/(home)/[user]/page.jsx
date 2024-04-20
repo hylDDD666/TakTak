@@ -2,16 +2,15 @@ import { getFollowedAndFans, getUserInfo } from '@/app/action/action'
 import FollowButton from '@/app/ui/user/FollowButton'
 import UserMenu from '@/app/ui/user/UserMenu'
 import { auth } from '@/auth'
-import { EditOutlined } from '@ant-design/icons'
 import { Avatar, Button, Col, Menu, Row } from 'antd'
 import React from 'react'
 
 export default async function page({ params }) {
-  const userInfo = await getUserInfo(params.user)
   const session = await auth()
+  const userInfo = await getUserInfo(params.user)
   const followedAndFans = await getFollowedAndFans(params.user)
   const {following,followedBy} = followedAndFans
-  const isFollowed = followedBy.find(item=>item.name === session.user.name)
+  const isFollowed = followedBy.find(item=>session && item.name === session.user.name)
   return (
     <div
       style={{

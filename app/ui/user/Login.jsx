@@ -7,7 +7,7 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { resgister } from '@/app/action/action'
 
-export default function page() {
+export default function Login() {
   const showLogin = useHomeStore((state) => state.showLogin)
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
   const [isRegister, setIsRegister] = useState(false)
@@ -22,7 +22,6 @@ export default function page() {
     setShowLogin(false)
   }
   const handleSubmit = async (values) => {
-    // console.log(values);
     if (isRegister) {
       const res = await resgister(values.userName,values.password)
       if(res.error){
