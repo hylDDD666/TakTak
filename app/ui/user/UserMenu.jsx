@@ -33,7 +33,7 @@ export default function UserMenu(props) {
   const setUserItemList = useHomeStore((state) => state.setUserItemList)
   const [collectedVideos, setCollectedVideos] = useState([])
   const [likedVideos, setLikedVideos] = useState([])
-  const [showSpin, setShowSpin] = useState(true)
+  const [showSpin, setShowSpin] = useState(false)
   const params = useParams()
   const handleSelect = async ({ key }) => {
     setCurrent(key)

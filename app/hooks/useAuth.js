@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import { useHomeStore } from '../stores/homeStore'
 
 export default function useAuth(func1,func2) {
   const session = useHomeStore(state=>state.session)
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
-  const clickHandler = useCallback(()=>{
+  const clickHandler = ()=>{
     if(session){
       func1()
     }else{
@@ -13,6 +13,6 @@ export default function useAuth(func1,func2) {
         func2()
       }
     }
-  },[session])
+  }
   return clickHandler
 }

@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, {useEffect, useLayoutEffect, useRef, useState } from 'react'
 import ReactPlayer from 'react-player'
 import { PlayCircleOutlined, SmallDashOutlined } from '@ant-design/icons'
 import { useParams, useRouter } from 'next/navigation'

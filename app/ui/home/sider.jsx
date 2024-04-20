@@ -50,7 +50,7 @@ export default function PriSider() {
     )
   }, [session,pathName])
 
-  const handleSelect = useCallback(
+  const handleSelect = 
     ({ key }) => {
       if ((key === '2' || key === '4') && session === null) {
         setShowLogin(true)
@@ -63,9 +63,7 @@ export default function PriSider() {
           router.push(`/${session.user.name}`)
         }
       }
-    },
-    [session]
-  )
+    }
   return (
     <>
       <Sider
