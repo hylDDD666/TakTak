@@ -1,5 +1,6 @@
 import { getFollowedAndFans, getUserInfo } from '@/app/action/action'
 import FollowButton from '@/app/ui/user/FollowButton'
+import FollowedInfo from '@/app/ui/user/FollowedInfo'
 import UserMenu from '@/app/ui/user/UserMenu'
 import { auth } from '@/auth'
 import { Avatar, Button, Col, Menu, Row } from 'antd'
@@ -9,8 +10,8 @@ export default async function page({ params }) {
   const session = await auth()
   const userInfo = await getUserInfo(params.user)
   const followedAndFans = await getFollowedAndFans(params.user)
-  const {following,followedBy} = followedAndFans
-  const isFollowed = followedBy.find(item=>session && item.name === session.user.name)
+  const { following, followedBy } = followedAndFans
+  const isFollowed = followedBy.find((item) => session && item.name === session.user.name)
   return (
     <div
       style={{
@@ -30,19 +31,20 @@ export default async function page({ params }) {
           <h2 className=" text-lg font-bold mb-2">
             {userInfo.nickName ? userInfo.nickName : userInfo.name}
           </h2>
-          <FollowButton session={session} isFollowed={isFollowed} userInfo={userInfo}></FollowButton>
+          <FollowButton
+            session={session}
+            isFollowed={isFollowed}
+            userInfo={userInfo}
+          ></FollowButton>
         </Col>
       </Row>
       <Row className="mt-2">
         <Col flex={'200px'}>
-          <span className=" text-base pr-4">
-            {<span className="font-bold pr-2 text-lg">{userInfo._count.following}</span>}
-            已关注
-          </span>
-          <span className=" text-base pr-4">
-            {<span className="font-bold pr-2 text-lg">{userInfo._count.followedBy}</span>}
-            粉丝
-          </span>
+          <FollowedInfo
+            userInfo={userInfo}
+            following={following}
+            followedBy={followedBy}
+          ></FollowedInfo>
         </Col>
       </Row>
       <Row className="mt-2 font-medium">
