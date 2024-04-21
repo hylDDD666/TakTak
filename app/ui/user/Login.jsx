@@ -44,7 +44,7 @@ export default function Login() {
     <>
       {showLogin && (
         <>
-          <div className="h-screen w-screen bg-gray-600 absolute z-50 bg-opacity-50">
+          <div className="h-screen w-screen bg-gray-600 absolute z-[999] bg-opacity-50">
             <div className="w-[480px] h-[500px] bg-white rounded-md absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-5 py-5">
               <div className=" w-full h-[40px]">
                 {isRegister && (

@@ -1,4 +1,5 @@
 'use client'
+import useAuth from '@/app/hooks/useAuth'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { SmileOutlined } from '@ant-design/icons'
 import { Button, Input, Popover, Tooltip } from 'antd'
@@ -7,7 +8,7 @@ import EmojiPicker from 'emoji-picker-react'
 import React, { useState } from 'react'
 
 export default function Reply(props) {
-  const session = useHomeStore(state=>state.session)
+  const session = useHomeStore((state) => state.session)
   const { placeholder } = props
   const [commentInput, setCommentInput] = useState('')
   const inputChange = (e) => {
@@ -17,9 +18,11 @@ export default function Reply(props) {
     // console.log(emojiData,e);
     setCommentInput((pre) => pre + emojiData.emoji)
   }
+  const handleFocus = useAuth()
   return (
-    <Compact style={{ width: '100%',marginBottom:'10px' }}>
+    <Compact style={{ width: '100%', marginBottom: '10px' }}>
       <Input
+        onFocus={handleFocus}
         onChange={inputChange}
         value={commentInput}
         style={{
@@ -28,8 +31,7 @@ export default function Reply(props) {
           color: 'black',
           backgroundColor: 'rgb(241,241,242)',
         }}
-        disabled={!session}
-        placeholder={!session?'请登录后再评论...':placeholder}
+        placeholder={!session ? '请登录后再评论...' : placeholder}
         suffix={
           <Popover
             placement="topLeft"
@@ -62,7 +64,9 @@ export default function Reply(props) {
       <Button
         size="large"
         disabled={commentInput === ''}
-        className={`!border-0 ${commentInput === ''?'text-gray-300':'!text-rose-500'} hover:!bg-white !font-semibold !bg-white !text-sm`}
+        className={`!border-0 ${
+          commentInput === '' ? 'text-gray-300' : '!text-rose-500'
+        } hover:!bg-white !font-semibold !bg-white !text-sm`}
       >
         发送
       </Button>

@@ -56,7 +56,7 @@ export default function page() {
       if (isUserVideoDetailOn) {
         item = state.userItemList.find((item) => item.id == videoId)
       } else {
-        item = state.itemList.find((item) => item.id == videoId)
+        item = state.itemList.find((item) => item.id == state.currentPlayId)
       }
     }
     if (item) {
@@ -71,7 +71,7 @@ export default function page() {
       if (isUserVideoDetailOn) {
         video = state.userItemList.find((item) => item.id == videoId)
       } else {
-        video = state.itemList.find((item) => item.id == videoId)
+        video = state.itemList.find((item) => item.id == state.currentPlayId)
       }
     }
     return video
