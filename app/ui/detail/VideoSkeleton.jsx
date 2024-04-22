@@ -61,20 +61,13 @@ export default function VideoSkeleton() {
     }
   }, [index])
 
-  const handleMouseEnter = () => {
-    setShow(true)
-  }
-  const handleMouseLeave = () => {
-    setShow(false)
-  }
 
   return (
     <>
       {domLoaded && (
         <div
           className={`h-full w-full  relative   overflow-hidden bg-black z-0`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+
         >
           <div
             className={`w-full h-full absolute bg-transparent z-10 opacity-0 ${

@@ -1,7 +1,7 @@
 'use client'
 import { HeartFilled } from '@ant-design/icons'
 import { Button } from 'antd'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { addLike, getLikeNum, subLike, validateIsLike } from '@/app/action/action'
 
@@ -24,7 +24,7 @@ export default function LikeButton(props) {
     const num = await getLikeNum(props.id)
     setLikeNum(num)
   }
-  useLayoutEffect(() => {
+  useEffect(() => {
     getIsLike()
   }, [])
   return (

@@ -3,29 +3,23 @@ import { Flex, Menu, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import VideoCard from '../VideoCard'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { getCollectVideos } from '@/app/action/action'
+import { getCollectVideos, getLikedVideos } from '@/app/action/action'
 import { useParams } from 'next/navigation'
 import { HeartOutlined, TagOutlined } from '@ant-design/icons'
 
 const items = [
   {
-    label: (
-      <div className="font-bold w-[121px] text-center text-lg py-2">视频</div>
-    ),
-    key: 'video',
+    label: <div className="font-bold w-[121px] text-center text-lg py-2">视频</div>,
+    key: 'video'
   },
   {
-    label: (
-      <div className="font-bold w-[121px] text-center text-lg py-2">收藏</div>
-    ),
-    key: 'collect',
+    label: <div className="font-bold w-[121px] text-center text-lg py-2">收藏</div>,
+    key: 'collect'
   },
   {
-    label: (
-      <div className="font-bold w-[121px] text-center text-lg py-2">已赞</div>
-    ),
-    key: 'like',
-  },
+    label: <div className="font-bold w-[121px] text-center text-lg py-2">已赞</div>,
+    key: 'like'
+  }
 ]
 
 export default function UserMenu(props) {
@@ -45,7 +39,7 @@ export default function UserMenu(props) {
     }
     if (key === 'like') {
       setShowSpin(true)
-      const res = await getCollectVideos(params.user)
+      const res = await getLikedVideos(params.user)
       setUserItemList(res)
       setLikedVideos(res)
     }
@@ -89,9 +83,10 @@ export default function UserMenu(props) {
       {current === 'collect' &&
         !showSpin &&
         (collectedVideos.length === 0 ? (
-          <div className=' text-center text-3xl font-bold mt-12 pr-56'>
+          <div className=" text-center text-3xl font-bold mt-12 pr-56">
             <TagOutlined />
-            <p>暂无收藏视频</p></div>
+            <p>暂无收藏视频</p>
+          </div>
         ) : (
           <Flex className="mt-2" gap={'small'} wrap="wrap">
             {collectedVideos.map((video) => {
@@ -109,9 +104,10 @@ export default function UserMenu(props) {
       {current === 'like' &&
         !showSpin &&
         (likedVideos.length === 0 ? (
-          <div className=' text-center text-3xl font-bold mt-12 pr-56'>
+          <div className=" text-center text-3xl font-bold mt-12 pr-56">
             <HeartOutlined />
-            <p>暂无已赞视频</p></div>
+            <p>暂无已赞视频</p>
+          </div>
         ) : (
           <Flex className="mt-2" gap={'small'} wrap="wrap">
             {likedVideos.map((video) => {

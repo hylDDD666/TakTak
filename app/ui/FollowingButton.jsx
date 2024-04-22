@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { addFollow, subFollow, validateIsFollow } from '../action/action'
 import { Button } from 'antd'
 import useAuth from '../hooks/useAuth'
@@ -18,7 +18,7 @@ export default function FollowingButton(props) {
     const res = await validateIsFollow(props.name)
     setIsFollowed(res)
   }
-  useLayoutEffect(() => {
+  useEffect(() => {
     getIsFollow()
   }, [])
   return (

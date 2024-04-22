@@ -8,16 +8,19 @@ import debounce from '../lib/debounce'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
-  const { itemList, fetchItemData, addPage } = useHomeStore(
-    (state) => state
-  )
+  const { itemList, fetchItemData, addPage } = useHomeStore((state) => state)
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
+  const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
+  const setIsUserVideoDetailOn = useHomeStore((state) => state.setIsUserVideoDetailOn)
+
   useEffect(() => {
+    setIsDetailOn(false)
+    setIsUserVideoDetailOn(false)
     const options = {
       rootMargin: '-64px 0px 0px 0px',
-      threshold: [0],
+      threshold: [0]
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
@@ -45,11 +48,11 @@ export default React.memo(function Home() {
         height: 'calc(100vh - 63px)',
         padding: '10px 10px 10px 100px',
         backgroundColor: 'white',
-        overflowY: 'scroll',
+        overflowY: 'scroll'
       }}
       onScroll={handleScroll}
     >
-      {itemList.map((item,index) => {
+      {itemList.map((item, index) => {
         const video = {
           videoInfo: {
             url: item.url,
@@ -57,16 +60,16 @@ export default React.memo(function Home() {
             cover: item.cover,
             videoHeight: item.videoHeight,
             videoWidth: item.videoWidth,
-            type: item.type,
+            type: item.type
           },
           likeNum: item._count.liker,
           commentsNum: item._count.comment,
           collectNum: item._count.collector,
-          shareNum: item.shareNum,
+          shareNum: item.shareNum
         }
         return (
           <HomeItem
-            key={item.id+index+''}
+            key={item.id + index + ''}
             user={item.author}
             desc={item.desc}
             videoInfo={video}
