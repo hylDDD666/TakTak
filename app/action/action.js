@@ -448,7 +448,38 @@ export const validateIsFollow = async (name) => {
   revalidatePath('/', 'layout')
   return false
 }
-
+export const validateIsLike = async (videoId) => {
+  const { user } = await auth()
+  const res = await prisma.user.findUnique({
+    where: {
+      name: user.name,
+      likedVideos: {
+        some: {
+          id: videoId
+        }
+      }
+    }
+  })
+  if (res) return true
+  revalidatePath('/', 'layout')
+  return false
+}
+export const validateIsCollect = async (videoId) => {
+  const { user } = await auth()
+  const res = await prisma.user.findUnique({
+    where: {
+      name: user.name,
+      collectedVideos: {
+        some: {
+          id: videoId
+        }
+      }
+    }
+  })
+  if (res) return true
+  revalidatePath('/', 'layout')
+  return false
+}
 export const getFollow = async (name, page) => {
   const res = await prisma.user.findUnique({
     where: {
@@ -493,4 +524,49 @@ export const getFollowBy = async (name, page) => {
 
   revalidatePath('/', 'layout')
   return res.followedBy
+}
+export const addLike = async (id) => {
+  const session = await auth()
+  const res = await prisma.user.update({
+    where: {
+      name: session.user.name
+    },
+    data: {
+      likedVideos: {
+        connect: {
+          id: id
+        }
+      }
+    }
+  })
+}
+export const subLike = async (id) => {
+  const session = await auth()
+  const res = await prisma.user.update({
+    where: {
+      name: session.user.name
+    },
+    data: {
+      likedVideos: {
+        disconnect: {
+          id: id
+        }
+      }
+    }
+  })
+}
+export const getLikeNum = async (id) => {
+  const res = await prisma.video.findUnique({
+    where: {
+      id: id
+    },
+    select: {
+      _count: {
+        select: {
+          liker: true
+        }
+      }
+    }
+  })
+  return res._count.liker
 }

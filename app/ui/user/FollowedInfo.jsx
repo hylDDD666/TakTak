@@ -1,5 +1,5 @@
 'use client'
-import { getFollow, getFollowBy } from '@/app/action/action'
+import { getFollow, getFollowBy, getUserInfo } from '@/app/action/action'
 import { CloseOutlined } from '@ant-design/icons'
 import { Avatar, Button, List, Menu, Modal } from 'antd'
 import Link from 'next/link'
@@ -38,6 +38,10 @@ export default function FollowedInfo(props) {
       setIsLoading(false)
     }
   }
+  const updateUserInfo = async () => {
+    const res = await getUserInfo(userInfo.name)
+    setUserInfo(res)
+  }
   const handleSelect = async ({ key }) => {
     if (key === 'followed') {
       await showFollowed()
@@ -46,8 +50,9 @@ export default function FollowedInfo(props) {
       await showFollowedBy()
     }
   }
-  const hideModal = () => {
+  const hideModal = async () => {
     setShowModal(false)
+    await updateUserInfo()
   }
   useLayoutEffect(() => {
     if (current === 'followed') {
@@ -62,75 +67,44 @@ export default function FollowedInfo(props) {
       label: (
         <div className=" text-base hover:cursor-pointer text-center w-[120px] mb-2">
           已关注
-          {
-            <span className="font-bold text-lg">
-              {' '}
-              {userInfo._count.following}
-            </span>
-          }
+          {<span className="font-bold text-lg"> {userInfo._count.following}</span>}
         </div>
       ),
-      key: 'followed',
+      key: 'followed'
     },
     {
       label: (
         <div className=" text-base hover:cursor-pointer text-center w-[120px] mb-2">
           粉丝
-          {
-            <span className="font-bold text-lg">
-              {' '}
-              {userInfo._count.followedBy}
-            </span>
-          }
+          {<span className="font-bold text-lg"> {userInfo._count.followedBy}</span>}
         </div>
       ),
-      key: 'followedBy',
+      key: 'followedBy'
     },
     {
       label: (
         <div className=" text-base hover:cursor-pointer text-center w-[120px] mb-2">
           好友
-          {
-            <span className="font-bold text-lg">
-              {' '}
-              {userInfo._count.followedBy}
-            </span>
-          }
+          {<span className="font-bold text-lg"> {userInfo._count.followedBy}</span>}
         </div>
       ),
-      key: 'friend',
-    },
+      key: 'friend'
+    }
   ]
   return (
     <>
-      <span
-        className=" text-base pr-4 hover:cursor-pointer"
-        onClick={showFollowed}
-      >
-        {
-          <span className="font-bold pr-2 text-lg">
-            {userInfo._count.following}
-          </span>
-        }
+      <span className=" text-base pr-4 hover:cursor-pointer" onClick={showFollowed}>
+        {<span className="font-bold pr-2 text-lg">{userInfo._count.following}</span>}
         已关注
       </span>
-      <span
-        className=" text-base pr-4 hover:cursor-pointer"
-        onClick={showFollowedBy}
-      >
-        {
-          <span className="font-bold pr-2 text-lg">
-            {userInfo._count.followedBy}
-          </span>
-        }
+      <span className=" text-base pr-4 hover:cursor-pointer" onClick={showFollowedBy}>
+        {<span className="font-bold pr-2 text-lg">{userInfo._count.followedBy}</span>}
         粉丝
       </span>
       <Modal
         title={
           <div className=" flex">
-            <div className=" text-2xl text-center flex-auto">
-              {userInfo.name}
-            </div>
+            <div className=" text-2xl text-center flex-auto">{userInfo.name}</div>
             <Button
               size="large"
               className=" !border-0"
@@ -156,19 +130,12 @@ export default function FollowedInfo(props) {
             loading={isLoading}
             renderItem={(item) => (
               <List.Item
-                actions={[
-                  <FollowingButton
-                    name={item.name}
-                  ></FollowingButton>,
-                ]}
+                actions={[<FollowingButton name={item.name} isFollowed={true}></FollowingButton>]}
               >
                 <List.Item.Meta
                   avatar={<Avatar src={item.image} size={50} />}
                   title={
-                    <Link
-                      href={`/${item.name}`}
-                      className=" text-lg font-semibold"
-                    >
+                    <Link href={`/${item.name}`} className=" text-lg font-semibold">
                       {item.name}
                     </Link>
                   }

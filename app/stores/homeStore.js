@@ -50,7 +50,7 @@ export const useHomeStore = create(
       page: 0,
       currentPlayId: 0,
       curDetailId: 0,
-      scrollHeight: 1000,
+      scrollHeight: 10,
       isDetailOn: false,
       isCreatorVideosOn: false,
       lastReplyShow: -1,
