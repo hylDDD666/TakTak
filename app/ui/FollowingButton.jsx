@@ -5,7 +5,7 @@ import { Button } from 'antd'
 import useAuth from '../hooks/useAuth'
 
 export default function FollowingButton(props) {
-  const [isFollowed, setIsFollowed] = useState(true)
+  const [isFollowed, setIsFollowed] = useState(false)
   const handleFollowClick = useAuth(async () => {
     setIsFollowed((pre) => !pre)
     if (isFollowed) {
@@ -15,10 +15,11 @@ export default function FollowingButton(props) {
     }
   })
   const getIsFollow = async () => {
-    return await validateIsFollow(props.name)
+    const res =  await validateIsFollow(props.name)
+    setIsFollowed(res)
   }
   useLayoutEffect(() => {
-    setIsFollowed(getIsFollow())
+    getIsFollow()
   }, [])
   return (
     <>
