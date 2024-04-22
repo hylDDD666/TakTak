@@ -317,7 +317,7 @@ export default function VideoDetail() {
                 </Col>
                 {isCreatorVideosOn && <Col flex={'100px'}></Col>}
                 <Col flex={'80px'} className="text-center">
-                  {!isCreatorVideosOn && (
+                  {!isCreatorVideosOn && !isUserVideoDetailOn &&(
                     <Popover
                       color="rgba(27,27,27,0.2)"
                       content={

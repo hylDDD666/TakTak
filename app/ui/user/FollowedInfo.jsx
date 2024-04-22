@@ -7,7 +7,7 @@ import React, { useEffect, useLayoutEffect, useState } from 'react'
 import FollowingButton from '../FollowingButton'
 
 export default function FollowedInfo(props) {
-  const [followingChange, setFollowingChange] = useState(0)
+  const [userInfo, setUserInfo] = useState(props.userInfo)
   const [isLoading, setIsLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [current, setCurrent] = useState()
@@ -19,9 +19,9 @@ export default function FollowedInfo(props) {
   const showFollowed = async () => {
     setCurrent('followed')
     setShowModal(true)
-    if (props.userInfo._count.following != 0 && followedList.length === 0) {
+    if (userInfo._count.following != 0 && followedList.length === 0) {
       setIsLoading(true)
-      const res = await getFollow(props.userInfo.name, followedPage)
+      const res = await getFollow(userInfo.name, followedPage)
       setFollowedList(res)
       setFollowedPage((pre) => pre + 1)
       setIsLoading(false)
@@ -30,26 +30,13 @@ export default function FollowedInfo(props) {
   const showFollowedBy = async () => {
     setCurrent('followedBy')
     setShowModal(true)
-    if (props.userInfo._count.followedBy != 0 && followedByList.length === 0) {
+    if (userInfo._count.followedBy != 0 && followedByList.length === 0) {
       setIsLoading(true)
-      const res = await getFollowBy(props.userInfo.name, followedByPage)
+      const res = await getFollowBy(userInfo.name, followedByPage)
       setFollowedByList(res)
       setFollowedByPage((pre) => pre + 1)
       setIsLoading(false)
     }
-  }
-  const isFollowedSync = (isFollowed, name) => {
-    if (isFollowed) {
-      setFollowingChange((pre) => pre - 1)
-    } else {
-      setFollowingChange((pre) => pre + 1)
-    }
-    setFollowedList((pre) => {
-      const index = pre.findIndex((item) => item.name === name)
-      const newList = [...pre]
-      newList[index].isFollowed = isFollowed
-      return newList
-    })
   }
   const handleSelect = async ({ key }) => {
     if (key === 'followed') {
@@ -78,7 +65,7 @@ export default function FollowedInfo(props) {
           {
             <span className="font-bold text-lg">
               {' '}
-              {props.userInfo._count.following + followingChange}
+              {userInfo._count.following}
             </span>
           }
         </div>
@@ -92,7 +79,7 @@ export default function FollowedInfo(props) {
           {
             <span className="font-bold text-lg">
               {' '}
-              {props.userInfo._count.followedBy}
+              {userInfo._count.followedBy}
             </span>
           }
         </div>
@@ -106,7 +93,7 @@ export default function FollowedInfo(props) {
           {
             <span className="font-bold text-lg">
               {' '}
-              {props.userInfo._count.followedBy}
+              {userInfo._count.followedBy}
             </span>
           }
         </div>
@@ -122,7 +109,7 @@ export default function FollowedInfo(props) {
       >
         {
           <span className="font-bold pr-2 text-lg">
-            {props.userInfo._count.following + followingChange}
+            {userInfo._count.following}
           </span>
         }
         已关注
@@ -133,7 +120,7 @@ export default function FollowedInfo(props) {
       >
         {
           <span className="font-bold pr-2 text-lg">
-            {props.userInfo._count.followedBy}
+            {userInfo._count.followedBy}
           </span>
         }
         粉丝
@@ -142,7 +129,7 @@ export default function FollowedInfo(props) {
         title={
           <div className=" flex">
             <div className=" text-2xl text-center flex-auto">
-              {props.userInfo.name}
+              {userInfo.name}
             </div>
             <Button
               size="large"
@@ -171,9 +158,7 @@ export default function FollowedInfo(props) {
               <List.Item
                 actions={[
                   <FollowingButton
-                    isFollowed={item.isFollowed}
                     name={item.name}
-                    stateSync={isFollowedSync}
                   ></FollowingButton>,
                 ]}
               >

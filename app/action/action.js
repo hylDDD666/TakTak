@@ -242,17 +242,17 @@ export const getUserInfo = async (name) => {
   res = {
     ...res,
     creatorVideos: res.creatorVideos.map((item) => {
-      return {
-        ...item,
-        author: {
-          id: item.author.id,
-          userName: item.author.name,
-          avatar: item.author.image,
-        },
-      }
+        return {
+          ...item,
+          author: {
+            id: item.author.id,
+            userName: item.author.name,
+            avatar: item.author.image,
+          },
+        }
     }),
   }
-  revalidatePath('/','layout')
+  revalidatePath('/', 'layout')
   return res
 }
 
@@ -291,15 +291,15 @@ export const getCollectVideos = async (userName) => {
     },
   })
   res.collectedVideos = res.collectedVideos.map((item) => {
-    return {
-      ...item,
-      author: {
-        id: item.author.id,
-        userName: item.author.name,
-        avatar: item.author.image,
-      },
-    }
-  })
+      return {
+        ...item,
+        author: {
+          id: item.author.id,
+          userName: item.author.name,
+          avatar: item.author.image,
+        },
+      }
+    })
   return res.collectedVideos
 }
 
@@ -338,15 +338,15 @@ export const getLikedVideos = async (userName) => {
     },
   })
   res.likedVideos = res.likedVideos.map((item) => {
-    return {
-      ...item,
-      author: {
-        id: item.author.id,
-        userName: item.author.name,
-        avatar: item.author.image,
-      },
-    }
-  })
+      return {
+        ...item,
+        author: {
+          id: item.author.id,
+          userName: item.author.name,
+          avatar: item.author.image,
+        },
+      }
+    })
   return res.likedVideos
 }
 
@@ -360,6 +360,7 @@ export const getFollowedAndFans = async (name) => {
       followedBy: true,
     },
   })
+  revalidatePath('/','layout')
   return res
 }
 
@@ -444,7 +445,7 @@ export const validateIsFollow = async (name) => {
     },
   })
   if (res.length !== 0) return true
-  revalidatePath('/','layout')
+  revalidatePath('/', 'layout')
   return false
 }
 
@@ -482,6 +483,7 @@ export const getFollow = async (name, page) => {
       })
     })
   )
+  revalidatePath('/', 'layout')
   return newList
 }
 export const getFollowBy = async (name, page) => {
@@ -518,5 +520,6 @@ export const getFollowBy = async (name, page) => {
       })
     })
   )
+  revalidatePath('/', 'layout')
   return newList
 }

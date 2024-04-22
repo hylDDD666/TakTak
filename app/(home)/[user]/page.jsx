@@ -3,7 +3,7 @@ import FollowButton from '@/app/ui/user/FollowButton'
 import FollowedInfo from '@/app/ui/user/FollowedInfo'
 import UserMenu from '@/app/ui/user/UserMenu'
 import { auth } from '@/auth'
-import { Avatar, Button, Col, Menu, Row } from 'antd'
+import { Avatar, Col,  Row } from 'antd'
 import React from 'react'
 
 export default async function page({ params }) {

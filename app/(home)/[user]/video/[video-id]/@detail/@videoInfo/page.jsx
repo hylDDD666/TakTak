@@ -29,6 +29,7 @@ import PlayerCard from '@/app/ui/PlayerCard'
 import { useHomeStore } from '@/app/stores/homeStore'
 import { fetchCommentByVideoId } from '@/app/action/action'
 import useAuth from '@/app/hooks/useAuth'
+import FollowingButton from '@/app/ui/FollowingButton'
 
 export default function page() {
   const [messageApi, contextHolder] = message.useMessage()
@@ -93,7 +94,6 @@ export default function page() {
   const { userName, id: userId, avatar } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
-  const [isFollow, setIsFollw] = useState(false)
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
@@ -103,9 +103,6 @@ export default function page() {
   })
   const handleFavorites = useAuth(() => {
     setIsFavorite((pre) => !pre)
-  })
-  const handleFollow = useAuth(() => {
-    setIsFollw((pre) => !pre)
   })
   const copyHandler = () => {
     messageApi.open({
@@ -192,27 +189,14 @@ export default function page() {
                 <Col span={18}>
                   <Avatar size={42} src={avatar} className="!mr-2" />
                   <Link
-                    href="/username"
+                    href={`/${userName}`}
                     className="text-lg font-bold text-black hover:underline hover:text-black "
                   >
                     <span>{userName}</span>
                   </Link>
                 </Col>
                 <Col span={6}>
-                  <Button
-                    size="large"
-                    style={{
-                      width: '100px',
-                    }}
-                    className={
-                      isFollow
-                        ? 'hover:!bg-gray-600 !bg-gray-400 !text-black'
-                        : 'hover:!bg-rose-700 !bg-rose-500 !text-white'
-                    }
-                    onClick={handleFollow}
-                  >
-                    {isFollow ? '已关注' : '关注'}
-                  </Button>
+                  <FollowingButton name={userName}></FollowingButton>
                 </Col>
               </Row>
             }

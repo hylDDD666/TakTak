@@ -10,12 +10,10 @@ import { produce } from 'immer'
 const getItemList = async (page) => {
   const itemList = await fetchHomeVideos(page)
   for (let i = 0; i < 5; i++) {
-    // console.log(itemList[i].author.userName,await validateIsFollow(itemList[i].author.userName));
     itemList[i] = {
       ...itemList[i],
       author: {
         ...itemList[i].author,
-        isFollowed: await validateIsFollow(itemList[i].author.userName),
       },
       disLike: false,
       isPlaying: false,
@@ -31,7 +29,6 @@ const getCreatorVideos = async (userId) => {
       ...itemList[i],
       author: {
         ...itemList[i].author,
-        isFollowed: false,
       },
       disLike: false,
       isPlaying: false,
@@ -58,16 +55,6 @@ export const useHomeStore = create(
       isCreatorVideosOn: false,
       lastReplyShow: -1,
       curReplyShow: -1,
-      setItemListIsFollowed: (name, isFollowed) => {
-        const index = get().itemList.findIndex(
-          (item) => item.author.userName === name
-        )
-        set((state) => {
-          const newList = [...state.itemList]
-          newList[index].author.isFollowed = isFollowed
-          return { itemList: newList }
-        })
-      },
       setIsUserVideoDetailOn: (boolean) => {
         set(() => {
           return { isUserVideoDetailOn: boolean }
@@ -81,11 +68,6 @@ export const useHomeStore = create(
       initItemList: () => {
         set(() => {
           return { itemList: [], page: 0 }
-        })
-      },
-      setItemList: (list) => {
-        set(() => {
-          return { itemList: list }
         })
       },
       setSession: (session) => {
@@ -131,7 +113,6 @@ export const useHomeStore = create(
         })
       },
       fetchItemData: async () => {
-        // console.log(get().itemList);
         const res = await getItemList(get().page)
         set((state) => {
           const newList = [...state.itemList, ...res]
@@ -160,40 +141,45 @@ export const useHomeStore = create(
         })
       },
       disLikeItem: (id) => {
-        set((state) => {
-          const newList = [...state.itemList]
-          const index = state.itemList.findIndex((item) => item.id === id)
-          newList[index].disLike = true
-          return { itemList: newList }
-        })
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              if (item.id == id) {
+                item.disLike = true
+              }
+            })
+          })
+        )
       },
       pauseAllItems: () => {
-        set((state) => {
-          const newList = [...state.itemList]
-          newList.map((item) => {
-            item.isPlaying = false
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              item.isPlaying = false
+            })
           })
-          return { itemList: newList }
-        })
+        )
       },
       pauseItemById: (id) => {
-        set((state) => {
-          const newList = [...state.itemList]
-          const index = newList.findIndex((item) => item.id == id)
-          newList[index].isPlaying = false
-          return { itemList: newList }
-        })
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              if (item.id == id) item.isPlaying = false
+            })
+          })
+        )
       },
       playItemById: (id) => {
-        set((state) => {
-          const newList = [...state.itemList]
-          newList.forEach((item) => {
-            item.isPlaying = false
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              item.isPlaying = false
+              if (item.id == id) {
+                item.isPlaying = true
+              }
+            })
           })
-          const index = newList.findIndex((item) => item.id == id)
-          newList[index].isPlaying = true
-          return { itemList: newList }
-        })
+        )
       },
       toggleAutoRoll: () => {
         set((state) => ({

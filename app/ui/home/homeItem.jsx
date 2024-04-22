@@ -165,9 +165,7 @@ export default React.memo(function HomeItem(props) {
               </Col>
               <Col flex={'100px'}>
                 <FollowingButton
-                  stateSync={isFollowedSync}
                   name={user.userName}
-                  isFollowed={user.isFollowed}
                 ></FollowingButton>
               </Col>
             </Row>

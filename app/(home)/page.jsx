@@ -49,7 +49,7 @@ export default React.memo(function Home() {
       }}
       onScroll={handleScroll}
     >
-      {itemList.map((item) => {
+      {itemList.map((item,index) => {
         const video = {
           videoInfo: {
             url: item.url,
@@ -66,7 +66,7 @@ export default React.memo(function Home() {
         }
         return (
           <HomeItem
-            key={item.id}
+            key={item.id+index+''}
             user={item.author}
             desc={item.desc}
             videoInfo={video}
