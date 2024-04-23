@@ -1,17 +1,15 @@
-import { getFollowedAndFans, getUserInfo } from '@/app/action/action'
+import { getFollowedAndFans, getUserInfo, validateIsFollow } from '@/app/action/action'
 import FollowButton from '@/app/ui/user/FollowButton'
 import FollowedInfo from '@/app/ui/user/FollowedInfo'
 import UserMenu from '@/app/ui/user/UserMenu'
 import { auth } from '@/auth'
-import { Avatar, Col,  Row } from 'antd'
+import { Avatar, Col, Row } from 'antd'
 import React from 'react'
 
 export default async function page({ params }) {
   const session = await auth()
   const userInfo = await getUserInfo(params.user)
-  const followedAndFans = await getFollowedAndFans(params.user)
-  const { following, followedBy } = followedAndFans
-  const isFollowed = followedBy.find((item) => session && item.name === session.user.name)
+  const isFollowed = await validateIsFollow(params.user)
   return (
     <div
       style={{
@@ -40,11 +38,7 @@ export default async function page({ params }) {
       </Row>
       <Row className="mt-2">
         <Col flex={'200px'}>
-          <FollowedInfo
-            userInfo={userInfo}
-            following={following}
-            followedBy={followedBy}
-          ></FollowedInfo>
+          <FollowedInfo userInfo={userInfo}></FollowedInfo>
         </Col>
       </Row>
       <Row className="mt-2 font-medium">

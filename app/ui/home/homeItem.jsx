@@ -1,12 +1,7 @@
 'use client'
 import { Avatar, Button, Col, Row } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
-import {
-  HeartFilled,
-  MergeFilled,
-  MessageFilled,
-  StarFilled,
-} from '@ant-design/icons'
+import { HeartFilled, MergeFilled, MessageFilled, StarFilled } from '@ant-design/icons'
 import VideoPlayer from '../video-player'
 import { Transition } from 'react-transition-group'
 import { useHomeStore } from '@/app/stores/homeStore'
@@ -21,20 +16,23 @@ import { addShareNum, getShareNUm } from '@/app/action/action'
 const defaultStyle = {
   transition: 'all 300ms linear',
   display: 'block',
-  maxHeight: '1000px',
+  maxHeight: '1000px'
 }
 const transitionStyles = {
-  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' },
+  exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' }
 }
 
 export default React.memo(function HomeItem(props) {
-  const { user, desc, videoInfo, disLike, id, isPlaying } = props
+  const { user, desc, videoInfo, disLike, id, isPlaying, isLike, isCollect } = props
   const curId = useHomeStore((state) => state.currentPlayId)
   const playItem = useHomeStore((state) => state.playItemById)
   const isDetailOn = useHomeStore((state) => state.isDetailOn)
   const pauseAllItems = useHomeStore((state) => state.pauseAllItems)
+  const syncFollowState = useHomeStore((state) => state.syncFollowState)
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
   const setCurId = useHomeStore((state) => state.setCurId)
+  const syncLikeState = useHomeStore((state) => state.syncLikeState)
+  const syncCollectState = useHomeStore((state) => state.syncCollectState)
   const router = useRouter()
   const pauseItemById = useHomeStore((state) => state.pauseItemById)
   const [isCollipse, setIsCollipse] = useState(true)
@@ -54,9 +52,7 @@ export default React.memo(function HomeItem(props) {
     nodeRef.current.parentNode.scrollTo({
       behavior: 'smooth',
       top:
-        nodeRef.current.parentNode.scrollTop +
-        nodeRef.current.getBoundingClientRect().bottom -
-        63,
+        nodeRef.current.parentNode.scrollTop + nodeRef.current.getBoundingClientRect().bottom - 63
     })
   }
   const videoClickHandler = () => {
@@ -84,7 +80,7 @@ export default React.memo(function HomeItem(props) {
     }
     const options = {
       rootMargin: '-10% 0px 0px 200%',
-      threshold: [0, 0.5, 1],
+      threshold: [0, 0.5, 1]
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
@@ -111,8 +107,7 @@ export default React.memo(function HomeItem(props) {
     if (
       nodeRef.current &&
       props.scrollHeight >= nodeRef.current.offsetTop - 300 &&
-      props.scrollHeight <=
-        nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
+      props.scrollHeight <= nodeRef.current.offsetTop + nodeRef.current.clientHeight * 0.3
     ) {
       if (!isDetailOn) {
         playItem(id)
@@ -120,12 +115,7 @@ export default React.memo(function HomeItem(props) {
     }
   }, [props.scrollHeight])
   return (
-    <Transition
-      nodeRef={nodeRef}
-      timeout={500}
-      in={!disLike}
-      unmountOnExit={true}
-    >
+    <Transition nodeRef={nodeRef} timeout={500} in={!disLike} unmountOnExit={true}>
       {(state) => {
         return (
           <div
@@ -163,16 +153,16 @@ export default React.memo(function HomeItem(props) {
                 </div>
               </Col>
               <Col flex={'100px'}>
-                <FollowingButton name={user.userName}></FollowingButton>
+                <FollowingButton
+                  name={user.userName}
+                  isFollowed={user.isFollow}
+                  syncFollowState={syncFollowState}
+                ></FollowingButton>
               </Col>
             </Row>
             <Row justify={'center'} wrap={false}>
               <Col flex={'60px'}></Col>
-              <Col
-                flex={'auto'}
-                style={{ maxWidth: '610px', display: 'flex' }}
-                className="pb-10"
-              >
+              <Col flex={'auto'} style={{ maxWidth: '610px', display: 'flex' }} className="pb-10">
                 <VideoPlayer
                   videoInfo={videoInfo.videoInfo}
                   id={id}
@@ -183,7 +173,12 @@ export default React.memo(function HomeItem(props) {
                 ></VideoPlayer>
 
                 <div className="w-[20px] min-w-5 ml-3 flex flex-col flex-wrap justify-end md:w-[40px] md:min-w-10">
-                  <LikeButton likeNum={videoInfo.likeNum} id={id}></LikeButton>
+                  <LikeButton
+                    likeNum={videoInfo.likeNum}
+                    id={id}
+                    isLike={isLike}
+                    syncLikeState={syncLikeState}
+                  ></LikeButton>
 
                   <Button
                     type="round"
@@ -192,7 +187,7 @@ export default React.memo(function HomeItem(props) {
                       marginBottom: '5px',
                       padding: 0,
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
                     size="large"
                     icon={<MessageFilled className="!text-sm md:!text-lg" />}
@@ -205,6 +200,8 @@ export default React.memo(function HomeItem(props) {
                   <CollectButton
                     collectNum={videoInfo.collectNum}
                     id={id}
+                    isCollect={isCollect}
+                    syncCollectState={syncCollectState}
                   ></CollectButton>
                   <Button
                     type="round"
@@ -213,16 +210,14 @@ export default React.memo(function HomeItem(props) {
                       marginBottom: '5px',
                       padding: 0,
                       border: 0,
-                      backgroundColor: 'rgb(241,241,242)',
+                      backgroundColor: 'rgb(241,241,242)'
                     }}
                     size="large"
                     icon={<MergeFilled className="!text-sm md:!text-lg" />}
                     className={`active:!bg-gray-200 !h-5 md:!h-10`}
                     onClick={handleShare}
                   ></Button>
-                  <strong className="w-full text-center text-xs mb-2">
-                    {shareNum}
-                  </strong>
+                  <strong className="w-full text-center text-xs mb-2">{shareNum}</strong>
                 </div>
               </Col>
             </Row>

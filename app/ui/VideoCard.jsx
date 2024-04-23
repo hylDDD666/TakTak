@@ -23,7 +23,7 @@ export default function VideoCard(props) {
   const handleVideoClick =async()=>{
     await setIsDetailOn(true)
     setIsUserVideoDetailOn(true)
-    router.push(`${path}/video/${props.video.id}`)
+    router.push(`${props.video.author.userName}/video/${props.video.id}`)
     
   }
 

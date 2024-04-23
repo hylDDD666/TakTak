@@ -69,6 +69,8 @@ export default React.memo(function Home() {
         }
         return (
           <HomeItem
+            isLike={item.isLike}
+            isCollect={item.isCollect}
             key={item.id + index + ''}
             user={item.author}
             desc={item.desc}

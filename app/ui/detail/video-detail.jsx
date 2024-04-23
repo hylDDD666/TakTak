@@ -187,20 +187,19 @@ export default function VideoDetail() {
   }
 
   const handleClose = () => {
+    router.back()
     if (isCreatorVideosOn) {
       setCurId(curDetailId)
       setIsCreatorVideosOn(false)
     } else {
       if (isUserVideoDetailOn) {
         setIsDetailOn(false)
-
         setIsUserVideoDetailOn(false)
       } else {
         setCurId(id)
         playItemById(id)
       }
     }
-    router.back()
   }
   const handleToNext = () => {
     if (nextItem) {

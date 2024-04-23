@@ -1,8 +1,5 @@
 import { create } from 'zustand'
-import {
-  fetchHomeVideos,
-  fetchCreatorVideos,
-} from '../action/action'
+import { fetchHomeVideos, fetchCreatorVideos } from '../action/action'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { produce } from 'immer'
 
@@ -12,10 +9,10 @@ const getItemList = async (page) => {
     itemList[i] = {
       ...itemList[i],
       author: {
-        ...itemList[i].author,
+        ...itemList[i].author
       },
       disLike: false,
-      isPlaying: false,
+      isPlaying: false
     }
   }
   return itemList
@@ -27,10 +24,10 @@ const getCreatorVideos = async (userId) => {
     itemList[i] = {
       ...itemList[i],
       author: {
-        ...itemList[i].author,
+        ...itemList[i].author
       },
       disLike: false,
-      isPlaying: false,
+      isPlaying: false
     }
   }
   return itemList
@@ -63,6 +60,99 @@ export const useHomeStore = create(
         set(() => {
           return { userItemList: list }
         })
+      },
+      syncFollowState: (name, isFollow) => {
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              if (item.author.userName === name) {
+                item.author.isFollow = isFollow
+              }
+            })
+            state.creatorVideos.forEach((item) => {
+              if (item.author.userName === name) {
+                item.author.isFollow = isFollow
+              }
+            })
+            state.userItemList.forEach((item) => {
+              if (item.author.userName === name) {
+                item.author.isFollow = isFollow
+              }
+            })
+          })
+        )
+      },
+      syncLikeState: (videoId, isLike) => {
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              if (item.id === videoId) {
+                item.isLike = isLike
+                if (isLike) {
+                  item._count.liker += 1
+                } else {
+                  item._count.liker -= 1
+                }
+              }
+            })
+            state.creatorVideos.forEach((item) => {
+              if (item.id === videoId) {
+                item.isLike = isLike
+                if (isLike) {
+                  item._count.liker += 1
+                } else {
+                  item._count.liker -= 1
+                }
+              }
+            })
+            state.userItemList.forEach((item) => {
+              if (item.id === videoId) {
+                item.isLike = isLike
+                if (isLike) {
+                  item._count.liker += 1
+                } else {
+                  item._count.liker -= 1
+                }
+              }
+            })
+          })
+        )
+      },
+      syncCollectState: (videoId, isCollect) => {
+        set(
+          produce((state) => {
+            state.itemList.forEach((item) => {
+              if (item.id === videoId) {
+                item.isCollect = isCollect
+                if (isCollect) {
+                  item._count.collector += 1
+                } else {
+                  item._count.collector -= 1
+                }
+              }
+            })
+            state.creatorVideos.forEach((item) => {
+              if (item.id === videoId) {
+                item.isCollect = isCollect
+                if (isCollect) {
+                  item._count.collector += 1
+                } else {
+                  item._count.collector -= 1
+                }
+              }
+            })
+            state.userItemList.forEach((item) => {
+              if (item.id === videoId) {
+                item.isCollect = isCollect
+                if (isCollect) {
+                  item._count.collector += 1
+                } else {
+                  item._count.collector -= 1
+                }
+              }
+            })
+          })
+        )
       },
       initItemList: () => {
         set(() => {
@@ -182,9 +272,9 @@ export const useHomeStore = create(
       },
       toggleAutoRoll: () => {
         set((state) => ({
-          isAutoRoll: !state.isAutoRoll,
+          isAutoRoll: !state.isAutoRoll
         }))
-      },
+      }
     }),
     { name: 'home-storage', storage: createJSONStorage(() => sessionStorage) }
   )

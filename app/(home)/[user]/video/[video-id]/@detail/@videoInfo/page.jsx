@@ -1,25 +1,10 @@
 'use client'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Spin } from 'antd'
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  ConfigProvider,
-  Menu,
-  Row,
-  Tooltip,
-  message,
-} from 'antd'
+import { Avatar, Button, Card, Col, ConfigProvider, Menu, Row, Tooltip, message } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
-import {
-  HeartFilled,
-  MessageFilled,
-  SendOutlined,
-  StarFilled,
-} from '@ant-design/icons'
+import { HeartFilled, MessageFilled, SendOutlined, StarFilled } from '@ant-design/icons'
 import { useParams, usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
@@ -39,7 +24,8 @@ export default function page() {
   const addCommentList = useDetailStore((state) => state.addCommentList)
   const commentList = useDetailStore((state) => state.commentList)
   const initCommentList = useDetailStore((state) => state.initCommentList)
-  const commentPage = useDetailStore((state) => state.commentPage)
+  // const commentPage = useDetailStore((state) => state.commentPage)
+  const syncCollectState = useHomeStore((state) => state.syncCollectState)
   const commentNum = useDetailStore((state) => state.commentNum)
   const setCommentNum = useDetailStore((state) => state.setCommentNum)
   const params = useParams()
@@ -49,10 +35,9 @@ export default function page() {
   const [showCollopse, setshowCollopse] = useState(false)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const isUserVideoDetailOn = useHomeStore((state) => state.isUserVideoDetailOn)
+  const syncLikeState = useHomeStore((state) => state.syncLikeState)
   const [isComments, setIsComments] = useState(!isCreatorVideosOn)
-  // const [commentList, setCommentList] = useState([])
   const spinRef = useRef()
-  // const [commentpage, setCommentPage] = useState(0)
   const videoId = params['video-id']
   const user = useHomeStore((state) => {
     let item
@@ -82,26 +67,24 @@ export default function page() {
     }
     return video
   })
-
-  // const [commentNum, setCommentNum] = useState(curVideo._count.comment)
-
+  const { isLike, isCollect, _count } = curVideo
   const items = [
     {
       label: (
         <div className="font-bold w-[231px] text-center">{`Comments(${curVideo._count.comment})`}</div>
       ),
-      key: 'comments',
+      key: 'comments'
     },
     {
-      label: (
-        <div className="font-bold w-[231px] text-center">Creator videos</div>
-      ),
-      key: 'Creator videos',
-    },
+      label: <div className="font-bold w-[231px] text-center">Creator videos</div>,
+      key: 'Creator videos'
+    }
   ]
-  const { userName, id: userId, avatar } = user
+  const { userName, id: userId, avatar, isFollow } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
   const creatorVideos = useHomeStore((state) => state.creatorVideos)
+  const syncFollowState = useHomeStore((state) => state.syncFollowState)
+
   const commentRef = useRef()
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
@@ -110,7 +93,7 @@ export default function page() {
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
-      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
+      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60'
     })
   }
 
@@ -126,7 +109,7 @@ export default function page() {
     setCommentNum(curVideo._count.comment)
     const options = {
       rootMargin: '0px 0px 0px -90px',
-      threshold: [0],
+      threshold: [0]
     }
     const observer = new IntersectionObserver(async ([entry]) => {
       if (entry.intersectionRatio || entry.isIntersecting) {
@@ -147,7 +130,7 @@ export default function page() {
       setIsComments(true)
     } else {
       if (!isCreatorVideosOn) {
-        getCreatorVideos(userId)
+        getCreatorVideos(userName)
       }
       setIsComments(false)
     }
@@ -166,26 +149,26 @@ export default function page() {
             colorBgContainer: 'rgb(247,247,248)',
             colorTextPlaceholder: 'rgb(77,79,87)',
             colorBgSpotlight: 'rgb(97,97,97)',
-            colorText: 'black',
+            colorText: 'black'
           },
           components: {
             Message: {
-              contentBg: 'transparent',
+              contentBg: 'transparent'
             },
             Menu: {
               itemColor: 'rgb(116,117,124)',
-              itemHoverColor: 'rgb(116,117,124)',
+              itemHoverColor: 'rgb(116,117,124)'
             },
             Input: {
-              activeBorderColor: 'rgb(197,197,201)',
-            },
-          },
+              activeBorderColor: 'rgb(197,197,201)'
+            }
+          }
         }}
       >
         <Card
           style={{
             width: 496,
-            margin: 16,
+            margin: 16
           }}
         >
           <Meta
@@ -201,7 +184,11 @@ export default function page() {
                   </Link>
                 </Col>
                 <Col span={6}>
-                  <FollowingButton name={userName}></FollowingButton>
+                  <FollowingButton
+                    name={userName}
+                    isFollowed={isFollow}
+                    syncFollowState={syncFollowState}
+                  ></FollowingButton>
                 </Col>
               </Row>
             }
@@ -229,14 +216,16 @@ export default function page() {
         </Card>
         <Row
           style={{
-            padding: '0px 15px',
+            padding: '0px 15px'
           }}
           justify={'space-between'}
         >
           <Col span={20}>
             <LikeButton
-              likedNum={curVideo._count.liker}
+              likeNum={_count.liker}
               id={videoId}
+              isLike={isLike}
+              syncLikeState={syncLikeState}
             ></LikeButton>
             <Button
               type="round"
@@ -248,17 +237,17 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
+                color: 'rgb(22,24,35)'
               }}
               icon={<MessageFilled className="!text-l" />}
               className={`active:!bg-gray-200`}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {commentNum}
-            </strong>
+            <strong className="w-full text-center text-xs mr-2">{commentNum}</strong>
             <CollectButton
-              collectNum={curVideo._count.collector}
+              collectNum={_count.collector}
               id={videoId}
+              isCollect={isCollect}
+              syncCollectState={syncCollectState}
             ></CollectButton>
           </Col>
           <Col span={3}>
@@ -273,7 +262,7 @@ export default function page() {
                   width: '32px',
                   border: 0,
                   backgroundColor: 'rgb(254,44,85)',
-                  color: 'white',
+                  color: 'white'
                 }}
                 icon={<SendOutlined className="!text-l" />}
                 // onClick={handleFavorites}
@@ -286,15 +275,11 @@ export default function page() {
             margin: '0px 15px',
             width: '494px',
             backgroundColor: 'rgb(241,241,242)',
-            borderRadius: '5px',
+            borderRadius: '5px'
           }}
         >
           <Col span={19}>
-            <div
-              className={
-                'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'
-              }
-            >
+            <div className={'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'}>
               {`current/host/current/current/${path}`}
             </div>
           </Col>
@@ -307,7 +292,7 @@ export default function page() {
                   border: 0,
                   width: '100%',
                   backgroundColor: 'transparent',
-                  color: 'black',
+                  color: 'black'
                 }}
                 className="hover:!bg-gray-200"
                 onClick={copyHandler}
@@ -319,9 +304,7 @@ export default function page() {
         </Row>
         <Menu
           onClick={handleMenuClick}
-          defaultSelectedKeys={
-            isCreatorVideosOn ? 'Creator videos' : 'comments'
-          }
+          defaultSelectedKeys={isCreatorVideosOn ? 'Creator videos' : 'comments'}
           mode="horizontal"
           items={items}
           style={{
@@ -329,7 +312,7 @@ export default function page() {
             top: 0,
             color: 'black',
             backgroundColor: 'white',
-            zIndex: 99,
+            zIndex: 99
           }}
         />
 
@@ -362,7 +345,7 @@ export default function page() {
             style={{
               padding: '15px',
               overflowY: 'auto',
-              flex: 1,
+              flex: 1
             }}
           >
             {creatorVideos.map((item) => {
@@ -372,7 +355,7 @@ export default function page() {
                   style={{
                     height: 240,
                     paddingLeft: 10,
-                    paddingBottom: 10,
+                    paddingBottom: 10
                   }}
                   key={item.id}
                 >

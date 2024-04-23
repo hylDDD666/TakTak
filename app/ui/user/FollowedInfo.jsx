@@ -38,6 +38,26 @@ export default function FollowedInfo(props) {
       setIsLoading(false)
     }
   }
+  const syncFollowState = (name, isFollowed) => {
+    setFollowedList((pre) => {
+      const newList = pre.map((item) => {
+        if (item.name === name) {
+          item.isFollow = isFollowed
+        }
+        return item
+      })
+      return newList
+    })
+    setFollowedByList((pre) => {
+      const newList = pre.map((item) => {
+        if (item.name === name) {
+          item.isFollow = isFollowed
+        }
+        return item
+      })
+      return newList
+    })
+  }
   const updateUserInfo = async () => {
     const res = await getUserInfo(userInfo.name)
     setUserInfo(res)
@@ -130,7 +150,13 @@ export default function FollowedInfo(props) {
             loading={isLoading}
             renderItem={(item) => (
               <List.Item
-                actions={[<FollowingButton name={item.name} isFollowed={true}></FollowingButton>]}
+                actions={[
+                  <FollowingButton
+                    name={item.name}
+                    isFollowed={item.isFollow}
+                    syncFollowState={syncFollowState}
+                  ></FollowingButton>
+                ]}
               >
                 <List.Item.Meta
                   avatar={<Avatar src={item.image} size={50} />}
