@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import {
   fetchHomeVideos,
   fetchCreatorVideos,
-  validateIsFollow,
 } from '../action/action'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { produce } from 'immer'

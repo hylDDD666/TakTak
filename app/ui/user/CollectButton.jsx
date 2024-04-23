@@ -38,19 +38,23 @@ export default function CollectButton(props) {
         type="round"
         style={{
           fontWeight: 'bold',
-          marginBottom: '5px',
-          padding: 0,
+          margin: '10px',
+          padding: 5,
+          height: '32px',
+          width: '32px',
           border: 0,
           backgroundColor: 'rgb(241,241,242)',
+          color: 'rgb(22,24,35)',
         }}
-        size="large"
-        icon={<StarFilled className="!text-sm md:!text-lg" />}
+        icon={<StarFilled className="!text-l" />}
         className={`active:!bg-gray-200 ${
           isFavorite ? '!text-yellow-400' : ''
-        } !h-5 md:!h-10`}
+        }`}
         onClick={handleFavorites}
       ></Button>
-      <strong className="w-full text-center text-xs mb-2">{collectNum}</strong>
+      <strong className="w-full text-center text-xs mr-2">
+        {collectNum}
+      </strong>
     </>
   )
 }

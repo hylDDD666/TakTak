@@ -5,7 +5,7 @@ import {
   DownOutlined,
   HeartFilled,
   HeartOutlined,
-  UpOutlined
+  UpOutlined,
 } from '@ant-design/icons'
 import { Avatar, Button, Col, Row, Spin } from 'antd'
 import Link from 'next/link'
@@ -13,14 +13,14 @@ import React, { useEffect, useState } from 'react'
 import SubComment from './SubComment'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { fetchSubCommentById } from '@/app/action/action'
+import { addSubComment, fetchSubCommentById, validateIsCommentLike } from '@/app/action/action'
 import useAuth from '@/app/hooks/useAuth'
 
 export default function Comment(props) {
   const [showReplyInput, setShowReplyInput] = useState(false)
   const [isLike, setIsLike] = useState(false)
   const [showReply, setShowReply] = useState(false)
-  const { content, author, createdAt, likedNum, _count, id } = props
+  const { content, author, createdAt, _count, id } = props
   const lastReplyShow = useHomeStore((state) => state.lastReplyShow)
   const curReplyShow = useHomeStore((state) => state.curReplyShow)
   const setLastReplyShow = useHomeStore((state) => state.setLastReplyShow)
@@ -28,8 +28,15 @@ export default function Comment(props) {
   const [subCommentPage, setSubCommentPage] = useState(0)
   const [subCommentList, setSubCommentList] = useState([])
   const [showSpin, setShowSpin] = useState(false)
+  const [likeNum, setLikeNum] = useState(_count.likedBy)
+  const [subCommentNum,setSubCommentNum] = useState(_count.commentBy)
   const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
+    if(isLike){
+      setLikeNum(pre=>pre-1)
+    }else{
+      setLikeNum(pre=>pre=1)
+    }
   })
   const hideReplyInput = () => {
     setShowReplyInput(false)
@@ -67,6 +74,21 @@ export default function Comment(props) {
   const handleHideMore = () => {
     setShowReply(false)
   }
+  const updateComment = async () => {
+    const res = await validateIsCommentLike(id)
+    setIsLike(res)
+  }
+  useEffect(() => {
+    updateComment()
+  }, [])
+
+  const addSubComments = async (content)=>{
+    setSubCommentNum(pre=>pre+1)
+    props.addCommentNum()
+    await addSubComment(content,videoId,id)
+  }
+
+
   return (
     <>
       <Row className="mt-3">
@@ -97,7 +119,7 @@ export default function Comment(props) {
               fontWeight: 'bold',
               backgroundColor: 'white',
               color: 'rgb(138,139,145)',
-              padding: '0 10px'
+              padding: '0 10px',
             }}
             className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
             size="large"
@@ -110,7 +132,7 @@ export default function Comment(props) {
             }
             onClick={handleLikeClick}
           ></Button>
-          <p className="w-full text-center text-gray-500 ">{likedNum}</p>
+          <p className="w-full text-center text-gray-500 ">{likeNum}</p>
         </Col>
       </Row>
       {showReplyInput && (
@@ -131,8 +153,7 @@ export default function Comment(props) {
       {showReply && (
         <>
           {subCommentList.map((item) => {
-            const { content, author, createdAt, likedNum, _count } = item
-
+            const { content, author, createdAt, _count } = item
             return (
               <SubComment
                 key={item.id}
@@ -140,8 +161,8 @@ export default function Comment(props) {
                 content={content}
                 author={author}
                 createdAt={createdAt}
-                likedNum={likedNum}
                 _count={_count}
+                addSubComment={addSubComments}
               ></SubComment>
             )
           })}
@@ -151,12 +172,12 @@ export default function Comment(props) {
               <Col span={2}></Col>
               <Col span={2}></Col>
               <Col span={16}>
-                {_count.commentBy - subCommentList.length !== 0 && (
+                {subCommentNum- subCommentList.length !== 0 && (
                   <p
                     onClick={handleShowMore}
                     className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "
                   >
-                    View {_count.commentBy - subCommentList.length} more
+                    View {subCommentNum - subCommentList.length} more
                     <DownOutlined className="!text-sm ml-1 font-semibold" />
                   </p>
                 )}

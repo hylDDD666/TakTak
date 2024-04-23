@@ -1,14 +1,14 @@
 'use client'
 import useAuth from '@/app/hooks/useAuth'
-import { useHomeStore } from '@/app/stores/homeStore'
 import { SmileOutlined } from '@ant-design/icons'
 import { Button, Input, Popover, Tooltip } from 'antd'
 import Compact from 'antd/es/space/Compact'
 import EmojiPicker from 'emoji-picker-react'
+import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 
 export default function Reply(props) {
-  const session = useHomeStore((state) => state.session)
+  const {data:session}= useSession()
   const { placeholder } = props
   const [commentInput, setCommentInput] = useState('')
   const inputChange = (e) => {

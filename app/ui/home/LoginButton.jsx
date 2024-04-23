@@ -13,16 +13,10 @@ import { signOut } from 'next-auth/react'
 
 export default function LoginButton(props) {
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
-  const setSession = useHomeStore((state) => state.setSession)
   const router = useRouter()
   const handleLoginClick = () => {
     setShowLogin(true)
   }
-  useEffect(() => {
-    if (props.session) {
-      setSession(props.session)
-    }
-  }, [props.session])
 
   const handleProfileClick = () => {
     router.push(`/${props.session.user.name}`)

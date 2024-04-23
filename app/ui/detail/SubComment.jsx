@@ -8,12 +8,14 @@ import { useHomeStore } from '@/app/stores/homeStore'
 import useAuth from '@/app/hooks/useAuth'
 
 export default function SubComment(props) {
-  const { content, author, createdAt, likedNum, _count, id } = props
+  const { content, author, createdAt, _count, id } = props
   const [showReplyInput, setShowReplyInput] = useState(false)
   const lastReplyShow = useHomeStore((state) => state.lastReplyShow)
   const curReplyShow = useHomeStore((state) => state.curReplyShow)
   const setLastReplyShow = useHomeStore((state) => state.setLastReplyShow)
   const setCurReplyShow = useHomeStore((state) => state.setCurReplyShow)
+  const [likeNum, setLikeNum] = useState(_count.likedBy)
+
   useEffect(() => {
     if (id === lastReplyShow) {
       setShowReplyInput(false)
@@ -27,10 +29,22 @@ export default function SubComment(props) {
   const [isLike, setIsLike] = useState(false)
   const handleLikeClick = useAuth(() => {
     setIsLike((pre) => !pre)
+    if (isLike) {
+      setLikeNum((pre) => pre - 1)
+    } else {
+      setLikeNum((pre) => (pre = 1))
+    }
   })
   const hideReplyInput = () => {
     setShowReplyInput(false)
   }
+  const updateComment = async () => {
+    const res = await validateIsCommentLike(id)
+    setIsLike(res)
+  }
+  useEffect(() => {
+    updateComment()
+  }, [])
   return (
     <div>
       <Row wrap={false} className="mt-3">
@@ -61,7 +75,7 @@ export default function SubComment(props) {
               fontWeight: 'bold',
               backgroundColor: 'white',
               color: 'rgb(138,139,145)',
-              padding: '0 10px'
+              padding: '0 10px',
             }}
             className={`active:!bg-gray-200 ${isLike ? '!text-rose-500' : ''}`}
             size="large"
@@ -74,7 +88,7 @@ export default function SubComment(props) {
             }
             onClick={handleLikeClick}
           ></Button>
-          <p className="w-full text-center text-gray-500 ">{likedNum}</p>
+          <p className="w-full text-center text-gray-500 ">{likeNum}</p>
         </Col>
       </Row>
       {showReplyInput && (

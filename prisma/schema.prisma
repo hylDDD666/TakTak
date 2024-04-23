@@ -14,12 +14,12 @@ datasource db {
 model User {
   id              String    @id @default(cuid())
   name            String    @unique @map("userName")
-  image           String?   @map("avatar") @default("https://api.dicebear.com/7.x/miniavs/svg?seed=1")
+  image           String?   @default("https://api.dicebear.com/7.x/miniavs/svg?seed=1") @map("avatar")
   comment         Comment[]
-  likedNum        Int?
   followedBy      User[]    @relation("UserFollows")
   following       User[]    @relation("UserFollows")
   likedVideos     Video[]   @relation("likeRelation")
+  likedComments   Comment[] @relation("commentLike")
   collectedVideos Video[]   @relation("collectorRelation")
   creatorVideos   Video[]   @relation("creatorVideos")
   password        String
@@ -76,7 +76,7 @@ model Comment {
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   createdAt DateTime  @default(now())
-  likedNum  Int       @default(0)
+  likedBy   User[]    @relation("commentLike")
   video     Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId   String
   commentOn Comment?  @relation("subComment", fields: [commentId], references: [id])

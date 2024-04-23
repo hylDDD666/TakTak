@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Spin } from 'antd'
 import {
   Avatar,
@@ -27,28 +27,33 @@ import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { fetchCommentByVideoId } from '@/app/action/action'
+import { addComment, fetchCommentByVideoId } from '@/app/action/action'
 import useAuth from '@/app/hooks/useAuth'
 import FollowingButton from '@/app/ui/FollowingButton'
+import LikeButton from '@/app/ui/user/LikeButton'
+import CollectButton from '@/app/ui/user/CollectButton'
+import { useDetailStore } from '@/app/stores/detailStore'
 
 export default function page() {
   const [messageApi, contextHolder] = message.useMessage()
+  const addCommentList = useDetailStore((state) => state.addCommentList)
+  const commentList = useDetailStore((state) => state.commentList)
+  const initCommentList = useDetailStore((state) => state.initCommentList)
+  const commentPage = useDetailStore((state) => state.commentPage)
+  const commentNum = useDetailStore((state) => state.commentNum)
+  const setCommentNum = useDetailStore((state) => state.setCommentNum)
   const params = useParams()
   const [isCollipse, setIsCollipse] = useState(true)
-  const [isLike, setIsLike] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
   const textRef = useRef()
   const path = usePathname()
   const [showCollopse, setshowCollopse] = useState(false)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const isUserVideoDetailOn = useHomeStore((state) => state.isUserVideoDetailOn)
   const [isComments, setIsComments] = useState(!isCreatorVideosOn)
-  const [commentList, setCommentList] = useState([])
+  // const [commentList, setCommentList] = useState([])
   const spinRef = useRef()
-  const [commentpage, setCommentPage] = useState(0)
-  const [commentNum, setCommentNum] = useState(-1)
+  // const [commentpage, setCommentPage] = useState(0)
   const videoId = params['video-id']
-
   const user = useHomeStore((state) => {
     let item
     if (isCreatorVideosOn) {
@@ -77,6 +82,9 @@ export default function page() {
     }
     return video
   })
+
+  // const [commentNum, setCommentNum] = useState(curVideo._count.comment)
+
   const items = [
     {
       label: (
@@ -98,18 +106,14 @@ export default function page() {
   const toggleCollopse = () => {
     setIsCollipse((pre) => !pre)
   }
-  const handleLikeClick = useAuth(() => {
-    setIsLike((pre) => !pre)
-  })
-  const handleFavorites = useAuth(() => {
-    setIsFavorite((pre) => !pre)
-  })
+
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
       className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
     })
   }
+
   useEffect(() => {
     if (textRef.current.scrollHeight > textRef.current.clientHeight) {
       setshowCollopse(true)
@@ -117,26 +121,27 @@ export default function page() {
       setshowCollopse(false)
     }
   }, [])
+
   useEffect(() => {
+    setCommentNum(curVideo._count.comment)
     const options = {
       rootMargin: '0px 0px 0px -90px',
       threshold: [0],
     }
     const observer = new IntersectionObserver(async ([entry]) => {
-      if (entry.isIntersecting) {
-        const res = await fetchCommentByVideoId(videoId, commentpage)
-        setCommentNum(res.commentNum)
-        setCommentList((pre) => [...pre, ...res.comments])
-        setCommentPage((pre) => pre + 1)
+      if (entry.intersectionRatio || entry.isIntersecting) {
+        await addCommentList(videoId)
       }
     }, options)
+
     if (spinRef.current) {
       observer.observe(spinRef.current)
     }
     return () => {
+      initCommentList()
       observer.disconnect(spinRef.current)
     }
-  }, [commentpage])
+  }, [])
   const handleMenuClick = ({ key }) => {
     if (key === 'comments') {
       setIsComments(true)
@@ -229,27 +234,10 @@ export default function page() {
           justify={'space-between'}
         >
           <Col span={20}>
-            <Button
-              type="round"
-              style={{
-                fontWeight: 'bold',
-                margin: '10px',
-                padding: 5,
-                height: '32px',
-                width: '32px',
-                backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
-              }}
-              className={`active:!bg-gray-200 ${
-                isLike ? '!text-rose-500' : ''
-              }`}
-              size="large"
-              icon={<HeartFilled className={'!text-l'} />}
-              onClick={handleLikeClick}
-            ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {curVideo._count.liker}
-            </strong>
+            <LikeButton
+              likedNum={curVideo._count.liker}
+              id={videoId}
+            ></LikeButton>
             <Button
               type="round"
               style={{
@@ -266,29 +254,12 @@ export default function page() {
               className={`active:!bg-gray-200`}
             ></Button>
             <strong className="w-full text-center text-xs mr-2">
-              {curVideo._count.comment}
+              {commentNum}
             </strong>
-            <Button
-              type="round"
-              style={{
-                fontWeight: 'bold',
-                margin: '10px',
-                padding: 5,
-                height: '32px',
-                width: '32px',
-                border: 0,
-                backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)',
-              }}
-              icon={<StarFilled className="!text-l" />}
-              className={`active:!bg-gray-200 ${
-                isFavorite ? '!text-yellow-400' : ''
-              }`}
-              onClick={handleFavorites}
-            ></Button>
-            <strong className="w-full text-center text-xs mr-2">
-              {curVideo._count.collector}
-            </strong>
+            <CollectButton
+              collectNum={curVideo._count.collector}
+              id={videoId}
+            ></CollectButton>
           </Col>
           <Col span={3}>
             <Tooltip placement="top" title="发送给朋友">
@@ -365,7 +336,7 @@ export default function page() {
         {isComments ? (
           <div className="px-[20px] pt-[10px] w-full pb-[90px] ">
             {commentList.map((item) => {
-              const { content, author, createdAt, likedNum, _count } = item
+              const { content, author, createdAt, _count } = item
               return (
                 <Comment
                   key={item.id}
@@ -373,7 +344,6 @@ export default function page() {
                   content={content}
                   author={author}
                   createdAt={createdAt}
-                  likedNum={likedNum}
                   _count={_count}
                 ></Comment>
               )

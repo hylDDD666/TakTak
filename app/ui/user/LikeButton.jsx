@@ -35,21 +35,26 @@ export default function LikeButton(props) {
   return (
     <>
       <Button
-        type="round"
-        style={{
-          fontWeight: 'bold',
-          marginBottom: '5px',
-          padding: 0,
-          backgroundColor: 'rgb(241,241,242)',
-        }}
-        className={`active:!bg-gray-200 ${
-          isLike ? '!text-rose-500' : ''
-        } !h-5 md:!h-10`}
-        size="large"
-        icon={<HeartFilled className={'!text-sm md:!text-lg'} />}
-        onClick={handleLikeClick}
-      ></Button>
-      <strong className="w-full text-center text-xs mb-2">{likeNum}</strong>
+              type="round"
+              style={{
+                fontWeight: 'bold',
+                margin: '10px',
+                padding: 5,
+                height: '32px',
+                width: '32px',
+                backgroundColor: 'rgb(241,241,242)',
+                color: 'rgb(22,24,35)',
+              }}
+              className={`active:!bg-gray-200 ${
+                isLike ? '!text-rose-500' : ''
+              }`}
+              size="large"
+              icon={<HeartFilled className={'!text-l'} />}
+              onClick={handleLikeClick}
+            ></Button>
+            <strong className="w-full text-center text-xs mr-2">
+              {likeNum}
+            </strong>
     </>
   )
 }

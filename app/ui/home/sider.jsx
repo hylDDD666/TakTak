@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons'
 import { usePathname, useRouter } from 'next/navigation'
 import { useHomeStore } from '@/app/stores/homeStore'
+import { useSession } from 'next-auth/react'
 
 const items1 = [
   [HomeOutlined, '推荐', ''],
@@ -29,7 +30,7 @@ const items2 = items1.map((icon, index) => {
   }
 })
 export default function PriSider() {
-  const session = useHomeStore((state) => state.session)
+  const {data:session}= useSession()
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
   const router = useRouter()
   const pathName = usePathname()
