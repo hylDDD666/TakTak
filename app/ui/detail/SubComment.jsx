@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
 import useAuth from '@/app/hooks/useAuth'
+import { validateIsCommentLike } from '@/app/action/action'
 
 export default function SubComment(props) {
   const { content, author, createdAt, _count, id } = props
