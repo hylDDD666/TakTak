@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcrypt'
 import { revalidatePath } from 'next/cache'
+import useAuth from '../hooks/useAuth'
 
 export const fetchHomeVideos = async (page) => {
   let res = await prisma.video.findMany({
@@ -854,4 +855,63 @@ export const addSubComment = async (desc, videoId, commentId) => {
   })
   const comment = await getCommentByCommentId(res.id)
   return comment
+}
+
+export const getFollowingVideos = async (page) => {
+  const session = await auth()
+  if (!session) return []
+  const { user } = session
+  const res = await prisma.video.findMany({
+    skip:page*5,
+    take:5,
+    where: {
+      author: {
+        followedBy: {
+          some: {
+            id: user.id,
+          },
+        },
+      },
+    },
+    select: {
+      id: true,
+      desc: true,
+      url: true,
+      type: true,
+      cover: true,
+      videoHeight: true,
+      videoWidth: true,
+      shareNum: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      _count: {
+        select: {
+          comment: true,
+          liker: true,
+          collector: true,
+        },
+      },
+    },
+  })
+  res = await Promise.all(
+    res.map(async (item) => {
+      return {
+        ...item,
+        author: {
+          id: item.author.id,
+          userName: item.author.name,
+          avatar: item.author.image,
+          isFollow: true,
+        },
+        isLike: await validateIsLike(item.id),
+        isCollect: await validateIsCollect(item.id),
+      }
+    })
+  )
+  return res
 }
