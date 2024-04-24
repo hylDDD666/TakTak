@@ -1,10 +1,25 @@
 'use client'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Spin } from 'antd'
-import { Avatar, Button, Card, Col, ConfigProvider, Menu, Row, Tooltip, message } from 'antd'
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  ConfigProvider,
+  Menu,
+  Row,
+  Tooltip,
+  message,
+} from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
-import { HeartFilled, MessageFilled, SendOutlined, StarFilled } from '@ant-design/icons'
+import {
+  HeartFilled,
+  MessageFilled,
+  SendOutlined,
+  StarFilled,
+} from '@ant-design/icons'
 import { useParams, usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
@@ -12,8 +27,6 @@ import Reply from '@/app/ui/detail/Reply'
 import BackTop from 'antd/es/float-button/BackTop'
 import PlayerCard from '@/app/ui/PlayerCard'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { addComment, fetchCommentByVideoId } from '@/app/action/action'
-import useAuth from '@/app/hooks/useAuth'
 import FollowingButton from '@/app/ui/FollowingButton'
 import LikeButton from '@/app/ui/user/LikeButton'
 import CollectButton from '@/app/ui/user/CollectButton'
@@ -73,12 +86,14 @@ export default function page() {
       label: (
         <div className="font-bold w-[231px] text-center">{`Comments(${curVideo._count.comment})`}</div>
       ),
-      key: 'comments'
+      key: 'comments',
     },
     {
-      label: <div className="font-bold w-[231px] text-center">Creator videos</div>,
-      key: 'Creator videos'
-    }
+      label: (
+        <div className="font-bold w-[231px] text-center">Creator videos</div>
+      ),
+      key: 'Creator videos',
+    },
   ]
   const { userName, id: userId, avatar, isFollow } = user
   const getCreatorVideos = useHomeStore((state) => state.getCreatorVideos)
@@ -93,7 +108,7 @@ export default function page() {
   const copyHandler = () => {
     messageApi.open({
       content: <div>已复制</div>,
-      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60'
+      className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
     })
   }
 
@@ -109,7 +124,7 @@ export default function page() {
     setCommentNum(curVideo._count.comment)
     const options = {
       rootMargin: '0px 0px 0px -90px',
-      threshold: [0]
+      threshold: [0],
     }
     const observer = new IntersectionObserver(async ([entry]) => {
       if (entry.intersectionRatio || entry.isIntersecting) {
@@ -130,7 +145,7 @@ export default function page() {
       setIsComments(true)
     } else {
       if (!isCreatorVideosOn) {
-        getCreatorVideos(userName)
+        getCreatorVideos(userId)
       }
       setIsComments(false)
     }
@@ -149,26 +164,26 @@ export default function page() {
             colorBgContainer: 'rgb(247,247,248)',
             colorTextPlaceholder: 'rgb(77,79,87)',
             colorBgSpotlight: 'rgb(97,97,97)',
-            colorText: 'black'
+            colorText: 'black',
           },
           components: {
             Message: {
-              contentBg: 'transparent'
+              contentBg: 'transparent',
             },
             Menu: {
               itemColor: 'rgb(116,117,124)',
-              itemHoverColor: 'rgb(116,117,124)'
+              itemHoverColor: 'rgb(116,117,124)',
             },
             Input: {
-              activeBorderColor: 'rgb(197,197,201)'
-            }
-          }
+              activeBorderColor: 'rgb(197,197,201)',
+            },
+          },
         }}
       >
         <Card
           style={{
             width: 496,
-            margin: 16
+            margin: 16,
           }}
         >
           <Meta
@@ -216,7 +231,7 @@ export default function page() {
         </Card>
         <Row
           style={{
-            padding: '0px 15px'
+            padding: '0px 15px',
           }}
           justify={'space-between'}
         >
@@ -237,12 +252,14 @@ export default function page() {
                 width: '32px',
                 border: 0,
                 backgroundColor: 'rgb(241,241,242)',
-                color: 'rgb(22,24,35)'
+                color: 'rgb(22,24,35)',
               }}
               icon={<MessageFilled className="!text-l" />}
               className={`active:!bg-gray-200`}
             ></Button>
-            <strong className="w-full text-center text-xs mr-2">{commentNum}</strong>
+            <strong className="w-full text-center text-xs mr-2">
+              {commentNum}
+            </strong>
             <CollectButton
               collectNum={_count.collector}
               id={videoId}
@@ -262,7 +279,7 @@ export default function page() {
                   width: '32px',
                   border: 0,
                   backgroundColor: 'rgb(254,44,85)',
-                  color: 'white'
+                  color: 'white',
                 }}
                 icon={<SendOutlined className="!text-l" />}
                 // onClick={handleFavorites}
@@ -275,11 +292,15 @@ export default function page() {
             margin: '0px 15px',
             width: '494px',
             backgroundColor: 'rgb(241,241,242)',
-            borderRadius: '5px'
+            borderRadius: '5px',
           }}
         >
           <Col span={19}>
-            <div className={'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'}>
+            <div
+              className={
+                'h-full w-full leading-8 pl-4 text-ellipsis overflow-hidden'
+              }
+            >
               {`current/host/current/current/${path}`}
             </div>
           </Col>
@@ -292,7 +313,7 @@ export default function page() {
                   border: 0,
                   width: '100%',
                   backgroundColor: 'transparent',
-                  color: 'black'
+                  color: 'black',
                 }}
                 className="hover:!bg-gray-200"
                 onClick={copyHandler}
@@ -304,7 +325,9 @@ export default function page() {
         </Row>
         <Menu
           onClick={handleMenuClick}
-          defaultSelectedKeys={isCreatorVideosOn ? 'Creator videos' : 'comments'}
+          defaultSelectedKeys={
+            isCreatorVideosOn ? 'Creator videos' : 'comments'
+          }
           mode="horizontal"
           items={items}
           style={{
@@ -312,7 +335,7 @@ export default function page() {
             top: 0,
             color: 'black',
             backgroundColor: 'white',
-            zIndex: 99
+            zIndex: 99,
           }}
         />
 
@@ -345,7 +368,7 @@ export default function page() {
             style={{
               padding: '15px',
               overflowY: 'auto',
-              flex: 1
+              flex: 1,
             }}
           >
             {creatorVideos.map((item) => {
@@ -355,7 +378,7 @@ export default function page() {
                   style={{
                     height: 240,
                     paddingLeft: 10,
-                    paddingBottom: 10
+                    paddingBottom: 10,
                   }}
                   key={item.id}
                 >

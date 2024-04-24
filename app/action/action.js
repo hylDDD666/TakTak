@@ -52,6 +52,7 @@ export const fetchHomeVideos = async (page) => {
   return res
 }
 export const fetchCreatorVideos = async (userId) => {
+  console.log(userId)
   let res = await prisma.video.findMany({
     where: {
       authorId: userId,
@@ -81,7 +82,7 @@ export const fetchCreatorVideos = async (userId) => {
       },
     },
   })
-
+  console.log(res)
   res = await Promise.all(
     res.map(async (item) => {
       return {
