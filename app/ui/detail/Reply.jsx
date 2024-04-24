@@ -8,21 +8,30 @@ import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 
 export default function Reply(props) {
-  const {data:session}= useSession()
+  const { data: session } = useSession()
   const { placeholder } = props
   const [commentInput, setCommentInput] = useState('')
   const inputChange = (e) => {
     setCommentInput(e.target.value)
   }
   const addEmoji = (emojiData, e) => {
-    // console.log(emojiData,e);
     setCommentInput((pre) => pre + emojiData.emoji)
   }
   const handleFocus = useAuth()
+  const handleClick = () => {
+    props.addComment(commentInput)
+    setCommentInput('')
+  }
+  const handleEnter = (e) => {
+    if (commentInput.trim() !== '' && e.key === 'Enter') {
+      handleClick()
+    }
+  }
   return (
     <Compact style={{ width: '100%', marginBottom: '10px' }}>
       <Input
         onFocus={handleFocus}
+        onKeyUp={handleEnter}
         onChange={inputChange}
         value={commentInput}
         style={{
@@ -65,8 +74,9 @@ export default function Reply(props) {
         size="large"
         disabled={commentInput === ''}
         className={`!border-0 ${
-          commentInput === '' ? 'text-gray-300' : '!text-rose-500'
+          commentInput.trim() === '' ? 'text-gray-300' : '!text-rose-500'
         } hover:!bg-white !font-semibold !bg-white !text-sm`}
+        onClick={handleClick}
       >
         发送
       </Button>

@@ -1,5 +1,9 @@
 import { create } from 'zustand'
-import { addComment, fetchCommentByVideoId } from '../action/action'
+import {
+  addComment,
+  fetchCommentByVideoId,
+  getCommentNumByVideoId,
+} from '../action/action'
 
 export const useDetailStore = create((set, get) => ({
   commentNum: -1,
@@ -7,9 +11,10 @@ export const useDetailStore = create((set, get) => ({
   commentPage: 0,
   subCommentList: [],
   showSpin: true,
-  setCommentNum: (num) => {
+  getCommentNum: async (videoId) => {
+    const res = await getCommentNumByVideoId(videoId)
     set(() => {
-      return { commentNum: num }
+      return { commentNum: res }
     })
   },
   addCommentNum: () => {
@@ -25,7 +30,10 @@ export const useDetailStore = create((set, get) => ({
   addComments: async (content, videoId) => {
     const res = await addComment(content, videoId)
     set((state) => {
-      return { commentList: [res, ...state.commentList] }
+      return {
+        commentList: [res, ...state.commentList],
+        commentNum: state.commentNum + 1,
+      }
     })
   },
   addCommentList: async (videoId) => {
@@ -35,14 +43,12 @@ export const useDetailStore = create((set, get) => ({
         return {
           commentList: [...state.commentList, ...res.comments],
           commentPage: state.commentPage + 1,
-          commentNum: res.commentNum,
           showSpin: false,
         }
       }
       return {
         commentList: [...state.commentList, ...res.comments],
         commentPage: state.commentPage + 1,
-        commentNum: res.commentNum,
       }
     })
   },

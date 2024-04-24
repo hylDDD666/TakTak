@@ -99,6 +99,23 @@ export const fetchCreatorVideos = async (userId) => {
   return res
 }
 
+export const getCommentNumByVideoId = async (videoId) => {
+  const res = await prisma.video.findUnique({
+    where: {
+      id: videoId,
+    },
+    select: {
+      _count: {
+        select: {
+          comment: true,
+        },
+      },
+    },
+  })
+  console.log(res)
+  revalidatePath('/', 'layout')
+  return res._count.comment
+}
 export const fetchCommentByVideoId = async (videoId, page) => {
   let comments
   const commentNum = await prisma.comment.count({
@@ -130,6 +147,9 @@ export const fetchCommentByVideoId = async (videoId, page) => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
 
   comments = await Promise.all(
@@ -145,6 +165,7 @@ export const fetchCommentByVideoId = async (videoId, page) => {
       }
     })
   )
+  revalidatePath('/', 'layout')
   return {
     comments,
     commentNum,
@@ -172,6 +193,9 @@ export const fetchSubCommentById = async (id, page) => {
         },
       },
     },
+    orderBy: {
+      createdAt: 'desc',
+    },
   })
   comments = await Promise.all(
     comments.map(async (item) => {
@@ -186,6 +210,8 @@ export const fetchSubCommentById = async (id, page) => {
       }
     })
   )
+  revalidatePath('/', 'layout')
+
   return comments
 }
 export const authenticate = async (username, password) => {
@@ -771,6 +797,39 @@ export const validateIsCommentLike = async (commentId) => {
   revalidatePath('/', 'layout')
   return false
 }
+export const getCommentByCommentId = async (id) => {
+  let comment = await prisma.comment.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      _count: {
+        select: {
+          commentBy: true,
+          likedBy: true,
+        },
+      },
+    },
+  })
+
+  comment = {
+    ...comment,
+    author: {
+      id: comment.author.id,
+      userName: comment.author.name,
+      avatar: comment.author.image,
+    },
+    isLike: await validateIsCommentLike(comment.id),
+  }
+  return comment
+}
 export const addComment = async (desc, videoId) => {
   const { user } = await auth()
   const res = await prisma.comment.create({
@@ -780,8 +839,8 @@ export const addComment = async (desc, videoId) => {
       videoId: videoId,
     },
   })
-  console.log(res)
-  return res
+  const comment = await getCommentByCommentId(res.id)
+  return comment
 }
 export const addSubComment = async (desc, videoId, commentId) => {
   const { user } = await auth()
@@ -793,6 +852,6 @@ export const addSubComment = async (desc, videoId, commentId) => {
       commentId: commentId,
     },
   })
-  console.log(res)
-  return res
+  const comment = await getCommentByCommentId(res.id)
+  return comment
 }

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
 import useAuth from '@/app/hooks/useAuth'
-import { validateIsCommentLike } from '@/app/action/action'
+import { addLikeToComment, subLikeToComment } from '@/app/action/action'
 
 export default function SubComment(props) {
   const { content, author, createdAt, _count, id } = props
@@ -15,7 +15,8 @@ export default function SubComment(props) {
   const curReplyShow = useHomeStore((state) => state.curReplyShow)
   const setLastReplyShow = useHomeStore((state) => state.setLastReplyShow)
   const setCurReplyShow = useHomeStore((state) => state.setCurReplyShow)
-  const [likeNum, setLikeNum] = useState(_count.likedBy)
+  const [likeNum, setLikeNum] = useState(_count ? _count.likedBy : 0)
+  const [isLike, setIsLike] = useState(props.isLike)
 
   useEffect(() => {
     if (id === lastReplyShow) {
@@ -27,25 +28,23 @@ export default function SubComment(props) {
     setLastReplyShow(curReplyShow)
     setCurReplyShow(id)
   })
-  const [isLike, setIsLike] = useState(false)
-  const handleLikeClick = useAuth(() => {
+  const handleLikeClick = useAuth(async () => {
     setIsLike((pre) => !pre)
     if (isLike) {
       setLikeNum((pre) => pre - 1)
+      await subLikeToComment(props.id)
     } else {
       setLikeNum((pre) => (pre = 1))
+      await addLikeToComment(props.id)
     }
   })
   const hideReplyInput = () => {
     setShowReplyInput(false)
   }
-  const updateComment = async () => {
-    const res = await validateIsCommentLike(id)
-    setIsLike(res)
+  const addComment = (content) => {
+    setShowReplyInput(false)
+    props.addSubComment(content)
   }
-  useEffect(() => {
-    updateComment()
-  }, [])
   return (
     <div>
       <Row wrap={false} className="mt-3">
@@ -97,7 +96,7 @@ export default function SubComment(props) {
           <Col span={2}></Col>
           <Col span={2}></Col>
           <Col span={17}>
-            <Reply placeholder="回复..."></Reply>
+            <Reply placeholder="回复..." addComment={addComment}></Reply>
           </Col>
           <Col span={2}>
             <Button

@@ -13,12 +13,19 @@ import React, { useEffect, useState } from 'react'
 import SubComment from './SubComment'
 import Reply from './Reply'
 import { useHomeStore } from '@/app/stores/homeStore'
-import { addSubComment, fetchSubCommentById, validateIsCommentLike } from '@/app/action/action'
+import {
+  addLikeToComment,
+  addSubComment,
+  fetchSubCommentById,
+  subLikeToComment,
+  validateIsCommentLike,
+} from '@/app/action/action'
 import useAuth from '@/app/hooks/useAuth'
+import { useDetailStore } from '@/app/stores/detailStore'
 
 export default function Comment(props) {
   const [showReplyInput, setShowReplyInput] = useState(false)
-  const [isLike, setIsLike] = useState(false)
+  const [isLike, setIsLike] = useState(props.isLike)
   const [showReply, setShowReply] = useState(false)
   const { content, author, createdAt, _count, id } = props
   const lastReplyShow = useHomeStore((state) => state.lastReplyShow)
@@ -28,14 +35,19 @@ export default function Comment(props) {
   const [subCommentPage, setSubCommentPage] = useState(0)
   const [subCommentList, setSubCommentList] = useState([])
   const [showSpin, setShowSpin] = useState(false)
-  const [likeNum, setLikeNum] = useState(_count.likedBy)
-  const [subCommentNum,setSubCommentNum] = useState(_count.commentBy)
-  const handleLikeClick = useAuth(() => {
+  const [likeNum, setLikeNum] = useState(_count ? _count.likedBy : 0)
+  const [subCommentNum, setSubCommentNum] = useState(
+    _count ? _count.commentBy : 0
+  )
+  const addCommentNum = useDetailStore((state) => state.addCommentNum)
+  const handleLikeClick = useAuth(async () => {
     setIsLike((pre) => !pre)
-    if(isLike){
-      setLikeNum(pre=>pre-1)
-    }else{
-      setLikeNum(pre=>pre=1)
+    if (isLike) {
+      setLikeNum((pre) => pre - 1)
+      await subLikeToComment(props.id)
+    } else {
+      setLikeNum((pre) => pre + 1)
+      await addLikeToComment(props.id)
     }
   })
   const hideReplyInput = () => {
@@ -74,13 +86,14 @@ export default function Comment(props) {
   const handleHideMore = () => {
     setShowReply(false)
   }
-
-  const addSubComments = async (content)=>{
-    setSubCommentNum(pre=>pre+1)
-    props.addCommentNum()
-    await addSubComment(content,videoId,id)
+  const addComment = async (content) => {
+    addCommentNum()
+    setShowReplyInput(false)
+    const res = await addSubComment(content, props.videoId, id)
+    setSubCommentNum((pre) => pre + 1)
+    setSubCommentList((pre) => [res, ...pre])
+    setShowReply(true)
   }
-
 
   return (
     <>
@@ -132,7 +145,7 @@ export default function Comment(props) {
         <Row style={{ marginTop: '8px' }}>
           <Col span={2}></Col>
           <Col span={19}>
-            <Reply placeholder="回复..."></Reply>
+            <Reply placeholder="回复..." addComment={addComment}></Reply>
           </Col>
           <Col span={2}>
             <Button
@@ -146,7 +159,7 @@ export default function Comment(props) {
       {showReply && (
         <>
           {subCommentList.map((item) => {
-            const { content, author, createdAt, _count } = item
+            const { content, author, createdAt, _count, isLike } = item
             return (
               <SubComment
                 key={item.id}
@@ -155,7 +168,8 @@ export default function Comment(props) {
                 author={author}
                 createdAt={createdAt}
                 _count={_count}
-                addSubComment={addSubComments}
+                addSubComment={addComment}
+                isLike={isLike}
               ></SubComment>
             )
           })}
@@ -165,7 +179,7 @@ export default function Comment(props) {
               <Col span={2}></Col>
               <Col span={2}></Col>
               <Col span={16}>
-                {subCommentNum- subCommentList.length !== 0 && (
+                {subCommentNum - subCommentList.length > 0 && (
                   <p
                     onClick={handleShowMore}
                     className=" text-base text-gray-500 font-medium leading-[18px] hover:cursor-pointer hover:underline "

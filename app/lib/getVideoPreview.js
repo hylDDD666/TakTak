@@ -1,5 +1,5 @@
 export const getVideoPreviewImg = (url, currentTime) => {
-  currentTime = currentTime || 2
+  currentTime = currentTime.toFixed(2) || 2
   /* 创建视频dom节点 */
   let node = document.createElement('video')
 
@@ -28,7 +28,6 @@ export const getVideoPreviewImg = (url, currentTime) => {
     }
   })
 }
-
 
 // const videos = [
 //   {

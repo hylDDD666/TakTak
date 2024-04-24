@@ -7,7 +7,9 @@ export default function useAuth(func1, func2) {
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
   const clickHandler = () => {
     if (session) {
-      func1()
+      if (func1) {
+        func1()
+      }
     } else {
       setShowLogin(true)
       if (func2) {

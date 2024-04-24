@@ -14,10 +14,7 @@ import {
 } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
-import {
-  MessageFilled,
-  SendOutlined,
-} from '@ant-design/icons'
+import { MessageFilled, SendOutlined } from '@ant-design/icons'
 import { useParams, usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Comment from '@/app/ui/detail/Comment'
@@ -38,7 +35,8 @@ export default function page() {
   // const commentPage = useDetailStore((state) => state.commentPage)
   const syncCollectState = useHomeStore((state) => state.syncCollectState)
   const commentNum = useDetailStore((state) => state.commentNum)
-  const setCommentNum = useDetailStore((state) => state.setCommentNum)
+  const getCommentNum = useDetailStore((state) => state.getCommentNum)
+  const addComments = useDetailStore((state) => state.addComments)
   const params = useParams()
   const [isCollipse, setIsCollipse] = useState(true)
   const textRef = useRef()
@@ -66,6 +64,9 @@ export default function page() {
       return item.author
     }
   })
+  const addComment = (content) => {
+    addComments(content, videoId)
+  }
   const curVideo = useHomeStore((state) => {
     let video
     if (isCreatorVideosOn) {
@@ -83,7 +84,7 @@ export default function page() {
   const items = [
     {
       label: (
-        <div className="font-bold w-[231px] text-center">{`Comments(${curVideo._count.comment})`}</div>
+        <div className="font-bold w-[231px] text-center">{`Comments(${commentNum})`}</div>
       ),
       key: 'comments',
     },
@@ -110,7 +111,9 @@ export default function page() {
       className: 'bg-zinc-600 w-2/5 !mx-auto opacity-60',
     })
   }
-
+  useLayoutEffect(() => {
+    getCommentNum(videoId)
+  }, [])
   useEffect(() => {
     if (textRef.current.scrollHeight > textRef.current.clientHeight) {
       setshowCollopse(true)
@@ -122,7 +125,6 @@ export default function page() {
     }
   }, [])
   useEffect(() => {
-    setCommentNum(curVideo._count.comment)
     const options = {
       rootMargin: '-290px 0px 0px -90px',
       threshold: [0],
@@ -343,15 +345,17 @@ export default function page() {
         {isComments ? (
           <div className="px-[20px] pt-[10px] w-full pb-[90px] ">
             {commentList.map((item) => {
-              const { content, author, createdAt, _count } = item
+              const { content, author, createdAt, _count, isLike } = item
               return (
                 <Comment
                   key={item.id}
+                  videoId={videoId}
                   id={item.id}
                   content={content}
                   author={author}
                   createdAt={createdAt}
                   _count={_count}
+                  isLike={isLike}
                 ></Comment>
               )
             })}
@@ -361,7 +365,7 @@ export default function page() {
               </div>
             )}
             <div className=" border-t border-gray-300 border-solid h-[85px]  absolute bottom-0 py-[20px] pl-[15px] bg-white left-0 right-0">
-              <Reply placeholder="添加评论..."></Reply>
+              <Reply placeholder="添加评论..." addComment={addComment}></Reply>
             </div>
           </div>
         ) : (
