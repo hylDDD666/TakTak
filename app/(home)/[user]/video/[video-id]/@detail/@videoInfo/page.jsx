@@ -15,10 +15,8 @@ import {
 import Meta from 'antd/es/card/Meta'
 import Link from 'next/link'
 import {
-  HeartFilled,
   MessageFilled,
   SendOutlined,
-  StarFilled,
 } from '@ant-design/icons'
 import { useParams, usePathname } from 'next/navigation'
 import CopyToClipboard from 'react-copy-to-clipboard'
@@ -46,6 +44,7 @@ export default function page() {
   const textRef = useRef()
   const path = usePathname()
   const [showCollopse, setshowCollopse] = useState(false)
+  const showSpin = useDetailStore((state) => state.showSpin)
   const isCreatorVideosOn = useHomeStore((state) => state.isCreatorVideosOn)
   const isUserVideoDetailOn = useHomeStore((state) => state.isUserVideoDetailOn)
   const syncLikeState = useHomeStore((state) => state.syncLikeState)
@@ -118,12 +117,14 @@ export default function page() {
     } else {
       setshowCollopse(false)
     }
+    return () => {
+      initCommentList()
+    }
   }, [])
-
   useEffect(() => {
     setCommentNum(curVideo._count.comment)
     const options = {
-      rootMargin: '0px 0px 0px -90px',
+      rootMargin: '-290px 0px 0px -90px',
       threshold: [0],
     }
     const observer = new IntersectionObserver(async ([entry]) => {
@@ -136,10 +137,10 @@ export default function page() {
       observer.observe(spinRef.current)
     }
     return () => {
-      initCommentList()
       observer.disconnect(spinRef.current)
     }
-  }, [])
+  }, [commentList])
+
   const handleMenuClick = ({ key }) => {
     if (key === 'comments') {
       setIsComments(true)
@@ -354,7 +355,7 @@ export default function page() {
                 ></Comment>
               )
             })}
-            {commentNum !== commentList.length && (
+            {showSpin && (
               <div ref={spinRef} className="text-center">
                 <Spin size="large" className="!my-3 " />
               </div>

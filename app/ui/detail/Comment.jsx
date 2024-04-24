@@ -74,13 +74,6 @@ export default function Comment(props) {
   const handleHideMore = () => {
     setShowReply(false)
   }
-  const updateComment = async () => {
-    const res = await validateIsCommentLike(id)
-    setIsLike(res)
-  }
-  useEffect(() => {
-    updateComment()
-  }, [])
 
   const addSubComments = async (content)=>{
     setSubCommentNum(pre=>pre+1)

@@ -52,7 +52,6 @@ export const fetchHomeVideos = async (page) => {
   return res
 }
 export const fetchCreatorVideos = async (userId) => {
-  console.log(userId)
   let res = await prisma.video.findMany({
     where: {
       authorId: userId,
@@ -82,7 +81,6 @@ export const fetchCreatorVideos = async (userId) => {
       },
     },
   })
-  console.log(res)
   res = await Promise.all(
     res.map(async (item) => {
       return {
@@ -483,7 +481,6 @@ export const validateIsFollow = async (name) => {
   const session = await auth()
   if (!session) return false
   const user = session.user
-  console.log(user)
   if (!user) return false
   const res = await prisma.user.findMany({
     where: {

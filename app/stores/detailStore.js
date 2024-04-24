@@ -6,6 +6,7 @@ export const useDetailStore = create((set, get) => ({
   commentList: [],
   commentPage: 0,
   subCommentList: [],
+  showSpin: true,
   setCommentNum: (num) => {
     set(() => {
       return { commentNum: num }
@@ -30,16 +31,24 @@ export const useDetailStore = create((set, get) => ({
   addCommentList: async (videoId) => {
     const res = await fetchCommentByVideoId(videoId, get().commentPage)
     set((state) => {
+      if ([...state.commentList, ...res.comments].length === res.commentNum) {
+        return {
+          commentList: [...state.commentList, ...res.comments],
+          commentPage: state.commentPage + 1,
+          commentNum: res.commentNum,
+          showSpin: false,
+        }
+      }
       return {
         commentList: [...state.commentList, ...res.comments],
-        page: state.commentPage + 1,
+        commentPage: state.commentPage + 1,
         commentNum: res.commentNum,
       }
     })
   },
   initCommentList: () => {
     set(() => {
-      return { commentList: [], commentPage: 0, commentNum: -1 }
+      return { commentList: [], commentPage: 0, commentNum: -1, showSpin: true }
     })
   },
 }))
