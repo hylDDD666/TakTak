@@ -3,7 +3,7 @@ import { getFollow, getFollowBy, getUserInfo } from '@/app/action/action'
 import { CloseOutlined } from '@ant-design/icons'
 import { Avatar, Button, List, Menu, Modal } from 'antd'
 import Link from 'next/link'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, {  useLayoutEffect, useState } from 'react'
 import FollowingButton from '../FollowingButton'
 
 export default function FollowedInfo(props) {

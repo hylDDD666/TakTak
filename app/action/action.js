@@ -23,17 +23,17 @@ export const fetchHomeVideos = async (page) => {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           comment: true,
           liker: true,
-          collector: true,
-        },
-      },
-    },
+          collector: true
+        }
+      }
+    }
   })
   res = await Promise.all(
     res.map(async (item) => {
@@ -43,10 +43,10 @@ export const fetchHomeVideos = async (page) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: await validateIsFollow(item.author.name),
+          isFollow: await validateIsFollow(item.author.name)
         },
         isLike: await validateIsLike(item.id),
-        isCollect: await validateIsCollect(item.id),
+        isCollect: await validateIsCollect(item.id)
       }
     })
   )
@@ -55,7 +55,7 @@ export const fetchHomeVideos = async (page) => {
 export const fetchCreatorVideos = async (userId) => {
   let res = await prisma.video.findMany({
     where: {
-      authorId: userId,
+      authorId: userId
     },
     select: {
       id: true,
@@ -70,17 +70,17 @@ export const fetchCreatorVideos = async (userId) => {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           comment: true,
           liker: true,
-          collector: true,
-        },
-      },
-    },
+          collector: true
+        }
+      }
+    }
   })
   res = await Promise.all(
     res.map(async (item) => {
@@ -90,10 +90,10 @@ export const fetchCreatorVideos = async (userId) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: await validateIsFollow(item.author.name),
+          isFollow: await validateIsFollow(item.author.name)
         },
         isLike: await validateIsLike(item.id),
-        isCollect: await validateIsCollect(item.id),
+        isCollect: await validateIsCollect(item.id)
       }
     })
   )
@@ -103,17 +103,16 @@ export const fetchCreatorVideos = async (userId) => {
 export const getCommentNumByVideoId = async (videoId) => {
   const res = await prisma.video.findUnique({
     where: {
-      id: videoId,
+      id: videoId
     },
     select: {
       _count: {
         select: {
-          comment: true,
-        },
-      },
-    },
+          comment: true
+        }
+      }
+    }
   })
-  console.log(res)
   revalidatePath('/', 'layout')
   return res._count.comment
 }
@@ -122,8 +121,8 @@ export const fetchCommentByVideoId = async (videoId, page) => {
   const commentNum = await prisma.comment.count({
     where: {
       videoId: videoId,
-      commentOn: null,
-    },
+      commentOn: null
+    }
   })
 
   comments = await prisma.comment.findMany({
@@ -131,26 +130,26 @@ export const fetchCommentByVideoId = async (videoId, page) => {
     take: 15,
     where: {
       videoId: videoId,
-      commentOn: null,
+      commentOn: null
     },
     include: {
       author: {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           commentBy: true,
-          likedBy: true,
-        },
-      },
+          likedBy: true
+        }
+      }
     },
     orderBy: {
-      createdAt: 'desc',
-    },
+      createdAt: 'desc'
+    }
   })
 
   comments = await Promise.all(
@@ -160,16 +159,16 @@ export const fetchCommentByVideoId = async (videoId, page) => {
         author: {
           id: item.author.id,
           userName: item.author.name,
-          avatar: item.author.image,
+          avatar: item.author.image
         },
-        isLike: await validateIsCommentLike(item.id),
+        isLike: await validateIsCommentLike(item.id)
       }
     })
   )
   revalidatePath('/', 'layout')
   return {
     comments,
-    commentNum,
+    commentNum
   }
 }
 
@@ -178,25 +177,25 @@ export const fetchSubCommentById = async (id, page) => {
     skip: page * 5,
     take: 5,
     where: {
-      commentId: id,
+      commentId: id
     },
     include: {
       author: {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
-          likedBy: true,
-        },
-      },
+          likedBy: true
+        }
+      }
     },
     orderBy: {
-      createdAt: 'desc',
-    },
+      createdAt: 'desc'
+    }
   })
   comments = await Promise.all(
     comments.map(async (item) => {
@@ -205,9 +204,9 @@ export const fetchSubCommentById = async (id, page) => {
         author: {
           id: item.author.id,
           userName: item.author.name,
-          avatar: item.author.image,
+          avatar: item.author.image
         },
-        isLike: await validateIsCommentLike(item.id),
+        isLike: await validateIsCommentLike(item.id)
       }
     })
   )
@@ -218,8 +217,8 @@ export const fetchSubCommentById = async (id, page) => {
 export const authenticate = async (username, password) => {
   const res = await prisma.user.findUnique({
     where: {
-      name: username,
-    },
+      name: username
+    }
   })
   if (!(await bcrypt.compare(password, res.password))) {
     return null
@@ -230,8 +229,8 @@ export const authenticate = async (username, password) => {
 export const resgister = async (username, password) => {
   const existUser = await prisma.user.findUnique({
     where: {
-      name: username,
-    },
+      name: username
+    }
   })
   if (existUser) {
     return { error: '用户名已存在' }
@@ -240,15 +239,15 @@ export const resgister = async (username, password) => {
   const res = await prisma.user.create({
     data: {
       name: username,
-      password: hashPassword,
-    },
+      password: hashPassword
+    }
   })
   return { success: '注册成功' }
 }
 export const getUserInfo = async (name) => {
   let res = await prisma.user.findUnique({
     where: {
-      name: name,
+      name: name
     },
     include: {
       creatorVideos: {
@@ -265,25 +264,25 @@ export const getUserInfo = async (name) => {
             select: {
               id: true,
               name: true,
-              image: true,
-            },
+              image: true
+            }
           },
           _count: {
             select: {
               comment: true,
               liker: true,
-              collector: true,
-            },
-          },
-        },
+              collector: true
+            }
+          }
+        }
       },
       _count: {
         select: {
           following: true,
-          followedBy: true,
-        },
-      },
-    },
+          followedBy: true
+        }
+      }
+    }
   })
   res.creatorVideos = await Promise.all(
     res.creatorVideos.map(async (item, index) => {
@@ -293,8 +292,8 @@ export const getUserInfo = async (name) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: await validateIsFollow(item.author.name),
-        },
+          isFollow: await validateIsFollow(item.author.name)
+        }
       }
     })
   )
@@ -305,7 +304,7 @@ export const getUserInfo = async (name) => {
 export const getCollectVideos = async (userName) => {
   let res = await prisma.user.findUnique({
     where: {
-      name: userName,
+      name: userName
     },
     select: {
       collectedVideos: {
@@ -322,19 +321,19 @@ export const getCollectVideos = async (userName) => {
             select: {
               id: true,
               name: true,
-              image: true,
-            },
+              image: true
+            }
           },
           _count: {
             select: {
               comment: true,
               liker: true,
-              collector: true,
-            },
-          },
-        },
-      },
-    },
+              collector: true
+            }
+          }
+        }
+      }
+    }
   })
   res.collectedVideos = await Promise.all(
     res.collectedVideos.map(async (item) => {
@@ -344,10 +343,10 @@ export const getCollectVideos = async (userName) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: await validateIsFollow(item.author.name),
+          isFollow: await validateIsFollow(item.author.name)
         },
         isLike: await validateIsLike(item.id),
-        isCollect: true,
+        isCollect: true
       }
     })
   )
@@ -357,7 +356,7 @@ export const getCollectVideos = async (userName) => {
 export const getLikedVideos = async (userName) => {
   let res = await prisma.user.findUnique({
     where: {
-      name: userName,
+      name: userName
     },
     select: {
       likedVideos: {
@@ -374,19 +373,19 @@ export const getLikedVideos = async (userName) => {
             select: {
               id: true,
               name: true,
-              image: true,
-            },
+              image: true
+            }
           },
           _count: {
             select: {
               comment: true,
               liker: true,
-              collector: true,
-            },
-          },
-        },
-      },
-    },
+              collector: true
+            }
+          }
+        }
+      }
+    }
   })
   res.likedVideos = await Promise.all(
     res.likedVideos.map(async (item) => {
@@ -396,10 +395,10 @@ export const getLikedVideos = async (userName) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: await validateIsFollow(item.author.name),
+          isFollow: await validateIsFollow(item.author.name)
         },
         isLike: true,
-        isCollect: await validateIsCollect(item.id),
+        isCollect: await validateIsCollect(item.id)
       }
     })
   )
@@ -409,18 +408,18 @@ export const getLikedVideos = async (userName) => {
 export const getFollowedAndFans = async (name) => {
   const res = await prisma.user.findUnique({
     where: {
-      name: name,
+      name: name
     },
     select: {
       following: true,
-      followedBy: true,
-    },
+      followedBy: true
+    }
   })
   res.following = await Promise.all(
     res.following.map(async (item) => {
       return {
         ...item,
-        isFollow: await validateIsFollow(item.name),
+        isFollow: await validateIsFollow(item.name)
       }
     })
   )
@@ -428,7 +427,7 @@ export const getFollowedAndFans = async (name) => {
     res.followedBy.map(async (item) => {
       return {
         ...item,
-        isFollow: await validateIsFollow(item.name),
+        isFollow: await validateIsFollow(item.name)
       }
     })
   )
@@ -440,30 +439,30 @@ export const addFollow = async (followed) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       following: {
         connect: {
-          name: followed,
-        },
-      },
-    },
+          name: followed
+        }
+      }
+    }
   })
 }
 export const subFollow = async (followed) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       following: {
         disconnect: {
-          name: followed,
-        },
-      },
-    },
+          name: followed
+        }
+      }
+    }
   })
 }
 
@@ -474,8 +473,8 @@ export const validateName = async (name) => {
   } else {
     const res = await prisma.user.findUnique({
       where: {
-        name: name,
-      },
+        name: name
+      }
     })
     if (res) {
       throw new Error('用户名已存在')
@@ -489,18 +488,18 @@ export const updateUserInfo = async (values) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      id: session.user.id,
+      id: session.user.id
     },
     data: {
-      ...values,
-    },
+      ...values
+    }
   })
 }
 export const getUserInfoById = async (id) => {
   const res = await prisma.user.findUnique({
     where: {
-      id: id,
-    },
+      id: id
+    }
   })
   return res
 }
@@ -514,10 +513,10 @@ export const validateIsFollow = async (name) => {
       name: user.name,
       following: {
         some: {
-          name: name,
-        },
-      },
-    },
+          name: name
+        }
+      }
+    }
   })
   if (res.length !== 0) return true
   revalidatePath('/', 'layout')
@@ -533,10 +532,10 @@ export const validateIsLike = async (videoId) => {
       name: user.name,
       likedVideos: {
         some: {
-          id: videoId,
-        },
-      },
-    },
+          id: videoId
+        }
+      }
+    }
   })
   if (res) return true
   revalidatePath('/', 'layout')
@@ -551,10 +550,10 @@ export const validateIsCollect = async (videoId) => {
       name: user.name,
       collectedVideos: {
         some: {
-          id: videoId,
-        },
-      },
-    },
+          id: videoId
+        }
+      }
+    }
   })
   if (res) return true
   revalidatePath('/', 'layout')
@@ -563,7 +562,7 @@ export const validateIsCollect = async (videoId) => {
 export const getFollow = async (name, page) => {
   const res = await prisma.user.findUnique({
     where: {
-      name: name,
+      name: name
     },
     select: {
       following: {
@@ -573,16 +572,16 @@ export const getFollow = async (name, page) => {
           id: true,
           name: true,
           nickName: true,
-          image: true,
-        },
-      },
-    },
+          image: true
+        }
+      }
+    }
   })
   res.following = await Promise.all(
     res.following.map(async (item) => {
       return {
         ...item,
-        isFollow: await validateIsFollow(item.name),
+        isFollow: await validateIsFollow(item.name)
       }
     })
   )
@@ -592,7 +591,7 @@ export const getFollow = async (name, page) => {
 export const getFollowBy = async (name, page) => {
   let res = await prisma.user.findUnique({
     where: {
-      name: name,
+      name: name
     },
     select: {
       followedBy: {
@@ -602,16 +601,16 @@ export const getFollowBy = async (name, page) => {
           id: true,
           name: true,
           nickName: true,
-          image: true,
-        },
-      },
-    },
+          image: true
+        }
+      }
+    }
   })
   res.followedBy = await Promise.all(
     res.followedBy.map(async (item) => {
       return {
         ...item,
-        isFollow: await validateIsFollow(item.name),
+        isFollow: await validateIsFollow(item.name)
       }
     })
   )
@@ -622,44 +621,44 @@ export const addLike = async (id) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       likedVideos: {
         connect: {
-          id: id,
-        },
-      },
-    },
+          id: id
+        }
+      }
+    }
   })
 }
 export const subLike = async (id) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       likedVideos: {
         disconnect: {
-          id: id,
-        },
-      },
-    },
+          id: id
+        }
+      }
+    }
   })
 }
 export const getLikeNum = async (id) => {
   const res = await prisma.video.findUnique({
     where: {
-      id: id,
+      id: id
     },
     select: {
       _count: {
         select: {
-          liker: true,
-        },
-      },
-    },
+          liker: true
+        }
+      }
+    }
   })
   return res._count.liker
 }
@@ -667,44 +666,44 @@ export const addCollect = async (id) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       collectedVideos: {
         connect: {
-          id: id,
-        },
-      },
-    },
+          id: id
+        }
+      }
+    }
   })
 }
 export const subCollect = async (id) => {
   const session = await auth()
   const res = await prisma.user.update({
     where: {
-      name: session.user.name,
+      name: session.user.name
     },
     data: {
       collectedVideos: {
         disconnect: {
-          id: id,
-        },
-      },
-    },
+          id: id
+        }
+      }
+    }
   })
 }
 export const getCollectNum = async (id) => {
   const res = await prisma.video.findUnique({
     where: {
-      id: id,
+      id: id
     },
     select: {
       _count: {
         select: {
-          collector: true,
-        },
-      },
-    },
+          collector: true
+        }
+      }
+    }
   })
   return res._count.collector
 }
@@ -712,23 +711,23 @@ export const getCollectNum = async (id) => {
 export const addShareNum = async (id) => {
   await prisma.video.update({
     where: {
-      id: id,
+      id: id
     },
     data: {
       shareNum: {
-        increment: 1,
-      },
-    },
+        increment: 1
+      }
+    }
   })
 }
 export const getShareNUm = async (id) => {
   const res = await prisma.video.findUnique({
     where: {
-      id: id,
+      id: id
     },
     select: {
-      shareNum: true,
-    },
+      shareNum: true
+    }
   })
   return res.shareNum
 }
@@ -736,15 +735,15 @@ export const getShareNUm = async (id) => {
 export const getCommentsNum = async (id) => {
   const res = await prisma.video.findUnique({
     where: {
-      id: id,
+      id: id
     },
     select: {
       _count: {
         select: {
-          comment: true,
-        },
-      },
-    },
+          comment: true
+        }
+      }
+    }
   })
   return res._count.comment
 }
@@ -753,30 +752,30 @@ export const addLikeToComment = async (id) => {
   const session = await auth()
   const res = await prisma.comment.update({
     where: {
-      id: id,
+      id: id
     },
     data: {
       likedBy: {
         connect: {
-          id: session.user.id,
-        },
-      },
-    },
+          id: session.user.id
+        }
+      }
+    }
   })
 }
 export const subLikeToComment = async (id) => {
   const session = await auth()
   const res = await prisma.comment.update({
     where: {
-      id: id,
+      id: id
     },
     data: {
       likedBy: {
         disconnect: {
-          id: session.user.id,
-        },
-      },
-    },
+          id: session.user.id
+        }
+      }
+    }
   })
 }
 export const validateIsCommentLike = async (commentId) => {
@@ -789,10 +788,10 @@ export const validateIsCommentLike = async (commentId) => {
       name: user.name,
       likedComments: {
         some: {
-          id: commentId,
-        },
-      },
-    },
+          id: commentId
+        }
+      }
+    }
   })
   if (res) return true
   revalidatePath('/', 'layout')
@@ -801,23 +800,23 @@ export const validateIsCommentLike = async (commentId) => {
 export const getCommentByCommentId = async (id) => {
   let comment = await prisma.comment.findUnique({
     where: {
-      id: id,
+      id: id
     },
     include: {
       author: {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           commentBy: true,
-          likedBy: true,
-        },
-      },
-    },
+          likedBy: true
+        }
+      }
+    }
   })
 
   comment = {
@@ -825,9 +824,9 @@ export const getCommentByCommentId = async (id) => {
     author: {
       id: comment.author.id,
       userName: comment.author.name,
-      avatar: comment.author.image,
+      avatar: comment.author.image
     },
-    isLike: await validateIsCommentLike(comment.id),
+    isLike: await validateIsCommentLike(comment.id)
   }
   return comment
 }
@@ -837,8 +836,8 @@ export const addComment = async (desc, videoId) => {
     data: {
       content: desc,
       authorId: user.id,
-      videoId: videoId,
-    },
+      videoId: videoId
+    }
   })
   const comment = await getCommentByCommentId(res.id)
   return comment
@@ -850,8 +849,8 @@ export const addSubComment = async (desc, videoId, commentId) => {
       content: desc,
       authorId: user.id,
       videoId: videoId,
-      commentId: commentId,
-    },
+      commentId: commentId
+    }
   })
   const comment = await getCommentByCommentId(res.id)
   return comment
@@ -862,16 +861,16 @@ export const getFollowingVideos = async (page) => {
   if (!session) return []
   const { user } = session
   let res = await prisma.video.findMany({
-    skip:page*5,
-    take:5,
+    skip: page * 5,
+    take: 5,
     where: {
       author: {
         followedBy: {
           some: {
-            id: user.id,
-          },
-        },
-      },
+            id: user.id
+          }
+        }
+      }
     },
     select: {
       id: true,
@@ -886,17 +885,17 @@ export const getFollowingVideos = async (page) => {
         select: {
           id: true,
           name: true,
-          image: true,
-        },
+          image: true
+        }
       },
       _count: {
         select: {
           comment: true,
           liker: true,
-          collector: true,
-        },
-      },
-    },
+          collector: true
+        }
+      }
+    }
   })
   res = await Promise.all(
     res.map(async (item) => {
@@ -906,12 +905,71 @@ export const getFollowingVideos = async (page) => {
           id: item.author.id,
           userName: item.author.name,
           avatar: item.author.image,
-          isFollow: true,
+          isFollow: true
         },
         isLike: await validateIsLike(item.id),
         isCollect: await validateIsCollect(item.id),
+        disLike: false,
+        isPlaying: false
       }
     })
   )
+  return res
+}
+export const getFollowingVideosCount = async () => {
+  const session = await auth()
+  if (!session) return []
+  const { user } = session
+  const res = await prisma.video.count({
+    where: {
+      author: {
+        followedBy: {
+          some: {
+            id: user.id
+          }
+        }
+      }
+    }
+  })
+  return res
+}
+export const validateHaveFollowing = async () => {
+  const session = await auth()
+  if (!session) return false
+  const res = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      _count: {
+        select: {
+          following: true
+        }
+      }
+    }
+  })
+  revalidatePath('/', 'layout')
+
+  if (res._count.following !== 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
+export const getPersonList = async (page) => {
+  const res = await prisma.user.findMany({
+    skip: page * 12,
+    take: 12,
+    select: {
+      name: true,
+      image: true,
+      creatorVideos: {
+        take: 1
+      }
+    }
+  })
+  revalidatePath('/', 'layout')
+
   return res
 }

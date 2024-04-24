@@ -1,39 +1,53 @@
 'use client'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import dynamic from 'next/dynamic'
-import { useHomeStore } from '../stores/homeStore'
+import { useHomeStore } from '@/app/stores/homeStore'
 import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
-import debounce from '../lib/debounce'
-const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
+import debounce from '@/app/lib/debounce'
+import HomeItem from '@/app/ui/home/homeItem'
+import { getFollowingVideosCount } from '@/app/action/action'
 
-export default React.memo(function Home() {
+export default function Page() {
+  const [followingCount, setFollowingCount] = useState(Infinity)
   const { itemList, fetchItemData, addPage } = useHomeStore((state) => state)
   const spinRef = useRef()
   const contentRef = useRef()
+  const [showSpin, setShowSpin] = useState(true)
   const [scrollHeight, setScrollHeight] = useState(0)
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
   const setIsUserVideoDetailOn = useHomeStore((state) => state.setIsUserVideoDetailOn)
   const isFollowedPage = useHomeStore((state) => state.isFollowedPage)
   const setIsFollowedPage = useHomeStore((state) => state.setIsFollowedPage)
   const initItemList = useHomeStore((state) => state.initItemList)
+  const page = useHomeStore((state) => state.page)
+
   useLayoutEffect(() => {
-    if (isFollowedPage) {
-      setIsFollowedPage(false)
+    if (!isFollowedPage) {
+      setIsFollowedPage(true)
       initItemList()
     }
   }, [])
+  const getFollowingCount = async () => {
+    const res = await getFollowingVideosCount()
+    setFollowingCount(res)
+  }
   useEffect(() => {
     setIsDetailOn(false)
     setIsUserVideoDetailOn(false)
+    setIsFollowedPage(true)
+    getFollowingCount()
     const options = {
       rootMargin: '-64px 0px 0px 0px',
       threshold: [0]
     }
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        fetchItemData('home')
-        addPage()
+        if (page * 5 >= followingCount) {
+          setShowSpin(false)
+        } else {
+          fetchItemData('followed')
+          addPage()
+        }
       }
     }, options)
     if (spinRef.current) {
@@ -42,7 +56,8 @@ export default React.memo(function Home() {
     return () => {
       observer.disconnect(spinRef.current)
     }
-  }, [])
+  }, [page])
+
   const handleScroll = (e) => {
     const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)
@@ -90,10 +105,12 @@ export default React.memo(function Home() {
           ></HomeItem>
         )
       })}
-      <div ref={spinRef} className="text-center">
-        <Spin size="large" className="!my-3 " />
-      </div>
+      {showSpin && (
+        <div ref={spinRef} className="text-center">
+          <Spin size="large" className="!my-3 " />
+        </div>
+      )}
       <BackTop target={() => contentRef.current} tooltip="返回到顶部"></BackTop>
     </div>
   )
-})
+}

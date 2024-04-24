@@ -7,7 +7,7 @@ import {
   HomeOutlined,
   StarOutlined,
   TeamOutlined,
-  UserOutlined,
+  UserOutlined
 } from '@ant-design/icons'
 import { usePathname, useRouter } from 'next/navigation'
 import { useHomeStore } from '@/app/stores/homeStore'
@@ -18,7 +18,7 @@ const items1 = [
   [StarOutlined, '已关注', 'followed'],
   [TeamOutlined, '好友', 'friends'],
   [CompassOutlined, '探索', 'explore'],
-  [UserOutlined, '个人资料', 'profile'],
+  [UserOutlined, '个人资料', 'profile']
 ]
 const items2 = items1.map((icon, index) => {
   const key = String(index)
@@ -26,11 +26,11 @@ const items2 = items1.map((icon, index) => {
     key: key,
     icon: React.createElement(icon[0], { className: '!text-2xl' }),
     label: icon[1],
-    style: { marginTop: '8px', paddingLeft: '15px' },
+    style: { marginTop: '8px', paddingLeft: '15px' }
   }
 })
 export default function PriSider() {
-  const {data:session}= useSession()
+  const { data: session } = useSession()
   const setShowLogin = useHomeStore((state) => state.setShowLogin)
   const router = useRouter()
   const pathName = usePathname()
@@ -49,10 +49,10 @@ export default function PriSider() {
             return '/' + item[2] === pathName
           }) + ''
     )
-  }, [session,pathName])
+  }, [session, pathName])
 
-  const handleSelect = 
-    ({ key }) => {
+  const handleSelect = ({ key }) => {
+    if (key !== current) {
       if ((key === '2' || key === '4') && session === null) {
         setShowLogin(true)
       } else {
@@ -65,6 +65,7 @@ export default function PriSider() {
         }
       }
     }
+  }
   return (
     <>
       <Sider
@@ -73,7 +74,7 @@ export default function PriSider() {
           height: '100%',
           background: 'white',
           borderRight: '1px solid rgb(224,224,224)',
-          boxShadow: '2px 1px 10px rgb(249,249,249)',
+          boxShadow: '2px 1px 10px rgb(249,249,249)'
         }}
         breakpoint="lg"
         className={'lg:!border-r-0 lg:!shadow-none z-40'}
