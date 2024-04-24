@@ -861,7 +861,7 @@ export const getFollowingVideos = async (page) => {
   const session = await auth()
   if (!session) return []
   const { user } = session
-  const res = await prisma.video.findMany({
+  let res = await prisma.video.findMany({
     skip:page*5,
     take:5,
     where: {
