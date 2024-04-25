@@ -918,7 +918,7 @@ export const getFollowingVideos = async (page) => {
 }
 export const getFollowingVideosCount = async () => {
   const session = await auth()
-  if (!session) return []
+  if (!session) return 0
   const { user } = session
   const res = await prisma.video.count({
     where: {
