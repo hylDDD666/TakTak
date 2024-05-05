@@ -5,6 +5,7 @@ import ReactPlayer from 'react-player'
 import { useRouter } from 'next/navigation'
 import { useHomeStore } from '../stores/homeStore'
 import { addFollow, subFollow } from '../action/action'
+import useAuth from '../hooks/useAuth'
 
 export default function PersonCard(props) {
   const { video, name, avatar } = props
@@ -21,14 +22,14 @@ export default function PersonCard(props) {
   const pauseCard = () => {
     setIsPlaying(false)
   }
-  const toggleFollow = async () => {
+  const toggleFollow = useAuth(async () => {
     setIsFollowed((pre) => !pre)
     if (isFollowed) {
       await subFollow(name)
     } else {
       await addFollow(name)
     }
-  }
+  })
   useLayoutEffect(() => {
     const containerHeight = 300
     const containerWidth = 220
@@ -49,21 +50,25 @@ export default function PersonCard(props) {
       ref={containerRef}
       onMouseEnter={playCard}
       onMouseLeave={pauseCard}
-      onClick={handleClick}
     >
       <div
         className={`z-0 h-full w-full
           overflow-clip`}
       >
         <div className="absolute bottom-0 w-full h-3/5 z-30 text-center">
-          <Avatar size={56} src={avatar}></Avatar>
-          <h2 className="text-white text-xl font-bold mt-3 mb-3 hover:cursor-pointer">{name}</h2>
+          <div onClick={handleClick}>
+            <Avatar size={56} src={avatar}></Avatar>
+            <h2 className="text-white text-xl font-bold mt-3 mb-3 hover:cursor-pointer">
+              {name}
+            </h2>
+          </div>
+
           <Button
             size="large"
             style={{
               width: '160px',
               borderRadius: '5px',
-              border: 0
+              border: 0,
             }}
             onClick={toggleFollow}
             className={`${
@@ -76,7 +81,11 @@ export default function PersonCard(props) {
           </Button>
         </div>
         <div ref={videoRef} className="h-full w-full">
-          <img src={cover} alt="cover" className="absolute top-1/2 -translate-y-1/2" />
+          <img
+            src={cover}
+            alt="cover"
+            className="absolute top-1/2 -translate-y-1/2"
+          />
           {isPlaying && (
             <ReactPlayer
               volume={0}
