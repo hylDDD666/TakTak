@@ -22,7 +22,7 @@ const transitionStyles = {
   exiting: { maxHeight: 0, opacity: 0, transition: 'all 500ms' }
 }
 
-export default React.memo(function HomeItem(props) {
+export default function HomeItem(props) {
   const { user, desc, videoInfo, disLike, id, isPlaying, isLike, isCollect } = props
   const curId = useHomeStore((state) => state.currentPlayId)
   const playItem = useHomeStore((state) => state.playItemById)
@@ -81,6 +81,7 @@ export default React.memo(function HomeItem(props) {
     getShare()
   }, [])
   useEffect(() => {
+    if (!isLoad) {
     const options = {
       rootMargin: '-10% 0px 100% 0px',
       threshold: [0, 0.5, 1]
@@ -88,8 +89,8 @@ export default React.memo(function HomeItem(props) {
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-            setIsLoad(true)
-          
+          setIsLoad(true)
+          playItem(id)
         }
       }
     }, options)
@@ -99,6 +100,7 @@ export default React.memo(function HomeItem(props) {
 
     return () => {
       observer.unobserve(nodeRef.current)
+    }
     }
   }, [isLoad])
   useEffect(() => {
@@ -229,4 +231,4 @@ export default React.memo(function HomeItem(props) {
       }}
     </Transition>
   )
-})
+}
