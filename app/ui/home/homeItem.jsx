@@ -78,26 +78,29 @@ export default React.memo(function HomeItem(props) {
     } else {
       setshowCollopse(false)
     }
+    getShare()
+  }, [])
+  useEffect(() => {
     const options = {
-      rootMargin: '-10% 0px 0px 200%',
+      rootMargin: '-10% 0px 100% 0px',
       threshold: [0, 0.5, 1]
     }
     const observer = new IntersectionObserver((entrys) => {
       for (let entry of entrys) {
         if (entry.isIntersecting) {
-          if (isLoad) {
-            observer.unobserve(nodeRef.current)
-          } else {
             setIsLoad(true)
-          }
+          
         }
       }
     }, options)
     if (nodeRef.current) {
       observer.observe(nodeRef.current)
     }
-    getShare()
-  }, [])
+
+    return () => {
+      observer.unobserve(nodeRef.current)
+    }
+  }, [isLoad])
   useEffect(() => {
     if (curId === id) {
       nodeRef.current.parentNode.scrollTo(0, nodeRef.current.offsetTop - 65)
