@@ -103,7 +103,7 @@ export default function Comment(props) {
         </Col>
         <Col span={18} style={{ padding: '0 5px' }}>
           <Link
-            href="/username"
+            href={`/${author.userName}`}
             className="font-medium text-black hover:underline hover:text-black "
           >
             <span className="text-sm">{author.userName}</span>
