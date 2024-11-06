@@ -4,9 +4,9 @@ function throttle(func,delay){
     if(timer){
       return
     }
-    timer = setTimeout(()=>{
+    timer = setTimeout(function(){
       func.apply(this,args)
-      timer=null
+      clearTimeout(timer)
     },delay)
   }
 }

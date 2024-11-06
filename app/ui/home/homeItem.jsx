@@ -98,7 +98,7 @@ export default function HomeItem(props) {
         for (let entry of entrys) {
           if (entry.isIntersecting) {
             setIsLoad(true)
-            playItem(id)
+            // playItem(id)
           }
         }
       }, options)
