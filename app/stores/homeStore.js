@@ -162,11 +162,6 @@ export const useHomeStore = create((set, get) => ({
       })
     )
   },
-  initItemList: () => {
-    set(() => {
-      return { itemList: [], page: 0 }
-    })
-  },
   setSession: (session) => {
     set(() => {
       return { session }

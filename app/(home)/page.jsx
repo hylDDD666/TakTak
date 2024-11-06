@@ -12,6 +12,7 @@ export default React.memo(function Home() {
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
+  const pauseAllItems = useHomeStore(state=>state.pauseAllItems)
   const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
   const setIsUserVideoDetailOn = useHomeStore((state) => state.setIsUserVideoDetailOn)
   const isFollowedPage = useHomeStore((state) => state.isFollowedPage)
@@ -43,11 +44,14 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
-  const handleScroll = (e) => {
-    const debounceScroll = debounce((e) => {
+  const handleScroll =()=>{
+    pauseAllItems()
+  }
+  const handleScrollEnd = (e) => {
+    // const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)
-    }, 500)
-    debounceScroll(e)
+    // }, 500)
+    // debounceScroll(e)
   }
   return (
     <div
@@ -59,6 +63,7 @@ export default React.memo(function Home() {
         overflowY: 'scroll'
       }}
       onScroll={handleScroll}
+      onScrollEnd={handleScrollEnd}
     >
       {itemList.map((item, index) => {
         const video = {
