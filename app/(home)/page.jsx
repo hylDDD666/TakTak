@@ -45,11 +45,10 @@ export default React.memo(function Home() {
     }
   }, [])
 
-  const throttleScroll=throttle(pauseAllItems,500)
-  const handleScroll =()=>{
-    console.log('handleScroll', Date.now)
-    throttleScroll()
-  }
+  const handleScroll =throttle(()=>{
+    console.log('handleScroll')  
+    pauseAllItems()
+  },500)
   
   const handleScrollEnd = e => {
     console.log('handleScrollEnd', e)
