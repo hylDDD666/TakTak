@@ -54,10 +54,10 @@ export default function SubComment(props) {
         </Col>
         <Col span={17}>
           <Link
-            href="/username"
+            href={`/${author.userName}`}
             className="font-medium text-black hover:underline hover:text-black "
           >
-            <span className="text-sm">{author.usreName}</span>
+            <span className="text-sm">{author.userName}</span>
           </Link>
           <p className=" text-base leading-[18px]">{content}</p>
           <div className="text-gray-500 my-0.5">
