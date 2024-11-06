@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
-import debounce from '../lib/debounce'
+import throttle from '../lib/throttle'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
@@ -44,10 +44,10 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
-  const handleScroll =()=>{
-    pauseAllItems()
-  }
+  const handleScroll =throttle(pauseAllItems,500)
   const handleScrollEnd = (e) => {
+    console.log('handleScrollEnd',e)
+
     // const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)
     // }, 500)

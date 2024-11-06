@@ -58,11 +58,13 @@ export default function Page() {
     }
   }, [page])
 
-  const handleScroll = (e) => {
-    const debounceScroll = debounce((e) => {
+  const handleScroll =throttle(pauseAllItems,500)
+  const handleScrollEnd = (e) => {
+    console.log('handleScrollEnd',e)
+    // const debounceScroll = debounce((e) => {
       setScrollHeight(e.target.scrollTop)
-    }, 500)
-    debounceScroll(e)
+    // }, 500)
+    // debounceScroll(e)
   }
   return (
     <div
@@ -74,6 +76,7 @@ export default function Page() {
         overflowY: 'scroll'
       }}
       onScroll={handleScroll}
+      onScrollEnd={handleScrollEnd}
     >
       {itemList.map((item, index) => {
         const video = {

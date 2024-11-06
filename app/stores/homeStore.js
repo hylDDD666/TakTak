@@ -172,9 +172,9 @@ export const useHomeStore = create((set, get) => ({
       return { user: token }
     })
   },
-  setShowLogin: (boolen) => {
+  setShowLogin: (boolean) => {
     set(() => {
-      return { showLogin: boolen }
+      return { showLogin: boolean }
     })
   },
   setCurReplyShow: (id) => {
@@ -199,7 +199,7 @@ export const useHomeStore = create((set, get) => ({
   },
   getCreatorVideos: async (userId) => {
     const res = await getCreatorVideos(userId)
-    set((state) => {
+    set(() => {
       const newList = [...res]
       return { creatorVideos: newList }
     })
@@ -222,12 +222,12 @@ export const useHomeStore = create((set, get) => ({
     })
   },
   setCurId: (id) => {
-    set((state) => {
+    set(() => {
       return { currentPlayId: id }
     })
   },
   setDetailId: (id) => {
-    set((state) => {
+    set(() => {
       return { curDetailId: id }
     })
   },
