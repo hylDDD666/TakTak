@@ -5,19 +5,20 @@ import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
 import throttle from '../lib/throttle'
+import { data } from 'autoprefixer'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
-  const { itemList, fetchItemData, addPage } = useHomeStore((state) => state)
+  const { itemList, fetchItemData, addPage } = useHomeStore(state => state)
   const spinRef = useRef()
   const contentRef = useRef()
   const [scrollHeight, setScrollHeight] = useState(0)
-  const pauseAllItems = useHomeStore(state=>state.pauseAllItems)
-  const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
-  const setIsUserVideoDetailOn = useHomeStore((state) => state.setIsUserVideoDetailOn)
-  const isFollowedPage = useHomeStore((state) => state.isFollowedPage)
-  const setIsFollowedPage = useHomeStore((state) => state.setIsFollowedPage)
-  const initItemList = useHomeStore((state) => state.initItemList)
+  const pauseAllItems = useHomeStore(state => state.pauseAllItems)
+  const setIsDetailOn = useHomeStore(state => state.setIsDetailOn)
+  const setIsUserVideoDetailOn = useHomeStore(state => state.setIsUserVideoDetailOn)
+  const isFollowedPage = useHomeStore(state => state.isFollowedPage)
+  const setIsFollowedPage = useHomeStore(state => state.setIsFollowedPage)
+  const initItemList = useHomeStore(state => state.initItemList)
   useLayoutEffect(() => {
     if (isFollowedPage) {
       setIsFollowedPage(false)
@@ -44,12 +45,17 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
-  const handleScroll =throttle(pauseAllItems,500)
-  const handleScrollEnd = (e) => {
-    console.log('handleScrollEnd',e)
+  const handleScroll = throttle(() => {
+    console.log('handleScroll', Date.now)
+    pauseAllItems()
+  }, 500)
+  const handleScrollEnd = e => {
+    console.log('handleScrollEnd', e)
 
     // const debounceScroll = debounce((e) => {
+    setTimeout(() => {
       setScrollHeight(e.target.scrollTop)
+    }, 0)
     // }, 500)
     // debounceScroll(e)
   }
@@ -80,20 +86,7 @@ export default React.memo(function Home() {
           collectNum: item._count.collector,
           shareNum: item.shareNum
         }
-        return (
-          <HomeItem
-            isLike={item.isLike}
-            isCollect={item.isCollect}
-            key={item.id + index + ''}
-            user={item.author}
-            desc={item.desc}
-            videoInfo={video}
-            disLike={item.disLike}
-            id={item.id}
-            isPlaying={item.isPlaying}
-            scrollHeight={scrollHeight}
-          ></HomeItem>
-        )
+        return <HomeItem isLike={item.isLike} isCollect={item.isCollect} key={item.id + index + ''} user={item.author} desc={item.desc} videoInfo={video} disLike={item.disLike} id={item.id} isPlaying={item.isPlaying} scrollHeight={scrollHeight}></HomeItem>
       })}
       <div ref={spinRef} className="text-center">
         <Spin size="large" className="!my-3 " />
