@@ -5,7 +5,6 @@ import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
 import throttle from '../lib/throttle'
-import { data } from 'autoprefixer'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
@@ -45,10 +44,13 @@ export default React.memo(function Home() {
       observer.disconnect(spinRef.current)
     }
   }, [])
-  const handleScroll = throttle(() => {
+
+  const throttleScroll=throttle(pauseAllItems,500)
+  const handleScroll =()=>{
     console.log('handleScroll', Date.now)
-    pauseAllItems()
-  }, 500)
+    throttleScroll()
+  }
+  
   const handleScrollEnd = e => {
     console.log('handleScrollEnd', e)
 

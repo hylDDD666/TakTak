@@ -6,6 +6,7 @@ import BackTop from 'antd/es/float-button/BackTop'
 import debounce from '@/app/lib/debounce'
 import HomeItem from '@/app/ui/home/homeItem'
 import { getFollowingVideosCount } from '@/app/action/action'
+import throttle from '@/app/lib/throttle'
 
 export default function Page() {
   const [followingCount, setFollowingCount] = useState(Infinity)
@@ -57,8 +58,10 @@ export default function Page() {
       observer.disconnect(spinRef.current)
     }
   }, [page])
-
-  const handleScroll =throttle(pauseAllItems,500)
+  const throttleScroll=throttle(pauseAllItems,500)
+  const handleScroll =()=>{
+    throttleScroll()
+  }
   const handleScrollEnd = (e) => {
     console.log('handleScrollEnd',e)
     // const debounceScroll = debounce((e) => {
