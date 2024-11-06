@@ -5,7 +5,7 @@ import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
 import HomeItem from '@/app/ui/home/homeItem'
 import { getFollowingVideosCount } from '@/app/action/action'
-import throttle from '@/app/lib/throttle'
+// import throttle from '@/app/lib/throttle'
 
 export default function Page() {
   const [followingCount, setFollowingCount] = useState(Infinity)
@@ -19,6 +19,7 @@ export default function Page() {
   const isFollowedPage = useHomeStore(state => state.isFollowedPage)
   const setIsFollowedPage = useHomeStore(state => state.setIsFollowedPage)
   const initItemList = useHomeStore(state => state.initItemList)
+  const pauseAllItems = useHomeStore(state => state.pauseAllItems)
   const page = useHomeStore(state => state.page)
 
   useLayoutEffect(() => {
@@ -57,13 +58,15 @@ export default function Page() {
       observer.disconnect(spinRef.current)
     }
   }, [page])
-  const handleScroll = useCallback(
-    throttle(() => {
-      console.log('handleScroll')
+  const isScroll = useRef(false)
+  const handleScroll = useCallback(() => {
+    if (isScroll) {
+      return
+    } else {
+      isScroll.current = true
       pauseAllItems()
-    }, 500),
-    []
-  )
+    }
+  }, [])
   const handleScrollEnd = e => {
     console.log('handleScrollEnd', e)
     // const debounceScroll = debounce((e) => {

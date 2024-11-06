@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
 import BackTop from 'antd/es/float-button/BackTop'
-import throttle from '../lib/throttle'
+// import throttle from '../lib/throttle'
 const HomeItem = dynamic(() => import('../ui/home/homeItem'), { ssr: false })
 
 export default React.memo(function Home() {
@@ -45,14 +45,22 @@ export default React.memo(function Home() {
     }
   }, [])
 
-  const handleScroll = useCallback(
-    throttle(() => {
-      console.log('handleScroll')
-      pauseAllItems()
-    }, 500),
-    []
-  )
+  // const handleScroll = useCallback(
+  //   throttle(() => {
+  //     console.log('handleScroll')
+  //     pauseAllItems()
+  //   }, 500),
+  //   []
+  // )
 
+  const handleScroll = useCallback(() => {
+    if (isScroll) {
+      return
+    } else {
+      isScroll.current = true
+      pauseAllItems()
+    }
+  }, [])
   const handleScrollEnd = e => {
     console.log('handleScrollEnd', e)
 
