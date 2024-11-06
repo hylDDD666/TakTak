@@ -58,10 +58,10 @@ export default function Page() {
       observer.disconnect(spinRef.current)
     }
   }, [page])
-  const throttleScroll=throttle(pauseAllItems,500)
-  const handleScroll =()=>{
-    throttleScroll()
-  }
+  const handleScroll =throttle(()=>{
+    console.log('handleScroll')  
+    pauseAllItems()
+  },500)
   const handleScrollEnd = (e) => {
     console.log('handleScrollEnd',e)
     // const debounceScroll = debounce((e) => {
