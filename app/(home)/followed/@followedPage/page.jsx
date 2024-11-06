@@ -60,7 +60,7 @@ export default function Page() {
   }, [page])
   const isScroll = useRef(false)
   const handleScroll = useCallback(() => {
-    if (isScroll) {
+    if (isScroll.current) {
       return
     } else {
       isScroll.current = true

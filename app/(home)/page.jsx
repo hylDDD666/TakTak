@@ -54,7 +54,7 @@ export default React.memo(function Home() {
   // )
   const isScroll = useRef(false)
   const handleScroll = useCallback(() => {
-    if (isScroll) {
+    if (isScroll.current) {
       return
     } else {
       isScroll.current = true
