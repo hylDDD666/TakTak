@@ -6,7 +6,7 @@ function throttle(func,delay){
     }
     timer = setTimeout(function(){
       func.apply(this,args)
-      clearTimeout(timer)
+      timer=null
     },delay)
   }
 }
