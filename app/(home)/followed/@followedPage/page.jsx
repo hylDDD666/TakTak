@@ -71,6 +71,8 @@ export default function Page() {
     console.log('handleScrollEnd', e)
     // const debounceScroll = debounce((e) => {
     setScrollHeight(e.target.scrollTop)
+    isScroll.current = false
+
     // }, 500)
     // debounceScroll(e)
   }

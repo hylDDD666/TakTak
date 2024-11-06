@@ -52,7 +52,7 @@ export default React.memo(function Home() {
   //   }, 500),
   //   []
   // )
-
+  const isScroll = useRef(false)
   const handleScroll = useCallback(() => {
     if (isScroll) {
       return
@@ -67,6 +67,7 @@ export default React.memo(function Home() {
     // const debounceScroll = debounce((e) => {
     setTimeout(() => {
       setScrollHeight(e.target.scrollTop)
+      isScroll.current = false
     }, 0)
     // }, 500)
     // debounceScroll(e)
