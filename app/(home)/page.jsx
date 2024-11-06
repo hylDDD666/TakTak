@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { useHomeStore } from '../stores/homeStore'
 import { Spin } from 'antd'
@@ -45,11 +45,14 @@ export default React.memo(function Home() {
     }
   }, [])
 
-  const handleScroll =throttle(()=>{
-    console.log('handleScroll')  
-    pauseAllItems()
-  },500)
-  
+  const handleScroll = useCallback(
+    throttle(() => {
+      console.log('handleScroll')
+      pauseAllItems()
+    }, 500),
+    []
+  )
+
   const handleScrollEnd = e => {
     console.log('handleScrollEnd', e)
 

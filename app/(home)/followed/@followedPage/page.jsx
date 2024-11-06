@@ -9,17 +9,17 @@ import throttle from '@/app/lib/throttle'
 
 export default function Page() {
   const [followingCount, setFollowingCount] = useState(Infinity)
-  const { itemList, fetchItemData, addPage } = useHomeStore((state) => state)
+  const { itemList, fetchItemData, addPage } = useHomeStore(state => state)
   const spinRef = useRef()
   const contentRef = useRef()
   const [showSpin, setShowSpin] = useState(true)
   const [scrollHeight, setScrollHeight] = useState(0)
-  const setIsDetailOn = useHomeStore((state) => state.setIsDetailOn)
-  const setIsUserVideoDetailOn = useHomeStore((state) => state.setIsUserVideoDetailOn)
-  const isFollowedPage = useHomeStore((state) => state.isFollowedPage)
-  const setIsFollowedPage = useHomeStore((state) => state.setIsFollowedPage)
-  const initItemList = useHomeStore((state) => state.initItemList)
-  const page = useHomeStore((state) => state.page)
+  const setIsDetailOn = useHomeStore(state => state.setIsDetailOn)
+  const setIsUserVideoDetailOn = useHomeStore(state => state.setIsUserVideoDetailOn)
+  const isFollowedPage = useHomeStore(state => state.isFollowedPage)
+  const setIsFollowedPage = useHomeStore(state => state.setIsFollowedPage)
+  const initItemList = useHomeStore(state => state.initItemList)
+  const page = useHomeStore(state => state.page)
 
   useLayoutEffect(() => {
     if (!isFollowedPage) {
@@ -57,14 +57,17 @@ export default function Page() {
       observer.disconnect(spinRef.current)
     }
   }, [page])
-  const handleScroll =throttle(()=>{
-    console.log('handleScroll')  
-    pauseAllItems()
-  },500)
-  const handleScrollEnd = (e) => {
-    console.log('handleScrollEnd',e)
+  const handleScroll = useCallback(
+    throttle(() => {
+      console.log('handleScroll')
+      pauseAllItems()
+    }, 500),
+    []
+  )
+  const handleScrollEnd = e => {
+    console.log('handleScrollEnd', e)
     // const debounceScroll = debounce((e) => {
-      setScrollHeight(e.target.scrollTop)
+    setScrollHeight(e.target.scrollTop)
     // }, 500)
     // debounceScroll(e)
   }
@@ -95,20 +98,7 @@ export default function Page() {
           collectNum: item._count.collector,
           shareNum: item.shareNum
         }
-        return (
-          <HomeItem
-            isLike={item.isLike}
-            isCollect={item.isCollect}
-            key={item.id + index + ''}
-            user={item.author}
-            desc={item.desc}
-            videoInfo={video}
-            disLike={item.disLike}
-            id={item.id}
-            isPlaying={item.isPlaying}
-            scrollHeight={scrollHeight}
-          ></HomeItem>
-        )
+        return <HomeItem isLike={item.isLike} isCollect={item.isCollect} key={item.id + index + ''} user={item.author} desc={item.desc} videoInfo={video} disLike={item.disLike} id={item.id} isPlaying={item.isPlaying} scrollHeight={scrollHeight}></HomeItem>
       })}
       {showSpin && (
         <div ref={spinRef} className="text-center">
